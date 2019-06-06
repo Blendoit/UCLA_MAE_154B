@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 
-
+# hello im just dicking around
 # This variable is required for main.py constant wing dimensions
 # to be passed to inheriting classes (Airfoil, Spar, Stringer, Rib).
 # This way, we don't have to redeclare our coordinates as parameters for
@@ -117,13 +117,12 @@ class Airfoil(Coordinates):
             x_c = x
             y_c = float()
             if 0 <= x < p_c:
-                y_c = (m / (p ** 2)) * (2 * p
-                                        * (x / self.chord)
-                                        - (x / self.chord) ** 2)
+                y_c = (m / (p**2)) * (2 * p * (x / self.chord) -
+                                      (x / self.chord)**2)
             elif p_c <= x <= self.chord:
-                y_c = (m / ((1 - p) ** 2)) * ((1 - 2 * p)
-                                              + 2 * p * (x / self.chord)
-                                              - (x / self.chord) ** 2)
+                y_c = (m /
+                       ((1 - p)**2)) * ((1 - 2 * p) + 2 * p *
+                                        (x / self.chord) - (x / self.chord)**2)
             else:
                 print('x-coordinate for camber is out of bounds. '
                       'Check that 0 < x <= chord.')
@@ -135,11 +134,12 @@ class Airfoil(Coordinates):
             """
             y_t = float()
             if 0 <= x <= self.chord:
-                y_t = 5 * t * self.chord * (0.2969 * sqrt(x / self.chord)
-                                            - 0.1260 * (x / self.chord)
-                                            - 0.3516 * (x / self.chord) ** 2
-                                            + 0.2843 * (x / self.chord) ** 3
-                                            - 0.1015 * (x / self.chord) ** 4)
+                y_t = 5 * t * self.chord * (0.2969 * sqrt(x / self.chord) -
+                                            0.1260 *
+                                            (x / self.chord) - 0.3516 *
+                                            (x / self.chord)**2 + 0.2843 *
+                                            (x / self.chord)**3 - 0.1015 *
+                                            (x / self.chord)**4)
             else:
                 print('x-coordinate for thickness is out of bounds. '
                       'Check that 0 < x <= chord.')
@@ -151,9 +151,9 @@ class Airfoil(Coordinates):
             """
             dy_c = float()
             if 0 <= x < p_c:
-                dy_c = ((2 * m)/p ** 2) * (p - x / self.chord)
+                dy_c = ((2 * m) / p**2) * (p - x / self.chord)
             elif p_c <= x <= self.chord:
-                dy_c = (2 * m) / ((1 - p) ** 2) * (p - x / self.chord)
+                dy_c = (2 * m) / ((1 - p)**2) * (p - x / self.chord)
             return dy_c
 
         def get_theta(dy_c):
@@ -169,7 +169,7 @@ class Airfoil(Coordinates):
             elif x == self.chord:
                 x_u = x - self.y_t[x] * sin(self.theta[x])
                 y_u = 0  # Make upper curve finish at y = 0
-            return(x_u, y_u)
+            return (x_u, y_u)
 
         def get_lower_coordinates(x):
             x_l = float()
@@ -180,7 +180,7 @@ class Airfoil(Coordinates):
             elif x == self.chord:
                 x_l = (x + self.y_t[x] * sin(self.theta[x]))
                 y_l = 0  # Make lower curve finish at y = 0
-            return(x_l, y_l)
+            return (x_l, y_l)
 
         # Generate all our wing geometries from previous sub-functions
         for x in range(0, self.chord + 1):
@@ -233,7 +233,7 @@ class Airfoil(Coordinates):
         Save all the declared geometry to save_dir_path (must be full path).
         """
         file_name = 'airfoil_%s' % airfoil_number
-        full_path = os.path.join(save_dir_path, file_name+'.txt')
+        full_path = os.path.join(save_dir_path, file_name + '.txt')
         file = open(full_path, 'w')
         sys.stdout = file
         self.print_geometry(4)
@@ -341,7 +341,11 @@ def plot(airfoil, spar):
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot mean camber line
-    plt.plot(airfoil.x_c, airfoil.y_c, '-.', color='r', linewidth='2',
+    plt.plot(airfoil.x_c,
+             airfoil.y_c,
+             '-.',
+             color='r',
+             linewidth='2',
              label='mean camber line')
     # Plot upper surface
     plt.plot(airfoil.x_u, airfoil.y_u, '', color='b', linewidth='1')
