@@ -1,5 +1,5 @@
 # UCLA_MAE_154B
-UCLA Spring 2019, MAE 154B
+## Spring 2019 Final Project
 
 This program enables the creation of NACA airfoils;\
 the analysis of the airfoil's structural properties;\
