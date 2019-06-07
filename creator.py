@@ -31,8 +31,17 @@ global parent
 
 class Coordinates:
     """
-    All classes need coordinates relative to the chord & semi-span.
-    So, they all inherit from this class.
+    All airfoil components need the following:
+
+    Parameters:
+        * Component material
+        * Coordinates relative to the chord & semi-span.
+
+    Methods:
+        * Print component coordinates
+        * Save component coordinates to file specified in main.py
+
+    So, all component classes inherit from class Coordinates.
     """
 
     def __init__(self, chord, semi_span):
