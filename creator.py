@@ -28,6 +28,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # our spars, stringers and ribs. This makes for more elegant code.
 global parent
 
+# Marius makes a change.
 
 class Coordinates:
     """
