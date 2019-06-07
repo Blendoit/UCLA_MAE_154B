@@ -19,7 +19,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 100
+CHORD_LENGTH = 40
 SEMI_SPAN = 200
 
 POP_SIZE = 1
@@ -32,11 +32,12 @@ def main():
     for airfoil_number in range(1, POP_SIZE + 1):
         foo = creator.Airfoil()
         foo.naca(2412)
-        # foo.print_geometry(4)
+        # foo.print_coord(4)
         foo.spar = creator.Spar()
         foo.spar.add_spar(foo.coordinates, 'aluminium', 0.15)
+        foo.spar.print_coord(4)
         creator.plot(foo, foo.spar)
-        # foo.save_values(airfoil_number, SAVE_PATH)
+        foo.save_values(SAVE_PATH)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 

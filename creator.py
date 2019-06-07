@@ -38,13 +38,11 @@ class Coordinates:
     def __init__(self, chord, semi_span):
         # Global dimensions
         self.chord = chord
+        if chord < 10:
+            self.chord = 10
         self.semi_span = semi_span
-        # Upper coordinates
-        self.x_u = []
-        self.y_u = []
-        # Lower coordinates
-        self.x_l = []
-        self.y_l = []
+        # Component material
+        self.material = str()
         # Upper coordinates
         self.x_u = []
         self.y_u = []
@@ -56,16 +54,39 @@ class Coordinates:
         global parent
         parent = self
 
-    def create(self, chord, semi_span):
-        self.chord = chord
-        self.semi_span = semi_span
+    def print_coord(self, round):
+        """
+        Print all the object's coordinates to the terminal.
 
-        chord = self.chord
-        semi_span = self.semi_span
+        This function's output is piped to the 'save_coord' function below.
+        """
+        print('Chord length', self.chord, sep='\n')
+        print('Semi-span')
+        print('x_u the upper x-coordinates')
+        print(np.around(self.x_u, round))
+        print('y_u the upper y-coordinates')
+        print(np.around(self.y_u, round))
+        print('x_l the lower x-coordinates')
+        print(np.around(self.x_l, round))
+        print('y_l the lower y-coordinates')
+        print(np.around(self.y_l, round))
+        return None
+
+    def save_coord(self, save_dir_path):
+        """
+        Save all the object's coordinates (must be full path).
+        """
+        object_name = str(self.__name__)
+        file_name = 'airfoil_%s' % airfoil_number
+        full_path = os.path.join(save_dir_path, file_name + '.txt')
+        file = open(full_path, 'w')
+        sys.stdout = file
+        self.print_coord(4)
+        return None
 
 
 class Airfoil(Coordinates):
-    """This class enables the creation of a NACA airfoil."""
+    """This class enables the creation of a single NACA airfoil."""
 
     def __init__(self):
         global parent
@@ -74,8 +95,8 @@ class Airfoil(Coordinates):
         # NACA number
         self.naca_num = int()
         # Mean camber line
-        self.x_c = []
-        self.y_c = []
+        self.x_c = []  # Contains only integers from 0 to self.chord
+        self.y_c = []  # Contains floats
         # Thickness
         self.y_t = []
         # dy_c / d_x
@@ -103,9 +124,6 @@ class Airfoil(Coordinates):
         m = int(str(naca_num)[0]) / 100
         p = int(str(naca_num)[1]) / 10
         t = int(str(naca_num)[2:]) / 100
-        # Chord length. Should be higher than 10.
-        if self.chord < 10:
-            self.chord = 10
         # x-coordinate of maximum camber
         p_c = p * self.chord
 
@@ -196,46 +214,8 @@ class Airfoil(Coordinates):
         self.coordinates.append(self.x_u)
         self.coordinates.append(self.y_u)
         self.coordinates.append(self.x_l)
-        self.coordinates.append(self.x_l)
+        self.coordinates.append(self.y_l)
 
-        return None
-
-    def print_geometry(self, round):
-        """
-        Print all the declared geometry to the terminal.
-        """
-        # Print all our basic geometry, useful for debugging
-        print('Chord length')
-        print(self.chord)
-        print('x_c the x-coordinates of the mean camber line')
-        print(np.around(self.x_c, round))
-        print('y_c the y-coordinates of the mean camber line')
-        print(np.around(self.y_c, round))
-        print('y_t the y-coordinates of the airfoil thickness')
-        print(np.around(self.y_t, round))
-        print('dy_c the derivative of y_c with respect to dx')
-        print(np.around(self.dy_c, round))
-        print('theta is like an angle, idk')
-        print(np.around(self.theta, round))
-        print('x_u the x-coordinates of the upper airfoil surface')
-        print(np.around(self.x_u, round))
-        print('y_u the y-coordinates of the upper airfoil surface')
-        print(np.around(self.y_u, round))
-        print('x_l the x-coordinates of the lower airfoil surface')
-        print(np.around(self.x_l, round))
-        print('y_l the y-coordinates of lower airfoil surface')
-        print(np.around(self.y_l, round))
-        return None
-
-    def save_values(self, airfoil_number, save_dir_path):
-        """
-        Save all the declared geometry to save_dir_path (must be full path).
-        """
-        file_name = 'airfoil_%s' % airfoil_number
-        full_path = os.path.join(save_dir_path, file_name + '.txt')
-        file = open(full_path, 'w')
-        sys.stdout = file
-        self.print_geometry(4)
         return None
 
 
@@ -245,8 +225,6 @@ class Spar(Coordinates):
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
-        # Spar material
-        self.spar_material = []
 
     def add_spar(self, coordinates, material, spar_x):
         """
@@ -358,7 +336,7 @@ def plot(airfoil, spar):
             plt.plot(x, y, '.-', color='b', label='spar')
             plt.legend()
     except:
-        print('Did plot spars. Were they added?')
+        print('Did not plot spars. Were they added?')
     # Plot stringers
     # if len(self.spar_x) != 0:
     #     for _ in range(0, len(self.stringer_x)):
