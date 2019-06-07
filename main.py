@@ -23,22 +23,35 @@ CHORD_LENGTH = 40
 SEMI_SPAN = 200
 
 POP_SIZE = 1
-SAVE_PATH = 'C:/Users/blend/Desktop/python/airfoils'
+SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
 def main():
     # Create coordinate system specific to airfoil dimensions.
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
-    for airfoil_number in range(1, POP_SIZE + 1):
-        foo = creator.Airfoil()
-        foo.naca(2412)
-        # foo.print_coord(4)
-        foo.spar = creator.Spar()
-        foo.spar.add_spar(foo.coordinates, 'aluminium', 0.15)
-        foo.spar.print_coord(4)
-        creator.plot(foo, foo.spar)
-        foo.save_values(SAVE_PATH)
 
+    # Interate through all wings in population.
+    for _ in range(1, POP_SIZE + 1):
+        # Create airfoil instance
+        af = creator.Airfoil()
+        # Define NACA airfoil coordinates
+        af.naca(2412)
+        # Print coordinates of af to terminal
+        af.print_coord(4)
+        # Create spar instance
+        af.spar = creator.Spar()
+        # Define the spar coordinates
+        af.spar.add_spar(af.coordinates, 'aluminium', 0.15)
+        # Print coordinates of af.spar to terminal
+        af.spar.print_coord(4)
+        # Plot components with matplotlib
+        creator.plot(af, af.spar)
+
+        # Save component coordinates
+        af.save_coord(SAVE_PATH)
+        af.spar.save_coord(SAVE_PATH)
+
+    # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
 
 

@@ -65,28 +65,35 @@ class Coordinates:
 
     def print_coord(self, round):
         """
-        Print all the object's coordinates to the terminal.
+        Print all the component's coordinates to the terminal.
 
         This function's output is piped to the 'save_coord' function below.
         """
-        print('Chord length', self.chord, sep='\n')
-        print('Semi-span')
-        print('x_u the upper x-coordinates')
-        print(np.around(self.x_u, round))
-        print('y_u the upper y-coordinates')
-        print(np.around(self.y_u, round))
-        print('x_l the lower x-coordinates')
-        print(np.around(self.x_l, round))
-        print('y_l the lower y-coordinates')
-        print(np.around(self.y_l, round))
+        print('============================')
+        print('Component:', type(self).__name__)
+        print('Chord length:', self.chord)
+        print('Semi-span:', self.semi_span)
+        print('============================')
+        print('x_u the upper x-coordinates:',
+              np.around(self.x_u, round),
+              sep='\n')
+        print('y_u the upper y-coordinates:',
+              np.around(self.y_u, round),
+              sep='\n')
+        print('x_l the lower x-coordinates:',
+              np.around(self.x_l, round),
+              sep='\n')
+        print('y_l the lower y-coordinates:',
+              np.around(self.y_l, round),
+              sep='\n')
+        print('\n')
         return None
 
     def save_coord(self, save_dir_path):
         """
         Save all the object's coordinates (must be full path).
         """
-        object_name = str(self.__name__)
-        file_name = 'airfoil_%s' % airfoil_number
+        file_name = str(type(self).__name__)
         full_path = os.path.join(save_dir_path, file_name + '.txt')
         file = open(full_path, 'w')
         sys.stdout = file
