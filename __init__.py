@@ -13,12 +13,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 __author__ = "Marius Peter"
-<<<<<<< HEAD
-__version__ = "2.1"
-__revision__ = "2.1.1"
-
-qwqw
-=======
 __version__ = "2.3"
 __revision__ = "2.3.1"
->>>>>>> 4f2f9b29b0863fa670cd889f20f3c5ba76a1b80b
