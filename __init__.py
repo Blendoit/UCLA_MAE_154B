@@ -15,5 +15,3 @@
 __author__ = "Marius Peter"
 __version__ = "2.1"
 __revision__ = "2.1.1"
-
-# Foobie foobar

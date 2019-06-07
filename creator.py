@@ -22,7 +22,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 
-# hello im just dicking around
 # This variable is required for main.py constant wing dimensions
 # to be passed to inheriting classes (Airfoil, Spar, Stringer, Rib).
 # This way, we don't have to redeclare our coordinates as parameters for
