@@ -59,11 +59,12 @@ class Coordinates:
         self.x_l = []
         self.y_l = []
         # Coordinates x_u, y_u, x_l, y_l packed in single list
-        self.coordinates = []
+        self.coord = []
+        # The airfoil components know the Coordinates instance's coords
         global parent
         parent = self
 
-    def print_coord(self, round):
+    def print_component(self, round):
         """
         Print all the component's coordinates to the terminal.
 
@@ -99,6 +100,12 @@ class Coordinates:
         sys.stdout = file
         self.print_coord(4)
         return None
+
+    def pack_coord(self):
+        self.coord.append(self.x_u)
+        self.coord.append(self.y_u)
+        self.coord.append(self.x_l)
+        self.coord.append(self.y_l)
 
 
 class Airfoil(Coordinates):
@@ -227,11 +234,7 @@ class Airfoil(Coordinates):
             self.x_l.append(get_lower_coordinates(x)[0])
             self.y_l.append(get_lower_coordinates(x)[1])
 
-        self.coordinates.append(self.x_u)
-        self.coordinates.append(self.y_u)
-        self.coordinates.append(self.x_l)
-        self.coordinates.append(self.y_l)
-
+        super().pack_coord()
         return None
 
 
@@ -271,6 +274,8 @@ class Spar(Coordinates):
         self.y_u.append(y_u[spar_x_u])
         self.x_l.append(x_l[spar_x_l])
         self.y_l.append(y_l[spar_x_l])
+
+        super().pack_coord()
         return None
 
 
@@ -281,17 +286,25 @@ class Stringer():
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add_stringer(self, *density):
+    def add_stringer(self, coordinates, den_u_1, den_u_2, den_l_1, den_l_2):
         """
-        Add stringers to the wing from their distribution density between spars.
-        First half of density[] concerns stringer distribution on
+        Add stringers to the wing from their density distribution.
 
         Parameters:
-        material: stringer material
-        *density:
+        den_u_1: upper nose stringer density (until first spar)
+        den_u_2: upper surface stringer density
+        den_l_1: lower nose stringer density (until first spar)
+        den_l_2: lower surface stringer density
 
+        Returns:
+        None
         """
-
+        # Airfoil surface coordinates
+        # unpacked from 'coordinates' (list of lists in 'Airfoil').
+        x_u = coordinates[0]
+        y_u = coordinates[1]
+        x_l = coordinates[2]
+        y_l = coordinates[3]
         # Find interval between leading edge and first upper stringer,
         # from density parameter den_u_1.
         interval = self.spar_x_u[0] / (den_u_1 * self.spar_x_u[0])
