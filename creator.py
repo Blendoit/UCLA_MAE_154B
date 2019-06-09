@@ -242,7 +242,7 @@ class Spar(Coordinates):
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add_spar(self, coordinates, material, spar_x):
+    def add_spar(self, coordinates, spar_x):
         """
         Add a single spar at the % chord location given to function.
 
@@ -271,7 +271,6 @@ class Spar(Coordinates):
         self.y_u.append(y_u[spar_x_u])
         self.x_l.append(x_l[spar_x_l])
         self.y_l.append(y_l[spar_x_l])
-        self.spar_material = material
         return None
 
 
@@ -286,7 +285,7 @@ class Stringer():
         self.stringer_y_l = []
         self.stringer_mat = []
 
-    def add_stringers(self, material, *density):
+    def add_stringers(self, *density):
         """
         Add stringers to the wing from their distribution density between spars.
         First half of density[] concerns stringer distribution on
@@ -347,8 +346,8 @@ def plot(airfoil, spar):
     # Plot spars
     try:
         for _ in range(0, len(spar.x_u)):
-            x = (spar.spar_x_u[_], spar.spar_x_l[_])
-            y = (spar.spar_y_u[_], spar.spar_y_l[_])
+            x = (spar.x_u[_], spar.x_l[_])
+            y = (spar.y_u[_], spar.y_l[_])
             plt.plot(x, y, '.-', color='b', label='spar')
             plt.legend()
     except:

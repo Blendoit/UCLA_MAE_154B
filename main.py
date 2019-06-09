@@ -19,7 +19,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 40
+CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
 POP_SIZE = 1
@@ -41,7 +41,8 @@ def main():
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates
-        af.spar.add_spar(af.coordinates, 'aluminium', 0.15)
+        af.spar.add_spar(af.coordinates, 0.15)
+        af.spar.add_spar(af.coordinates, 0.55)
         # Print coordinates of af.spar to terminal
         af.spar.print_coord(4)
         # Plot components with matplotlib
