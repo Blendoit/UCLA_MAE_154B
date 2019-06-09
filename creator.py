@@ -236,7 +236,7 @@ class Airfoil(Coordinates):
 
 
 class Spar(Coordinates):
-    """Contains a single spar's location and material."""
+    """Contains a single spar's location."""
     global parent
 
     def __init__(self):
@@ -275,17 +275,13 @@ class Spar(Coordinates):
 
 
 class Stringer():
-    """Contains the coordinates of stringer(s) location and material."""
+    """Contains the coordinates of stringer(s)."""
+    global parent
 
     def __init__(self):
-        # Stringer attributes
-        self.stringer_x_u = []
-        self.stringer_y_u = []
-        self.stringer_x_l = []
-        self.stringer_y_l = []
-        self.stringer_mat = []
+        super().__init__(parent.chord, parent.semi_span)
 
-    def add_stringers(self, *density):
+    def add_stringer(self, *density):
         """
         Add stringers to the wing from their distribution density between spars.
         First half of density[] concerns stringer distribution on

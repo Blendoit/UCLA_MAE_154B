@@ -38,6 +38,7 @@ def main():
         af.naca(2412)
         # Print coordinates of af to terminal
         af.print_coord(4)
+
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates
@@ -45,8 +46,17 @@ def main():
         af.spar.add_spar(af.coordinates, 0.55)
         # Print coordinates of af.spar to terminal
         af.spar.print_coord(4)
+
+        # Create stringer instance
+        af.stringer = creator.Stringer()
+        # Define the stringer coordinates
+        af.stringer.add_stringer(af.coordinates, 0.15)
+        af.stringer.add_stringer(af.coordinates, 0.55)
+        # Print coordinates of af.stringer to terminal
+        af.stringer.print_coord(4)
+
         # Plot components with matplotlib
-        creator.plot(af, af.spar)
+        creator.plot(af, af.spar, af.stringer)
 
         # Save component coordinates
         af.save_coord(SAVE_PATH)
