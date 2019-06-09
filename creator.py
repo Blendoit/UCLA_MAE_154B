@@ -239,8 +239,6 @@ class Spar(Coordinates):
     """Contains a single spar's location and material."""
     global parent
 
-    # Blendo
-
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
