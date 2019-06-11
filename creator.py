@@ -59,9 +59,13 @@ class Coordinates:
         self.x_l = []
         self.y_l = []
         # Coordinates x_u, y_u, x_l, y_l packed in single list
-        self.coordinates = []
+        self.coord = []
+        # The airfoil components know the Coordinates instance's coords
         global parent
         parent = self
+
+    def __str__(self):
+        return type(self).__name__
 
     def print_coord(self, round):
         """
@@ -70,35 +74,34 @@ class Coordinates:
         This function's output is piped to the 'save_coord' function below.
         """
         print('============================')
-        print('Component:', type(self).__name__)
+        print('Component:', str(self))
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('============================')
-        print('x_u the upper x-coordinates:',
-              np.around(self.x_u, round),
-              sep='\n')
-        print('y_u the upper y-coordinates:',
-              np.around(self.y_u, round),
-              sep='\n')
-        print('x_l the lower x-coordinates:',
-              np.around(self.x_l, round),
-              sep='\n')
-        print('y_l the lower y-coordinates:',
-              np.around(self.y_l, round),
-              sep='\n')
-        print('\n')
+        print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
+        print('y_u the upper y-coordinates:\n', np.around(self.y_u, round))
+        print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))
+        print('y_l the lower y-coordinates:\n', np.around(self.y_l, round))
+        # print('\n')
         return None
 
     def save_coord(self, save_dir_path):
         """
         Save all the object's coordinates (must be full path).
         """
-        file_name = str(type(self).__name__)
+
+        file_name = str(self)
         full_path = os.path.join(save_dir_path, file_name + '.txt')
         file = open(full_path, 'w')
         sys.stdout = file
         self.print_coord(4)
         return None
+
+    def pack_coord(self):
+        self.coord.append(self.x_u)
+        self.coord.append(self.y_u)
+        self.coord.append(self.x_l)
+        self.coord.append(self.y_l)
 
 
 class Airfoil(Coordinates):
@@ -120,16 +123,15 @@ class Airfoil(Coordinates):
         # Theta
         self.theta = []
 
-    def naca(self, naca_num):
+    def add_naca(self, naca_num):
         """
-        This function generates geometry for our chosen NACA airfoil shape.\
-        The nested functions perform the required steps to generate geometry,\
-        and can be called to solve the geometry y-coordinate for any 'x' input.\
+        This function generates geometry for our chosen NACA airfoil shape.
+        The nested functions perform the required steps to generate geometry,
+        and can be called to solve the geometry y-coordinate for any 'x' input.
         Equation coefficients were retrieved from Wikipedia.org.
 
         Parameters:
         naca_num: 4-digit NACA wing
-        chord: wing chord length, in any unit
 
         Return:
         None
@@ -227,22 +229,18 @@ class Airfoil(Coordinates):
             self.x_l.append(get_lower_coordinates(x)[0])
             self.y_l.append(get_lower_coordinates(x)[1])
 
-        self.coordinates.append(self.x_u)
-        self.coordinates.append(self.y_u)
-        self.coordinates.append(self.x_l)
-        self.coordinates.append(self.y_l)
-
+        super().pack_coord()
         return None
 
 
 class Spar(Coordinates):
-    """Contains a single spar's location and material."""
+    """Contains a single spar's location."""
     global parent
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add_spar(self, coordinates, spar_x):
+    def add(self, airfoil_coord, spar_x):
         """
         Add a single spar at the % chord location given to function.
 
@@ -255,11 +253,11 @@ class Spar(Coordinates):
         None
         """
         # Airfoil surface coordinates
-        # unpacked from 'coordinates' (list of lists in 'Airfoil').
-        x_u = coordinates[0]
-        y_u = coordinates[1]
-        x_l = coordinates[2]
-        y_l = coordinates[3]
+        # unpacked from 'coordinates' (list of lists in 'Coordinates').
+        x_u = airfoil_coord[0]
+        y_u = airfoil_coord[1]
+        x_l = airfoil_coord[2]
+        y_l = airfoil_coord[3]
         # Scaled spar location with regards to chord
         loc = spar_x * self.chord
         # bisect_left: returns index of first value in x_u > loc.
@@ -271,60 +269,92 @@ class Spar(Coordinates):
         self.y_u.append(y_u[spar_x_u])
         self.x_l.append(x_l[spar_x_l])
         self.y_l.append(y_l[spar_x_l])
+
+        super().pack_coord()
         return None
 
 
-class Stringer():
-    """Contains the coordinates of stringer(s) location and material."""
+class Stringer(Coordinates):
+    """Contains the coordinates of all stringers."""
+    global parent
 
     def __init__(self):
-        # Stringer attributes
-        self.stringer_x_u = []
-        self.stringer_y_u = []
-        self.stringer_x_l = []
-        self.stringer_y_l = []
-        self.stringer_mat = []
+        super().__init__(parent.chord, parent.semi_span)
 
-    def add_stringers(self, *density):
+    def add(self, airfoil_coord, spar_coord, stringer_u_1, stringer_u_2,
+            stringer_l_1, stringer_l_2):
         """
-        Add stringers to the wing from their distribution density between spars.
-        First half of density[] concerns stringer distribution on
+        Add equally distributed stringers to four airfoil locations
+        (upper nose, lower nose, upper surface, lower surface).
 
         Parameters:
-        material: stringer material
-        *density:
+        stringer_u_1: upper nose number of stringers
+        stringer_u_2: upper surface number of stringers
+        stringer_l_1: lower nose number of stringers
+        stringer_l_2: lower surface number of stringers
 
+        Returns:
+        None
         """
 
-        # Find interval between leading edge and first upper stringer,
-        # from density parameter den_u_1.
-        interval = self.spar_x_u[0] / (den_u_1 * self.spar_x_u[0])
-        # initialise first self.stringer_x_u at first interval.
+        # Airfoil surface coordinates
+        # unpacked from 'coordinates' (list of lists in 'Coordinates').
+        airfoil_x_u = airfoil_coord[0]
+        airfoil_y_u = airfoil_coord[1]
+        airfoil_x_l = airfoil_coord[2]
+        airfoil_y_l = airfoil_coord[3]
+        # Spar coordinates
+        # unpacked from 'coordinates' (list of lists in 'Coordinates').
+        try:
+            spar_x_u = spar_coord[0]
+            spar_y_u = spar_coord[1]
+            spar_x_l = spar_coord[2]
+            spar_y_l = spar_coord[3]
+        except:
+            print('Unable to initialize stringers. Were spars created?')
+        # Find distance between leading edge and first upper stringer
+        interval = spar_x_u[0] / (stringer_u_1 + 1)
+        # initialise first self.stringer_x_u at first interval
         x = interval
-        # Add upper stringers until first spar.
-        while x < self.spar_x_u[0]:
-            # Index of the first value of self.x_u > x
-            x_u = bi.bisect_left(self.x_u, x)
-            self.stringer_x_u.append(self.x_u[x_u])
-            self.stringer_y_u.append(self.y_u[x_u])
+        # Add upper stringers from leading edge until first spar.
+        for _ in range(0, stringer_u_1):
+            # Index of the first value of airfoil_x_u > x
+            index = bi.bisect_left(airfoil_x_u, x)
+            self.x_u.append(airfoil_x_u[index])
+            self.y_u.append(airfoil_y_u[index])
+            x += interval
+        # Add upper stringers from first spar until last spar
+        interval = (spar_x_u[-1] - spar_x_u[0]) / (stringer_u_2 + 1)
+        x = interval + spar_x_u[0]
+        for _ in range(0, stringer_u_2):
+            index = bi.bisect_left(airfoil_x_u, x)
+            self.x_u.append(airfoil_x_u[index])
+            self.y_u.append(airfoil_y_u[index])
             x += interval
 
-        # Find interval between leading edge and first lower stringer,
-        # from density parameter den_l_1.
-        interval = self.spar_x_u[0] / (den_l_1 * self.spar_x_u[0])
-        # initialise first self.stringer_x_l at first interval.
+        # Find distance between leading edge and first lower stringer
+        interval = spar_x_l[0] / (stringer_l_1 + 1)
         x = interval
-        # Add lower stringers until first spar.
-        while x < self.spar_x_l[0]:
-            # Index of the first value of self.x_l > x
-            x_u = bi.bisect_left(self.x_l, x)
-            self.stringer_x_l.append(self.x_l[x_u])
-            self.stringer_y_l.append(self.y_l[x_u])
+        # Add lower stringers from leading edge until first spar.
+        for _ in range(0, stringer_l_1):
+            index = bi.bisect_left(airfoil_x_l, x)
+            self.x_l.append(airfoil_x_l[index])
+            self.y_l.append(airfoil_y_l[index])
             x += interval
+        # Add lower stringers from first spar until last spar
+        interval = (spar_x_l[-1] - spar_x_l[0]) / (stringer_l_2 + 1)
+        x = interval + spar_x_l[0]
+        for _ in range(0, stringer_l_2):
+            index = bi.bisect_left(airfoil_x_l, x)
+            self.x_l.append(airfoil_x_l[index])
+            self.y_l.append(airfoil_y_l[index])
+            x += interval
+
+        super().pack_coord()
         return None
 
 
-def plot(airfoil, spar):
+def plot(airfoil, spar, stringer):
     """This function plots the elements passed as arguments."""
 
     print('Plotting airfoil.')
@@ -343,23 +373,32 @@ def plot(airfoil, spar):
     plt.plot(airfoil.x_u, airfoil.y_u, '', color='b', linewidth='1')
     # Plot lower surface
     plt.plot(airfoil.x_l, airfoil.y_l, '', color='b', linewidth='1')
+
     # Plot spars
     try:
         for _ in range(0, len(spar.x_u)):
             x = (spar.x_u[_], spar.x_l[_])
             y = (spar.y_u[_], spar.y_l[_])
-            plt.plot(x, y, '.-', color='b', label='spar')
+            plt.plot(x, y, '.-', color='b')
             plt.legend()
     except:
         print('Did not plot spars. Were they added?')
+
     # Plot stringers
-    # if len(self.spar_x) != 0:
-    #     for _ in range(0, len(self.stringer_x)):
-    #         x = (self.stringer_x[_], self.stringer_x[_])
-    #         y = (self.stringer_y_u[_], self.stringer_y_l[_])
-    #         plt.scatter(x, y, color='y', linewidth='1',
-    # else:
-    #     print('Unable to plot stringers. Were they created?')
+    try:
+        # Upper stringers
+        for _ in range(0, len(stringer.x_u)):
+            x = stringer.x_u[_]
+            y = stringer.y_u[_]
+            plt.plot(x, y, '.', color='y')
+        # Lower stringers
+        for _ in range(0, len(stringer.x_l)):
+            x = stringer.x_l[_]
+            y = stringer.y_l[_]
+            plt.plot(x, y, '.', color='y')
+    except:
+        print('Unable to plot stringers. Were they created?')
+
     # Graph formatting
     plt.gcf().set_size_inches(9, 2.2)
     plt.xlabel('X axis')

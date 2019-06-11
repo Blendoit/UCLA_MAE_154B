@@ -13,7 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import creator
+import creator  # Create geometry
+import evaluator  # Evaluate geometry
+import generator  # Iteratevely evaluate instances of geometry
 import random
 
 import time
@@ -27,7 +29,7 @@ SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
 def main():
-    # Create coordinate system specific to airfoil dimensions.
+    # Create coordinate system specific to our airfoil dimensions.
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
 
     # Interate through all wings in population.
@@ -35,22 +37,29 @@ def main():
         # Create airfoil instance
         af = creator.Airfoil()
         # Define NACA airfoil coordinates
-        af.naca(2412)
-        # Print coordinates of af to terminal
-        af.print_coord(4)
+        af.add_naca(2412)
+        af.print_coord(2)
+
         # Create spar instance
         af.spar = creator.Spar()
-        # Define the spar coordinates
-        af.spar.add_spar(af.coordinates, 0.15)
-        af.spar.add_spar(af.coordinates, 0.55)
-        # Print coordinates of af.spar to terminal
-        af.spar.print_coord(4)
+        # Define the spar coordinates, stored in single spar object
+        af.spar.add(af.coord, 0.15)
+        af.spar.add(af.coord, 0.55)
+        af.spar.print_coord(2)
+
+        # Create stringer instance
+        af.stringer = creator.Stringer()
+        # Define the stringer coordinates from their amount
+        af.stringer.add(af.coord, af.spar.coord, 10, 7, 5, 6)
+        # Print coordinates of af.stringer to terminal
+        af.stringer.print_coord(2)
+
         # Plot components with matplotlib
-        creator.plot(af, af.spar)
+        creator.plot(af, af.spar, af.stringer)
 
         # Save component coordinates
-        af.save_coord(SAVE_PATH)
-        af.spar.save_coord(SAVE_PATH)
+        # af.save_coord(SAVE_PATH)
+        # af.spar.save_coord(SAVE_PATH)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
