@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 40
+CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
 POP_SIZE = 1
@@ -38,26 +38,26 @@ def main():
         af = creator.Airfoil()
         # Define NACA airfoil coordinates
         af.add_naca(2412)
+        af.print_coord(2)
 
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates, stored in single spar object
         af.spar.add(af.coord, 0.15)
         af.spar.add(af.coord, 0.55)
-        # Print coordinates of af.spar to terminal
+        af.spar.print_coord(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
-        # Define the stringer coordinates from airfoil's and spars'
-        af.stringer.add(af.coord, af.spar.coord, 0.2, 0.2, 0.2, 0.2)
+        # Define the stringer coordinates from their amount
+        af.stringer.add(af.coord, af.spar.coord, 10, 7, 5, 6)
         # Print coordinates of af.stringer to terminal
-        # af.stringer.print_coord(2)
+        af.stringer.print_coord(2)
 
-        print(af.stringer.coord)
         # Plot components with matplotlib
         creator.plot(af, af.spar, af.stringer)
 
-        # # Save component coordinates
+        # Save component coordinates
         # af.save_coord(SAVE_PATH)
         # af.spar.save_coord(SAVE_PATH)
 
