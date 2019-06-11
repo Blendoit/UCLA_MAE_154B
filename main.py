@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 200
+CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
 POP_SIZE = 1
@@ -58,8 +58,9 @@ def main():
         creator.plot(af, af.spar, af.stringer)
 
         # Save component coordinates
-        # af.save_coord(SAVE_PATH)
-        # af.spar.save_coord(SAVE_PATH)
+        af.save_coord(SAVE_PATH)
+        af.spar.save_coord(SAVE_PATH)
+        af.stringer.save_coord(SAVE_PATH)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
