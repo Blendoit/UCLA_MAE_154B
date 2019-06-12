@@ -96,6 +96,8 @@ class Coordinates:
         # self.print_coord(2)
         with open(full_path, 'w') as sys.stdout:
             self.print_coord(2)
+        # Following line required to reset value of sys.stdout
+        sys.stdout = sys.__stdout__
         # It is cleaner to use this context guard to ensure file is closed
 
         return None
