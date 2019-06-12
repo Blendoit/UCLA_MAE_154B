@@ -92,12 +92,16 @@ class Coordinates:
 
         file_name = '{}_{}.txt'.format(self, number)
         full_path = os.path.join(save_dir_path, file_name)
-        # sys.stdout = open(full_path, 'w')
-        # self.print_coord(2)
-        with open(full_path, 'w') as sys.stdout:
-            self.print_coord(2)
-        # Following line required to reset value of sys.stdout
-        sys.stdout = sys.__stdout__
+        try:
+            with open(full_path, 'w') as sys.stdout:
+                self.print_coord(2)
+                # This line required to reset behavior of sys.stdout
+                sys.stdout = sys.__stdout__
+                print('Successfully wrote to file {}'.format(full_path))
+        except:
+            print('Unable to write {} to specified directory.\n'
+                  .format(file_name),
+                  'Was the full path passed to the function?')
         # It is cleaner to use this context guard to ensure file is closed
 
         return None
@@ -385,7 +389,7 @@ def plot(airfoil, spar, stringer):
             x = (spar.x_u[_], spar.x_l[_])
             y = (spar.y_u[_], spar.y_l[_])
             plt.plot(x, y, '.-', color='b')
-            plt.legend()
+            # plt.legend()
     except:
         print('Did not plot spars. Were they added?')
 

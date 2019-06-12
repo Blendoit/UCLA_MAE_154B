@@ -34,28 +34,29 @@ def main():
 
     # Interate through all wings in population.
     for _ in range(1, POP_SIZE + 1):
+
         # Create airfoil instance
         af = creator.Airfoil()
         # Define NACA airfoil coordinates
         af.add_naca(2412)
-        af.print_coord(2)
+        # af.print_coord(2)
 
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates, stored in single spar object
         af.spar.add(af.coord, 0.15)
         af.spar.add(af.coord, 0.55)
-        af.spar.print_coord(2)
+        # af.spar.print_coord(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Define the stringer coordinates from their amount
         af.stringer.add(af.coord, af.spar.coord, 4, 7, 5, 6)
         # Print coordinates of af.stringer to terminal
-        af.stringer.print_coord(2)
+        # af.stringer.print_coord(2)
 
         # Plot components with matplotlib
-        creator.plot(af, af.spar, af.stringer)
+        # creator.plot(af, af.spar, af.stringer)
 
         # Save component coordinates
         af.save_coord(SAVE_PATH, _)
