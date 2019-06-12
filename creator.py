@@ -372,8 +372,8 @@ def plot(airfoil, spar, stringer):
              airfoil.y_c,
              '-.',
              color='r',
-             linewidth='2',
-             label='mean camber line')
+             linewidth='2')
+    # label='mean camber line')
     # Plot upper surface
     plt.plot(airfoil.x_u, airfoil.y_u, '', color='b', linewidth='1')
     # Plot lower surface
@@ -405,10 +405,9 @@ def plot(airfoil, spar, stringer):
         print('Unable to plot stringers. Were they created?')
 
     # Graph formatting
-    plt.gcf().set_size_inches(9, 2.2)
+    plt.gca().set_aspect('equal', adjustable='box')
     plt.xlabel('X axis')
     plt.ylabel('Y axis')
-    # plt.gcf().set_size_inches(self.chord, max(self.y_u) - min(self.y_l))
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.show()
     return None

@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 140
+CHORD_LENGTH = 1000
 SEMI_SPAN = 200
 
 POP_SIZE = 1
