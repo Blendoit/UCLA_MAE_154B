@@ -85,16 +85,19 @@ class Coordinates:
         # print('\n')
         return None
 
-    def save_coord(self, save_dir_path):
+    def save_coord(self, save_dir_path, number):
         """
         Save all the object's coordinates (must be full path).
         """
 
-        file_name = str(self)
-        full_path = os.path.join(save_dir_path, file_name + '.txt')
-        file = open(full_path, 'w')
-        sys.stdout = file
-        self.print_coord(4)
+        file_name = '{}_{}.txt'.format(self, number)
+        full_path = os.path.join(save_dir_path, file_name)
+        # sys.stdout = open(full_path, 'w')
+        # self.print_coord(2)
+        with open(full_path, 'w') as sys.stdout:
+            self.print_coord(2)
+        # It is cleaner to use this context guard to ensure file is closed
+
         return None
 
     def pack_coord(self):
