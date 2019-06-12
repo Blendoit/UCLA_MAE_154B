@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 100
+CHORD_LENGTH = 1000
 SEMI_SPAN = 200
 
 POP_SIZE = 1
@@ -50,7 +50,7 @@ def main():
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Define the stringer coordinates from their amount
-        af.stringer.add(af.coord, af.spar.coord, 10, 7, 5, 6)
+        af.stringer.add(af.coord, af.spar.coord, 4, 7, 5, 6)
         # Print coordinates of af.stringer to terminal
         af.stringer.print_coord(2)
 
