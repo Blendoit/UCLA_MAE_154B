@@ -21,8 +21,13 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 1000
+CHORD_LENGTH = 10
 SEMI_SPAN = 200
+
+# masss
+AIRFOIL_MASS = 100  # lbs
+SPAR_MASS = 10  # lbs
+STRINGER_MASS = 5  # lbs
 
 POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
@@ -37,23 +42,25 @@ def main():
 
         # Create airfoil instance
         af = creator.Airfoil()
-        # Define NACA airfoil coordinates
+        # Define NACA airfoil coordinates and mass
         af.add_naca(2412)
-        # af.print_coord(2)
+        af.add_mass(AIRFOIL_MASS)
+        af.print_coord(2)
 
         # Create spar instance
         af.spar = creator.Spar()
-        # Define the spar coordinates, stored in single spar object
-        af.spar.add(af.coord, 0.15)
-        af.spar.add(af.coord, 0.55)
-        # af.spar.print_coord(2)
+        # Define the spar coordinates and mass, stored in single spar object
+        af.spar.add_coord(af.coord, 0.15)
+        af.spar.add_coord(af.coord, 0.55)
+        af.spar.add_mass(SPAR_MASS)
+        af.spar.print_coord(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
-        # Define the stringer coordinates from their amount
-        af.stringer.add(af.coord, af.spar.coord, 4, 7, 5, 6)
-        # Print coordinates of af.stringer to terminal
-        # af.stringer.print_coord(2)
+        # Compute the stringer coordinates from their quantity in each zone
+        af.stringer.add_coord(af.coord, af.spar.coord, 4, 7, 5, 6)
+        af.stringer.add_mass(STRINGER_MASS)
+        af.stringer.print_coord(2)
 
         # Plot components with matplotlib
         # creator.plot(af, af.spar, af.stringer)

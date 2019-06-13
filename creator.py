@@ -50,6 +50,8 @@ class Coordinates:
         if chord < 10:
             self.chord = 10
         self.semi_span = semi_span
+        # mass
+        self.mass = float()
         # Component material
         self.material = str()
         # Upper coordinates
@@ -60,12 +62,16 @@ class Coordinates:
         self.y_l = []
         # Coordinates x_u, y_u, x_l, y_l packed in single list
         self.coord = []
+
         # The airfoil components know the Coordinates instance's coords
         global parent
         parent = self
 
     def __str__(self):
         return type(self).__name__
+
+    def add_mass(self, mass):
+        self.mass = len(self.x_u) * mass
 
     def print_coord(self, round):
         """
@@ -249,7 +255,7 @@ class Spar(Coordinates):
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add(self, airfoil_coord, spar_x):
+    def add_coord(self, airfoil_coord, spar_x):
         """
         Add a single spar at the % chord location given to function.
 
@@ -290,8 +296,8 @@ class Stringer(Coordinates):
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add(self, airfoil_coord, spar_coord, stringer_u_1, stringer_u_2,
-            stringer_l_1, stringer_l_2):
+    def add_coord(self, airfoil_coord, spar_coord, stringer_u_1, stringer_u_2,
+                  stringer_l_1, stringer_l_2):
         """
         Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
