@@ -35,6 +35,7 @@ SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 def main():
     # Create coordinate system specific to our airfoil dimensions.
+    # TODO: imperial + metric unit setting
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
 
     # Interate through all wings in population.
@@ -63,7 +64,7 @@ def main():
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        # creator.plot(af, af.spar, af.stringer)
+        creator.plot(af, af.spar, af.stringer)
 
         # Save component info
         af.save_info(SAVE_PATH, _)

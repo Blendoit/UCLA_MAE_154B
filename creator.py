@@ -19,8 +19,6 @@ import numpy as np
 from math import sin, cos, tan, atan, sqrt, ceil
 import bisect as bi
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-from mpl_toolkits.mplot3d import Axes3D
 
 # This variable is required for main.py constant wing dimensions
 # to be passed to inheriting classes (Airfoil, Spar, Stringer, Rib).
@@ -50,17 +48,18 @@ class Coordinates:
         if chord < 10:
             self.chord = 10
         self.semi_span = semi_span
-        # mass
+        # mass and area
         self.mass = float()
+        self.area = float()
         # Component material
         self.material = str()
         # Upper coordinates
         self.x_u = []
-        self.y_u = []
+        self.z_u = []
         # Lower coordinates
         self.x_l = []
-        self.y_l = []
-        # Coordinates x_u, y_u, x_l, y_l packed in single list
+        self.z_l = []
+        # Coordinates x_u, z_u, x_l, z_l packed in single list
         self.coord = []
 
         # The airfoil components know the Coordinates instance's coords
@@ -69,6 +68,10 @@ class Coordinates:
 
     def __str__(self):
         return type(self).__name__
+
+    def add_area(self, area):
+        self.area = area
+        return None
 
     def print_info(self, round):
         """
@@ -83,9 +86,9 @@ class Coordinates:
         print('Mass:', self.mass)
         print('============================')
         print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
-        print('y_u the upper y-coordinates:\n', np.around(self.y_u, round))
+        print('z_u the upper y-coordinates:\n', np.around(self.z_u, round))
         print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))
-        print('y_l the lower y-coordinates:\n', np.around(self.y_l, round))
+        print('z_l the lower y-coordinates:\n', np.around(self.z_l, round))
         return None
 
     def save_info(self, save_dir_path, number):
@@ -106,14 +109,14 @@ class Coordinates:
                   .format(file_name),
                   'Was the full path passed to the function?')
         # It is cleaner to use this context guard to ensure file is closed
-
         return None
 
     def pack_info(self):
         self.coord.append(self.x_u)
-        self.coord.append(self.y_u)
+        self.coord.append(self.z_u)
         self.coord.append(self.x_l)
-        self.coord.append(self.y_l)
+        self.coord.append(self.z_l)
+        return None
 
 
 class Airfoil(Coordinates):
@@ -209,25 +212,25 @@ class Airfoil(Coordinates):
 
         def get_upper_coordinates(x):
             x_u = float()
-            y_u = float()
+            z_u = float()
             if 0 <= x < self.chord:
                 x_u = x - self.y_t[x] * sin(self.theta[x])
-                y_u = self.y_c[x] + self.y_t[x] * cos(self.theta[x])
+                z_u = self.y_c[x] + self.y_t[x] * cos(self.theta[x])
             elif x == self.chord:
                 x_u = x - self.y_t[x] * sin(self.theta[x])
-                y_u = 0  # Make upper curve finish at y = 0
-            return (x_u, y_u)
+                z_u = 0  # Make upper curve finish at y = 0
+            return (x_u, z_u)
 
         def get_lower_coordinates(x):
             x_l = float()
-            y_l = float()
+            z_l = float()
             if 0 <= x < self.chord:
                 x_l = (x + self.y_t[x] * sin(self.theta[x]))
-                y_l = (self.y_c[x] - self.y_t[x] * cos(self.theta[x]))
+                z_l = (self.y_c[x] - self.y_t[x] * cos(self.theta[x]))
             elif x == self.chord:
                 x_l = (x + self.y_t[x] * sin(self.theta[x]))
-                y_l = 0  # Make lower curve finish at y = 0
-            return (x_l, y_l)
+                z_l = 0  # Make lower curve finish at y = 0
+            return (x_l, z_l)
 
         # Generate all our wing geometries from previous sub-functions
         for x in range(0, self.chord + 1):
@@ -237,9 +240,9 @@ class Airfoil(Coordinates):
             self.dy_c.append(get_dy_c(x))
             self.theta.append(get_theta(self.dy_c[x]))
             self.x_u.append(get_upper_coordinates(x)[0])
-            self.y_u.append(get_upper_coordinates(x)[1])
+            self.z_u.append(get_upper_coordinates(x)[1])
             self.x_l.append(get_lower_coordinates(x)[0])
-            self.y_l.append(get_lower_coordinates(x)[1])
+            self.z_l.append(get_lower_coordinates(x)[1])
 
         super().pack_info()
         return None
@@ -260,7 +263,7 @@ class Spar(Coordinates):
         Add a single spar at the % chord location given to function.
 
         Parameters:
-        coordinates: provided by Airfoil.coordinates[x_u, y_u, x_l, y_l].
+        coordinates: provided by Airfoil.coordinates[x_u, z_u, x_l, z_l].
         material: spar's material. Assumes homogeneous material.
         spar_x: spar's location as a % of total chord length.
 
@@ -270,9 +273,9 @@ class Spar(Coordinates):
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
         x_u = airfoil_coord[0]
-        y_u = airfoil_coord[1]
+        z_u = airfoil_coord[1]
         x_l = airfoil_coord[2]
-        y_l = airfoil_coord[3]
+        z_l = airfoil_coord[3]
         # Scaled spar location with regards to chord
         loc = spar_x * self.chord
         # bisect_left: returns index of first value in x_u > loc.
@@ -281,9 +284,9 @@ class Spar(Coordinates):
         spar_x_l = bi.bisect_left(x_l, loc)  # index of spar's x_l
         # These x and y coordinates are assigned to the spar, NOT airfoil.
         self.x_u.append(x_u[spar_x_u])
-        self.y_u.append(y_u[spar_x_u])
+        self.z_u.append(z_u[spar_x_u])
         self.x_l.append(x_l[spar_x_l])
-        self.y_l.append(y_l[spar_x_l])
+        self.z_l.append(z_l[spar_x_l])
 
         super().pack_info()
         return None
@@ -318,16 +321,16 @@ class Stringer(Coordinates):
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
         airfoil_x_u = airfoil_coord[0]
-        airfoil_y_u = airfoil_coord[1]
+        airfoil_z_u = airfoil_coord[1]
         airfoil_x_l = airfoil_coord[2]
-        airfoil_y_l = airfoil_coord[3]
+        airfoil_z_l = airfoil_coord[3]
         # Spar coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
         try:
             spar_x_u = spar_coord[0]
-            spar_y_u = spar_coord[1]
+            spar_z_u = spar_coord[1]
             spar_x_l = spar_coord[2]
-            spar_y_l = spar_coord[3]
+            spar_z_l = spar_coord[3]
         except:
             print('Unable to initialize stringers. Were spars created?')
         # Find distance between leading edge and first upper stringer
@@ -339,7 +342,7 @@ class Stringer(Coordinates):
             # Index of the first value of airfoil_x_u > x
             index = bi.bisect_left(airfoil_x_u, x)
             self.x_u.append(airfoil_x_u[index])
-            self.y_u.append(airfoil_y_u[index])
+            self.z_u.append(airfoil_z_u[index])
             x += interval
         # Add upper stringers from first spar until last spar
         interval = (spar_x_u[-1] - spar_x_u[0]) / (stringer_u_2 + 1)
@@ -347,7 +350,7 @@ class Stringer(Coordinates):
         for _ in range(0, stringer_u_2):
             index = bi.bisect_left(airfoil_x_u, x)
             self.x_u.append(airfoil_x_u[index])
-            self.y_u.append(airfoil_y_u[index])
+            self.z_u.append(airfoil_z_u[index])
             x += interval
 
         # Find distance between leading edge and first lower stringer
@@ -357,7 +360,7 @@ class Stringer(Coordinates):
         for _ in range(0, stringer_l_1):
             index = bi.bisect_left(airfoil_x_l, x)
             self.x_l.append(airfoil_x_l[index])
-            self.y_l.append(airfoil_y_l[index])
+            self.z_l.append(airfoil_z_l[index])
             x += interval
         # Add lower stringers from first spar until last spar
         interval = (spar_x_l[-1] - spar_x_l[0]) / (stringer_l_2 + 1)
@@ -365,7 +368,7 @@ class Stringer(Coordinates):
         for _ in range(0, stringer_l_2):
             index = bi.bisect_left(airfoil_x_l, x)
             self.x_l.append(airfoil_x_l[index])
-            self.y_l.append(airfoil_y_l[index])
+            self.z_l.append(airfoil_z_l[index])
             x += interval
 
         super().pack_info()
@@ -391,15 +394,15 @@ def plot(airfoil, spar, stringer):
              linewidth='2')
     # label='mean camber line')
     # Plot upper surface
-    plt.plot(airfoil.x_u, airfoil.y_u, '', color='b', linewidth='1')
+    plt.plot(airfoil.x_u, airfoil.z_u, '', color='b', linewidth='1')
     # Plot lower surface
-    plt.plot(airfoil.x_l, airfoil.y_l, '', color='b', linewidth='1')
+    plt.plot(airfoil.x_l, airfoil.z_l, '', color='b', linewidth='1')
 
     # Plot spars
     try:
         for _ in range(0, len(spar.x_u)):
             x = (spar.x_u[_], spar.x_l[_])
-            y = (spar.y_u[_], spar.y_l[_])
+            y = (spar.z_u[_], spar.z_l[_])
             plt.plot(x, y, '.-', color='b')
             # plt.legend()
     except:
@@ -410,12 +413,12 @@ def plot(airfoil, spar, stringer):
         # Upper stringers
         for _ in range(0, len(stringer.x_u)):
             x = stringer.x_u[_]
-            y = stringer.y_u[_]
+            y = stringer.z_u[_]
             plt.plot(x, y, '.', color='y')
         # Lower stringers
         for _ in range(0, len(stringer.x_l)):
             x = stringer.x_l[_]
-            y = stringer.y_l[_]
+            y = stringer.z_l[_]
             plt.plot(x, y, '.', color='y')
     except:
         print('Unable to plot stringers. Were they created?')
@@ -423,7 +426,7 @@ def plot(airfoil, spar, stringer):
     # Graph formatting
     plt.gca().set_aspect('equal', adjustable='box')
     plt.xlabel('X axis')
-    plt.ylabel('Y axis')
+    plt.ylabel('Z axis')
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.show()
     return None
