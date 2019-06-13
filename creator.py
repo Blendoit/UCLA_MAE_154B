@@ -70,10 +70,7 @@ class Coordinates:
     def __str__(self):
         return type(self).__name__
 
-    def add_mass(self, mass):
-        self.mass = len(self.x_u) * mass
-
-    def print_coord(self, round):
+    def print_info(self, round):
         """
         Print all the component's coordinates to the terminal.
 
@@ -83,15 +80,15 @@ class Coordinates:
         print('Component:', str(self))
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
+        print('Mass:', self.mass)
         print('============================')
         print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
         print('y_u the upper y-coordinates:\n', np.around(self.y_u, round))
         print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))
         print('y_l the lower y-coordinates:\n', np.around(self.y_l, round))
-        # print('\n')
         return None
 
-    def save_coord(self, save_dir_path, number):
+    def save_info(self, save_dir_path, number):
         """
         Save all the object's coordinates (must be full path).
         """
@@ -100,7 +97,7 @@ class Coordinates:
         full_path = os.path.join(save_dir_path, file_name)
         try:
             with open(full_path, 'w') as sys.stdout:
-                self.print_coord(2)
+                self.print_info(2)
                 # This line required to reset behavior of sys.stdout
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
@@ -112,7 +109,7 @@ class Coordinates:
 
         return None
 
-    def pack_coord(self):
+    def pack_info(self):
         self.coord.append(self.x_u)
         self.coord.append(self.y_u)
         self.coord.append(self.x_l)
@@ -244,8 +241,11 @@ class Airfoil(Coordinates):
             self.x_l.append(get_lower_coordinates(x)[0])
             self.y_l.append(get_lower_coordinates(x)[1])
 
-        super().pack_coord()
+        super().pack_info()
         return None
+
+    def add_mass(self, mass):
+        self.mass = mass
 
 
 class Spar(Coordinates):
@@ -285,8 +285,11 @@ class Spar(Coordinates):
         self.x_l.append(x_l[spar_x_l])
         self.y_l.append(y_l[spar_x_l])
 
-        super().pack_coord()
+        super().pack_info()
         return None
+
+    def add_mass(self, mass):
+        self.mass = len(self.x_u) * mass
 
 
 class Stringer(Coordinates):
@@ -296,8 +299,8 @@ class Stringer(Coordinates):
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add_coord(self, airfoil_coord, spar_coord, stringer_u_1, stringer_u_2,
-                  stringer_l_1, stringer_l_2):
+    def add_coord(self, airfoil_coord, spar_coord,
+                  stringer_u_1, stringer_u_2, stringer_l_1, stringer_l_2):
         """
         Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
@@ -365,8 +368,11 @@ class Stringer(Coordinates):
             self.y_l.append(airfoil_y_l[index])
             x += interval
 
-        super().pack_coord()
+        super().pack_info()
         return None
+
+    def add_mass(self, mass):
+        self.mass = len(self.x_u) * mass + len(self.x_l) * mass
 
 
 def plot(airfoil, spar, stringer):

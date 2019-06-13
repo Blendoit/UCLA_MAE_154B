@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 10
+CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
 # masss
@@ -45,7 +45,7 @@ def main():
         # Define NACA airfoil coordinates and mass
         af.add_naca(2412)
         af.add_mass(AIRFOIL_MASS)
-        af.print_coord(2)
+        af.print_info(2)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -53,22 +53,22 @@ def main():
         af.spar.add_coord(af.coord, 0.15)
         af.spar.add_coord(af.coord, 0.55)
         af.spar.add_mass(SPAR_MASS)
-        af.spar.print_coord(2)
+        af.spar.print_info(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Compute the stringer coordinates from their quantity in each zone
         af.stringer.add_coord(af.coord, af.spar.coord, 4, 7, 5, 6)
         af.stringer.add_mass(STRINGER_MASS)
-        af.stringer.print_coord(2)
+        af.stringer.print_info(2)
 
         # Plot components with matplotlib
         # creator.plot(af, af.spar, af.stringer)
 
-        # Save component coordinates
-        af.save_coord(SAVE_PATH, _)
-        af.spar.save_coord(SAVE_PATH, _)
-        af.stringer.save_coord(SAVE_PATH, _)
+        # Save component info
+        af.save_info(SAVE_PATH, _)
+        af.spar.save_info(SAVE_PATH, _)
+        af.stringer.save_info(SAVE_PATH, _)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
