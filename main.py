@@ -15,7 +15,7 @@
 
 import creator  # Create geometry
 import evaluator  # Evaluate geometry
-import generator  # Iteratevely evaluate instances of geometry
+import generator  # Iteratevely evaluate instances of geometry and optimize
 import random
 
 import time
@@ -24,16 +24,19 @@ start_time = time.time()
 CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
-# masss
+# mass
 AIRFOIL_MASS = 100  # lbs
 SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
 
+# population information
 POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
-def main():
+def create():
+    '''Create an airfoil.'''
+
     # Create coordinate system specific to our airfoil dimensions.
     # TODO: imperial + metric unit setting
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
@@ -73,6 +76,22 @@ def main():
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
+
+
+def evaluate():
+    '''Evaluate previously created airfoil(s).'''
+    pass
+
+
+def generate():
+    '''Iteratively evaluate airfoils by defining genetic generations.'''
+    pass
+
+
+def main():
+    create()
+    evaluate()
+    generate()
 
 
 if __name__ == '__main__':

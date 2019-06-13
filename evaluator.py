@@ -18,3 +18,8 @@
 
 def get_centroid(airfoil):
     pass
+
+
+def get_mass(*component):
+    for _ in len(component):
+        mass += component.mass
