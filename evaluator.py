@@ -20,6 +20,8 @@ def get_centroid(airfoil):
     pass
 
 
-def get_mass(*component):
-    for _ in len(component):
-        mass += component.mass
+def get_total_mass(self, *component):
+    total_mass = float()
+    for _ in component:
+        total_mass += _.mass
+    return total_mass

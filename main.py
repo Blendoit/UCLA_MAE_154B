@@ -24,18 +24,25 @@ start_time = time.time()
 CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
-# mass
+# m=Mass
 AIRFOIL_MASS = 100  # lbs
 SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
+
+# Area
+STRINGER_AREA = 0.1  # sqin
 
 # population information
 POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
-def create():
-    '''Create an airfoil.'''
+def main():
+    '''
+    Create an airfoil;
+    Evaluate an airfoil;
+    Generate a population of airfoils & optimize.
+    '''
 
     # Create coordinate system specific to our airfoil dimensions.
     # TODO: imperial + metric unit setting
@@ -49,7 +56,7 @@ def create():
         # Define NACA airfoil coordinates and mass
         af.add_naca(2412)
         af.add_mass(AIRFOIL_MASS)
-        af.print_info(2)
+        # af.print_info(2)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -57,41 +64,32 @@ def create():
         af.spar.add_coord(af.coord, 0.15)
         af.spar.add_coord(af.coord, 0.55)
         af.spar.add_mass(SPAR_MASS)
-        af.spar.print_info(2)
+        # af.spar.print_info(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Compute the stringer coordinates from their quantity in each zone
         af.stringer.add_coord(af.coord, af.spar.coord, 4, 7, 5, 6)
+        af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        creator.plot(af, af.spar, af.stringer)
+        # creator.plot(af, af.spar, af.stringer)
 
         # Save component info
-        af.save_info(SAVE_PATH, _)
-        af.spar.save_info(SAVE_PATH, _)
-        af.stringer.save_info(SAVE_PATH, _)
+        # af.save_info(SAVE_PATH, _)
+        # af.spar.save_info(SAVE_PATH, _)
+        # af.stringer.save_info(SAVE_PATH, _)
+
+    # Evaluate previously created airfoil(s).
+    total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
+
+    # Iteratively evaluate airfoils by defining genetic generations.
+    # pass
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
-
-
-def evaluate():
-    '''Evaluate previously created airfoil(s).'''
-    pass
-
-
-def generate():
-    '''Iteratively evaluate airfoils by defining genetic generations.'''
-    pass
-
-
-def main():
-    create()
-    evaluate()
-    generate()
 
 
 if __name__ == '__main__':

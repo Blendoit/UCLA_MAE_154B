@@ -69,10 +69,6 @@ class Coordinates:
     def __str__(self):
         return type(self).__name__
 
-    def add_area(self, area):
-        self.area = area
-        return None
-
     def print_info(self, round):
         """
         Print all the component's coordinates to the terminal.
@@ -301,6 +297,7 @@ class Stringer(Coordinates):
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
+        self.area = float()
 
     def add_coord(self, airfoil_coord, spar_coord,
                   stringer_u_1, stringer_u_2, stringer_l_1, stringer_l_2):
@@ -333,6 +330,7 @@ class Stringer(Coordinates):
             spar_z_l = spar_coord[3]
         except:
             print('Unable to initialize stringers. Were spars created?')
+
         # Find distance between leading edge and first upper stringer
         interval = spar_x_u[0] / (stringer_u_1 + 1)
         # initialise first self.stringer_x_u at first interval
@@ -370,12 +368,21 @@ class Stringer(Coordinates):
             self.x_l.append(airfoil_x_l[index])
             self.z_l.append(airfoil_z_l[index])
             x += interval
-
         super().pack_info()
+        return None
+
+    def add_area(self, area):
+        self.area = area
         return None
 
     def add_mass(self, mass):
         self.mass = len(self.x_u) * mass + len(self.x_l) * mass
+        return None
+
+    def print_info(self, round):
+        super().print_info(round)
+        print('Stringer Area:\n', np.around(self.area, round))
+        return None
 
 
 def plot(airfoil, spar, stringer):
