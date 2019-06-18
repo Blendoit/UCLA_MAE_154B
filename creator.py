@@ -16,9 +16,10 @@
 import sys
 import os.path
 import numpy as np
-from math import sin, cos, tan, atan, sqrt, ceil
+from math import sin, cos, atan, sqrt
 import bisect as bi
 import matplotlib.pyplot as plt
+
 
 # This variable is required for main.py constant wing dimensions
 # to be passed to inheriting classes (Airfoil, Spar, Stringer, Rib).
