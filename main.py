@@ -56,7 +56,7 @@ def main():
         # Define NACA airfoil coordinates and mass
         af.add_naca(2412)
         af.add_mass(AIRFOIL_MASS)
-        # af.print_info(2)
+        af.print_info(2)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -64,7 +64,7 @@ def main():
         af.spar.add_coord(af.coord, 0.15)
         af.spar.add_coord(af.coord, 0.55)
         af.spar.add_mass(SPAR_MASS)
-        # af.spar.print_info(2)
+        af.spar.print_info(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
@@ -75,12 +75,12 @@ def main():
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        # creator.plot(af, af.spar, af.stringer)
+        creator.plot(af, af.spar, af.stringer)
 
         # Save component info
-        # af.save_info(SAVE_PATH, _)
-        # af.spar.save_info(SAVE_PATH, _)
-        # af.stringer.save_info(SAVE_PATH, _)
+        af.save_info(SAVE_PATH, _)
+        af.spar.save_info(SAVE_PATH, _)
+        af.stringer.save_info(SAVE_PATH, _)
 
     # Evaluate previously created airfoil(s).
     total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)

@@ -17,7 +17,14 @@
 
 
 def get_centroid(airfoil):
-    pass
+    area = airfoil.stringer.area
+    numerator = float()
+    for _ in airfoil.stringer.x_u:
+        numerator += _ * area
+    for _ in airfoil.stringer.x_l:
+        numerator += _ * area
+    denominator
+    # z_c =
 
 
 def get_total_mass(self, *component):
