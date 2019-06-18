@@ -34,7 +34,7 @@ class Coordinates:
 
     Parameters:
         * Component material
-        * Coordinates relative to the chord & semi-span.
+        * Coordinates relative to the chord & semi-span
 
     Methods:
         * Print component coordinates
