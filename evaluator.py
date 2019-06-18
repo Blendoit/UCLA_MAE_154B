@@ -13,4 +13,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import creator
+# F_z =
+
+
+def get_centroid(airfoil):
+    area = airfoil.stringer.area
+    numerator = float()
+    for _ in airfoil.stringer.x_u:
+        numerator += _ * area
+    for _ in airfoil.stringer.x_l:
+        numerator += _ * area
+    denominator
+    # z_c =
+
+
+def get_total_mass(self, *component):
+    total_mass = float()
+    for _ in component:
+        total_mass += _.mass
+    return total_mass

@@ -15,7 +15,7 @@
 
 import creator  # Create geometry
 import evaluator  # Evaluate geometry
-import generator  # Iteratevely evaluate instances of geometry
+import generator  # Iteratevely evaluate instances of geometry and optimize
 import random
 
 import time
@@ -24,43 +24,69 @@ start_time = time.time()
 CHORD_LENGTH = 100
 SEMI_SPAN = 200
 
+# m=Mass
+AIRFOIL_MASS = 100  # lbs
+SPAR_MASS = 10  # lbs
+STRINGER_MASS = 5  # lbs
+
+# Area
+STRINGER_AREA = 0.1  # sqin
+
+# population information
 POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
 def main():
+    '''
+    Create an airfoil;
+    Evaluate an airfoil;
+    Generate a population of airfoils & optimize.
+    '''
+
     # Create coordinate system specific to our airfoil dimensions.
+    # TODO: imperial + metric unit setting
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
 
     # Interate through all wings in population.
     for _ in range(1, POP_SIZE + 1):
+
         # Create airfoil instance
         af = creator.Airfoil()
-        # Define NACA airfoil coordinates
+        # Define NACA airfoil coordinates and mass
         af.add_naca(2412)
-        af.print_coord(2)
+        af.add_mass(AIRFOIL_MASS)
+        af.print_info(2)
 
         # Create spar instance
         af.spar = creator.Spar()
-        # Define the spar coordinates, stored in single spar object
-        af.spar.add(af.coord, 0.15)
-        af.spar.add(af.coord, 0.55)
-        af.spar.print_coord(2)
+        # Define the spar coordinates and mass, stored in single spar object
+        af.spar.add_coord(af.coord, 0.15)
+        af.spar.add_coord(af.coord, 0.55)
+        af.spar.add_mass(SPAR_MASS)
+        af.spar.print_info(2)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
-        # Define the stringer coordinates from their amount
-        af.stringer.add(af.coord, af.spar.coord, 4, 7, 5, 6)
-        # Print coordinates of af.stringer to terminal
-        af.stringer.print_coord(2)
+        # Compute the stringer coordinates from their quantity in each zone
+        af.stringer.add_coord(af.coord, af.spar.coord, 4, 7, 5, 6)
+        af.stringer.add_area(STRINGER_AREA)
+        af.stringer.add_mass(STRINGER_MASS)
+        af.stringer.print_info(2)
 
         # Plot components with matplotlib
         creator.plot(af, af.spar, af.stringer)
 
-        # Save component coordinates
-        af.save_coord(SAVE_PATH, _)
-        af.spar.save_coord(SAVE_PATH, _)
-        af.stringer.save_coord(SAVE_PATH, _)
+        # Save component info
+        af.save_info(SAVE_PATH, _)
+        af.spar.save_info(SAVE_PATH, _)
+        af.stringer.save_info(SAVE_PATH, _)
+
+    # Evaluate previously created airfoil(s).
+    total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
+
+    # Iteratively evaluate airfoils by defining genetic generations.
+    # pass
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
