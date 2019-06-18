@@ -75,7 +75,7 @@ def main():
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        creator.plot(af, af.spar, af.stringer)
+        # creator.plot(af, af.spar, af.stringer)
 
         # Save component info
         af.save_info(SAVE_PATH, _)
@@ -83,7 +83,7 @@ def main():
         af.stringer.save_info(SAVE_PATH, _)
 
     # Evaluate previously created airfoil(s).
-    total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
+    # total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
 
     # Iteratively evaluate airfoils by defining genetic generations.
     # pass
