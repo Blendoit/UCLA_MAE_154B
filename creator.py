@@ -99,7 +99,7 @@ class Coordinates:
                 # This line required to reset behavior of sys.stdout
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
-        except:
+        except IOError:
             print('Unable to write {} to specified directory.\n'
                   .format(file_name),
                   'Was the full path passed to the function?')
@@ -150,9 +150,8 @@ class Airfoil(Coordinates):
 
         def get_camber(x):
             """
-            Returns 1 camber y-coordinate from 1 'x' along the airfoil chord.
+            Returns camber y-coordinate from 1 'x' along the airfoil chord.
             """
-            x_c = x
             y_c = float()
             if 0 <= x < p_c:
                 y_c = (m / (p**2)) * (2 * p * (x / self.chord)
@@ -161,7 +160,7 @@ class Airfoil(Coordinates):
                 y_c = (m / ((1 - p)**2)) * ((1 - 2 * p)
                                             + 2 * p * (x / self.chord)
                                             - (x / self.chord)**2)
-            return (x_c, y_c * self.chord)
+            return (y_c * self.chord)
 
         def get_thickness(x):
             """
@@ -185,25 +184,13 @@ class Airfoil(Coordinates):
             return theta
 
         def get_upper_coordinates(x):
-            x_u = float()
-            z_u = float()
-            if 0 <= x < self.chord:
-                x_u = x - get_thickness(x) * sin(get_theta(x))
-                z_u = get_camber(x)[1] + get_thickness(x) * cos(get_theta(x))
-            elif x == self.chord:
-                x_u = x - get_thickness(x) * sin(get_theta(x))
-                z_u = 0  # Make upper curve finish at y = 0
+            x_u = x - get_thickness(x) * sin(get_theta(x))
+            z_u = get_camber(x) + get_thickness(x) * cos(get_theta(x))
             return (x_u, z_u)
 
         def get_lower_coordinates(x):
-            x_l = float()
-            z_l = float()
-            if 0 <= x < self.chord:
-                x_l = (x + get_thickness(x) * sin(get_theta(x)))
-                z_l = (get_camber(x)[1] - get_thickness(x) * cos(get_theta(x)))
-            elif x == self.chord:
-                x_l = (x + get_thickness(x) * sin(get_theta(x)))
-                z_l = 0  # Make lower curve finish at y = 0
+            x_l = x + get_thickness(x) * sin(get_theta(x))
+            z_l = get_camber(x) - get_thickness(x) * cos(get_theta(x))
             return (x_l, z_l)
 
         # Generate our airfoil geometry from previous sub-functions.
@@ -212,11 +199,10 @@ class Airfoil(Coordinates):
         # Densify x-coordinates 10 times for first 10% of the chord length
         x_chord = [x / 10 for x in range(x_chord_10_percent * 10)]
         x_chord.extend([x for x in range(x_chord_10_percent, self.chord + 1)])
-        print(x_chord)
 
         for x in x_chord:
-            self.x_c.append(get_camber(x)[0])
-            self.y_c.append(get_camber(x)[1])
+            self.x_c.append(x)
+            self.y_c.append(get_camber(x))
             self.x_u.append(get_upper_coordinates(x)[0])
             self.z_u.append(get_upper_coordinates(x)[1])
             self.x_l.append(get_lower_coordinates(x)[0])
