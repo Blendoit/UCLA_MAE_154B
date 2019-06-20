@@ -23,7 +23,7 @@ def get_centroid(airfoil):
         numerator += _ * area
     for _ in airfoil.stringer.x_l:
         numerator += _ * area
-    denominator
+    # denominator
     # z_c =
 
 

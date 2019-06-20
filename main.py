@@ -21,7 +21,7 @@ import random
 import time
 start_time = time.time()
 
-CHORD_LENGTH = 100
+CHORD_LENGTH = 10
 SEMI_SPAN = 200
 
 # m=Mass
@@ -75,7 +75,7 @@ def main():
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        # creator.plot(af, af.spar, af.stringer)
+        creator.plot(af, af.spar, af.stringer)
 
         # Save component info
         af.save_info(SAVE_PATH, _)
