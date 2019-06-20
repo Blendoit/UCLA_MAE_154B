@@ -103,7 +103,6 @@ class Coordinates:
             print('Unable to write {} to specified directory.\n'
                   .format(file_name),
                   'Was the full path passed to the function?')
-        # It is cleaner to use this context guard to ensure file is closed
         return None
 
     def pack_info(self):
@@ -126,12 +125,6 @@ class Airfoil(Coordinates):
         # Mean camber line
         self.x_c = []  # Contains only integers from 0 to self.chord
         self.y_c = []  # Contains floats
-        # Thickness
-        self.y_t = []
-        # dy_c / d_x
-        self.dy_c = []
-        # Theta
-        self.theta = []
 
     def add_naca(self, naca_num):
         """
@@ -168,9 +161,6 @@ class Airfoil(Coordinates):
                 y_c = (m / ((1 - p)**2)) * ((1 - 2 * p)
                                             + 2 * p * (x / self.chord)
                                             - (x / self.chord)**2)
-            else:
-                print('x-coordinate for camber is out of bounds. '
-                      'Check that 0 < x <= chord.')
             return (x_c, y_c * self.chord)
 
         def get_thickness(x):
@@ -185,9 +175,6 @@ class Airfoil(Coordinates):
                     - 0.3516 * (x / self.chord)**2
                     + 0.2843 * (x / self.chord)**3
                     - 0.1015 * (x / self.chord)**4)
-            else:
-                print('x-coordinate for thickness is out of bounds. '
-                      'Check that 0 < x <= chord.')
             return y_t
 
         def get_theta(x):
@@ -204,8 +191,7 @@ class Airfoil(Coordinates):
             z_u = float()
             if 0 <= x < self.chord:
                 x_u = x - get_thickness(x) * sin(get_theta(x))
-                z_u = get_camber(x)[1] + get_thickness(x) * \
-                    cos(get_theta(x))
+                z_u = get_camber(x)[1] + get_thickness(x) * cos(get_theta(x))
             elif x == self.chord:
                 x_u = x - get_thickness(x) * sin(get_theta(x))
                 z_u = 0  # Make upper curve finish at y = 0
@@ -216,8 +202,7 @@ class Airfoil(Coordinates):
             z_l = float()
             if 0 <= x < self.chord:
                 x_l = (x + get_thickness(x) * sin(get_theta(x)))
-                z_l = (get_camber(x)[1] - get_thickness(x)
-                       * cos(get_theta(x)))
+                z_l = (get_camber(x)[1] - get_thickness(x) * cos(get_theta(x)))
             elif x == self.chord:
                 x_l = (x + get_thickness(x) * sin(get_theta(x)))
                 z_l = 0  # Make lower curve finish at y = 0
@@ -234,9 +219,6 @@ class Airfoil(Coordinates):
         for x in x_chord:
             self.x_c.append(get_camber(x)[0])
             self.y_c.append(get_camber(x)[1])
-            self.y_t.append(get_thickness(x))
-            self.dy_c.append(x)
-            self.theta.append(get_theta(x))
             self.x_u.append(get_upper_coordinates(x)[0])
             self.z_u.append(get_upper_coordinates(x)[1])
             self.x_l.append(get_lower_coordinates(x)[0])

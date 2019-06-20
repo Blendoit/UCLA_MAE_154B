@@ -75,7 +75,7 @@ def main():
         af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        creator.plot(af, af.spar, af.stringer)
+        # creator.plot(af, af.spar, af.stringer)
 
         # Save component info
         af.save_info(SAVE_PATH, _)
