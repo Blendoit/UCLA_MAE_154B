@@ -45,9 +45,7 @@ class Coordinates:
 
     def __init__(self, chord, semi_span):
         # Global dimensions
-        self.chord = chord
-        if chord < 10:
-            self.chord = 10
+        self.chord = chord if chord > 10 else 10
         self.semi_span = semi_span
         # mass and area
         self.mass = float()
@@ -164,12 +162,12 @@ class Airfoil(Coordinates):
             x_c = x
             y_c = float()
             if 0 <= x < p_c:
-                y_c = (m / (p**2)) * (2 * p * (x / self.chord) -
-                                      (x / self.chord)**2)
+                y_c = (m / (p**2)) * (2 * p * (x / self.chord)
+                                      - (x / self.chord)**2)
             elif p_c <= x <= self.chord:
-                y_c = (m /
-                       ((1 - p)**2)) * ((1 - 2 * p) + 2 * p *
-                                        (x / self.chord) - (x / self.chord)**2)
+                y_c = (m / ((1 - p)**2)) * ((1 - 2 * p)
+                                            + 2 * p * (x / self.chord)
+                                            - (x / self.chord)**2)
             else:
                 print('x-coordinate for camber is out of bounds. '
                       'Check that 0 < x <= chord.')
@@ -181,29 +179,23 @@ class Airfoil(Coordinates):
             """
             y_t = float()
             if 0 <= x <= self.chord:
-                y_t = 5 * t * self.chord * (0.2969 * sqrt(x / self.chord) -
-                                            0.1260 *
-                                            (x / self.chord) - 0.3516 *
-                                            (x / self.chord)**2 + 0.2843 *
-                                            (x / self.chord)**3 - 0.1015 *
-                                            (x / self.chord)**4)
+                y_t = 5 * t * self.chord * (
+                    +0.2969 * sqrt(x / self.chord)
+                    - 0.1260 * (x / self.chord)
+                    - 0.3516 * (x / self.chord)**2
+                    + 0.2843 * (x / self.chord)**3
+                    - 0.1015 * (x / self.chord)**4)
             else:
                 print('x-coordinate for thickness is out of bounds. '
                       'Check that 0 < x <= chord.')
             return y_t
 
-        def get_dy_c(x):
-            """
-            Returns dy_c/dx from 1 'x' along the airfoil chord.
-            """
+        def get_theta(x):
             dy_c = float()
             if 0 <= x < p_c:
                 dy_c = ((2 * m) / p**2) * (p - x / self.chord)
             elif p_c <= x <= self.chord:
                 dy_c = (2 * m) / ((1 - p)**2) * (p - x / self.chord)
-            return dy_c
-
-        def get_theta(dy_c):
             theta = atan(dy_c)
             return theta
 
@@ -211,10 +203,11 @@ class Airfoil(Coordinates):
             x_u = float()
             z_u = float()
             if 0 <= x < self.chord:
-                x_u = x - self.y_t[x] * sin(self.theta[x])
-                z_u = self.y_c[x] + self.y_t[x] * cos(self.theta[x])
+                x_u = x - get_thickness(x) * sin(get_theta(x))
+                z_u = get_camber(x)[1] + get_thickness(x) * \
+                    cos(get_theta(x))
             elif x == self.chord:
-                x_u = x - self.y_t[x] * sin(self.theta[x])
+                x_u = x - get_thickness(x) * sin(get_theta(x))
                 z_u = 0  # Make upper curve finish at y = 0
             return (x_u, z_u)
 
@@ -222,20 +215,28 @@ class Airfoil(Coordinates):
             x_l = float()
             z_l = float()
             if 0 <= x < self.chord:
-                x_l = (x + self.y_t[x] * sin(self.theta[x]))
-                z_l = (self.y_c[x] - self.y_t[x] * cos(self.theta[x]))
+                x_l = (x + get_thickness(x) * sin(get_theta(x)))
+                z_l = (get_camber(x)[1] - get_thickness(x)
+                       * cos(get_theta(x)))
             elif x == self.chord:
-                x_l = (x + self.y_t[x] * sin(self.theta[x]))
+                x_l = (x + get_thickness(x) * sin(get_theta(x)))
                 z_l = 0  # Make lower curve finish at y = 0
             return (x_l, z_l)
 
-        # Generate all our wing geometries from previous sub-functions
-        for x in range(0, self.chord + 1):
+        # Generate our airfoil geometry from previous sub-functions.
+        # Geometry is densest at leading edge: airfoil slope is highest here.
+        x_chord_10_percent = round(self.chord / 10)
+        # Densify x-coordinates 10 times for first 10% of the chord length
+        x_chord = [x / 10 for x in range(x_chord_10_percent * 10)]
+        x_chord.extend([x for x in range(x_chord_10_percent, self.chord + 1)])
+        print(x_chord)
+
+        for x in x_chord:
             self.x_c.append(get_camber(x)[0])
             self.y_c.append(get_camber(x)[1])
             self.y_t.append(get_thickness(x))
-            self.dy_c.append(get_dy_c(x))
-            self.theta.append(get_theta(self.dy_c[x]))
+            self.dy_c.append(x)
+            self.theta.append(get_theta(x))
             self.x_u.append(get_upper_coordinates(x)[0])
             self.z_u.append(get_upper_coordinates(x)[1])
             self.x_l.append(get_lower_coordinates(x)[0])
