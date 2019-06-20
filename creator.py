@@ -243,7 +243,7 @@ class Spar(Coordinates):
         # Scaled spar location with regards to chord
         loc = spar_x * self.chord
         # bisect_left: returns index of first value in x_u > loc.
-        # This ensures that the spar coordinates intersect with airfoil surface.
+        # Ensures that the spar coordinates intersect with airfoil surface.
         spar_x_u = bi.bisect_left(x_u, loc)  # index of spar's x_u
         spar_x_l = bi.bisect_left(x_l, loc)  # index of spar's x_l
         # These x and y coordinates are assigned to the spar, NOT airfoil.
@@ -374,29 +374,22 @@ def plot(airfoil, spar, stringer):
     plt.plot(airfoil.x_l, airfoil.z_l, '', color='b', linewidth='1')
 
     # Plot spars
-    try:
-        for _ in range(0, len(spar.x_u)):
-            x = (spar.x_u[_], spar.x_l[_])
-            y = (spar.z_u[_], spar.z_l[_])
-            plt.plot(x, y, '.-', color='b')
-            # plt.legend()
-    except:
-        print('Did not plot spars. Were they added?')
+    for _ in range(0, len(spar.x_u)):
+        x = (spar.x_u[_], spar.x_l[_])
+        y = (spar.z_u[_], spar.z_l[_])
+        plt.plot(x, y, '.-', color='b')
 
     # Plot stringers
-    try:
-        # Upper stringers
-        for _ in range(0, len(stringer.x_u)):
-            x = stringer.x_u[_]
-            y = stringer.z_u[_]
-            plt.plot(x, y, '.', color='y')
-        # Lower stringers
-        for _ in range(0, len(stringer.x_l)):
-            x = stringer.x_l[_]
-            y = stringer.z_l[_]
-            plt.plot(x, y, '.', color='y')
-    except:
-        print('Unable to plot stringers. Were they created?')
+    # Upper stringers
+    for _ in range(0, len(stringer.x_u)):
+        x = stringer.x_u[_]
+        y = stringer.z_u[_]
+        plt.plot(x, y, '.', color='y')
+    # Lower stringers
+    for _ in range(0, len(stringer.x_l)):
+        x = stringer.x_l[_]
+        y = stringer.z_l[_]
+        plt.plot(x, y, '.', color='y')
 
     # Graph formatting
     plt.gca().set_aspect('equal', adjustable='box')
