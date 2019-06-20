@@ -167,14 +167,12 @@ class Airfoil(Coordinates):
             """
             Returns thickness from 1 'x' along the airfoil chord.
             """
-            y_t = float()
-            if 0 <= x <= self.chord:
-                y_t = 5 * t * self.chord * (
-                    +0.2969 * sqrt(x / self.chord)
-                    - 0.1260 * (x / self.chord)
-                    - 0.3516 * (x / self.chord)**2
-                    + 0.2843 * (x / self.chord)**3
-                    - 0.1015 * (x / self.chord)**4)
+            y_t = 5 * t * self.chord * (
+                +0.2969 * sqrt(x / self.chord)
+                - 0.1260 * (x / self.chord)
+                - 0.3516 * (x / self.chord)**2
+                + 0.2843 * (x / self.chord)**3
+                - 0.1015 * (x / self.chord)**4)
             return y_t
 
         def get_theta(x):
