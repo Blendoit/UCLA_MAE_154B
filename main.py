@@ -76,6 +76,8 @@ def main():
         af.stringer.add_mass(STRINGER_MASS)
         # af.stringer.print_info(2)
 
+        print(evaluator.get_total_mass(af, af.spar, af.stringer))
+
         # Plot components with matplotlib
         creator.plot(af, af.spar, af.stringer)
 

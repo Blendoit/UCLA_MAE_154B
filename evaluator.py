@@ -13,7 +13,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# F_z =
+from math import sin, cos, atan, sqrt
+
+
+def get_total_mass(*component):
+    total_mass = float()
+    for _ in component:
+        total_mass += _.mass
+    return total_mass
+
+
+def lift_rectangular(lift, semi_span):
+    L_prime = lift / (semi_span * 2)
+    return L_prime
+
+
+def lift_elliptical(L_0, y, semi_span):
+    L_prime = L_0 * sqrt(1 - (y / semi_span) ** 2)
+    return L_prime
 
 
 def get_centroid(airfoil):
@@ -25,10 +42,3 @@ def get_centroid(airfoil):
         numerator += _ * area
     # denominator
     # z_c =
-
-
-def get_total_mass(self, *component):
-    total_mass = float()
-    for _ in component:
-        total_mass += _.mass
-    return total_mass

@@ -154,12 +154,12 @@ class Airfoil(Coordinates):
             """
             y_c = float()
             if 0 <= x < p_c:
-                y_c = (m / (p**2)) * (2 * p * (x / self.chord)
-                                      - (x / self.chord)**2)
+                y_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
+                                        - (x / self.chord) ** 2)
             elif p_c <= x <= self.chord:
-                y_c = (m / ((1 - p)**2)) * ((1 - 2 * p)
-                                            + 2 * p * (x / self.chord)
-                                            - (x / self.chord)**2)
+                y_c = (m / ((1 - p) ** 2)) * ((1 - 2 * p)
+                                              + 2 * p * (x / self.chord)
+                                              - (x / self.chord) ** 2)
             return (y_c * self.chord)
 
         def get_thickness(x):
@@ -169,17 +169,17 @@ class Airfoil(Coordinates):
             y_t = 5 * t * self.chord * (
                 +0.2969 * sqrt(x / self.chord)
                 - 0.1260 * (x / self.chord)
-                - 0.3516 * (x / self.chord)**2
-                + 0.2843 * (x / self.chord)**3
-                - 0.1015 * (x / self.chord)**4)
+                - 0.3516 * (x / self.chord) ** 2
+                + 0.2843 * (x / self.chord) ** 3
+                - 0.1015 * (x / self.chord) ** 4)
             return y_t
 
         def get_theta(x):
             dy_c = float()
             if 0 <= x < p_c:
-                dy_c = ((2 * m) / p**2) * (p - x / self.chord)
+                dy_c = ((2 * m) / p ** 2) * (p - x / self.chord)
             elif p_c <= x <= self.chord:
-                dy_c = (2 * m) / ((1 - p)**2) * (p - x / self.chord)
+                dy_c = (2 * m) / ((1 - p) ** 2) * (p - x / self.chord)
             theta = atan(dy_c)
             return theta
 
