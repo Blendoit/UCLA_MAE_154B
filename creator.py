@@ -183,30 +183,29 @@ class Airfoil(Coordinates):
             theta = atan(dy_c)
             return theta
 
-        def get_upper_coordinates(x):
+        def get_upper_coord(x):
             x_u = x - get_thickness(x) * sin(get_theta(x))
             z_u = get_camber(x) + get_thickness(x) * cos(get_theta(x))
             return (x_u, z_u)
 
-        def get_lower_coordinates(x):
+        def get_lower_coord(x):
             x_l = x + get_thickness(x) * sin(get_theta(x))
             z_l = get_camber(x) - get_thickness(x) * cos(get_theta(x))
             return (x_l, z_l)
 
-        # Generate our airfoil geometry from previous sub-functions.
-        # Geometry is densest at leading edge: airfoil slope is highest here.
-        x_chord_10_percent = round(self.chord / 10)
-        # Densify x-coordinates 10 times for first 10% of the chord length
-        x_chord = [x / 10 for x in range(x_chord_10_percent * 10)]
-        x_chord.extend([x for x in range(x_chord_10_percent, self.chord + 1)])
+        # Densify x-coordinates 10 times for first 1/4 chord length
+        x_chord_25_percent = round(self.chord / 4)
+        x_chord = [x / 10 for x in range(x_chord_25_percent * 10)]
+        x_chord.extend([x for x in range(x_chord_25_percent, self.chord + 1)])
 
+        # Generate our airfoil geometry from previous sub-functions.
         for x in x_chord:
             self.x_c.append(x)
             self.y_c.append(get_camber(x))
-            self.x_u.append(get_upper_coordinates(x)[0])
-            self.z_u.append(get_upper_coordinates(x)[1])
-            self.x_l.append(get_lower_coordinates(x)[0])
-            self.z_l.append(get_lower_coordinates(x)[1])
+            self.x_u.append(get_upper_coord(x)[0])
+            self.z_u.append(get_upper_coord(x)[1])
+            self.x_l.append(get_lower_coord(x)[0])
+            self.z_l.append(get_lower_coord(x)[1])
 
         super().pack_info()
         return None
@@ -274,6 +273,8 @@ class Stringer(Coordinates):
         (upper nose, lower nose, upper surface, lower surface).
 
         Parameters:
+        airfoil_coord: packed airfoil coordinates
+        spar_coord: packed spar coordinates
         stringer_u_1: upper nose number of stringers
         stringer_u_2: upper surface number of stringers
         stringer_l_1: lower nose number of stringers
@@ -291,13 +292,10 @@ class Stringer(Coordinates):
         airfoil_z_l = airfoil_coord[3]
         # Spar coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        try:
-            spar_x_u = spar_coord[0]
-            spar_z_u = spar_coord[1]
-            spar_x_l = spar_coord[2]
-            spar_z_l = spar_coord[3]
-        except:
-            print('Unable to initialize stringers. Were spars created?')
+        spar_x_u = spar_coord[0]
+        spar_z_u = spar_coord[1]
+        spar_x_l = spar_coord[2]
+        spar_z_l = spar_coord[3]
 
         # Find distance between leading edge and first upper stringer
         interval = spar_x_u[0] / (stringer_u_1 + 1)
@@ -361,17 +359,18 @@ def plot(airfoil, spar, stringer):
     x_chord = [0, airfoil.chord]
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
+    # Plot quarter chord
+    plt.plot(airfoil.chord / 4, 0, '.', color='g')
     # Plot mean camber line
-    plt.plot(airfoil.x_c,
-             airfoil.y_c,
-             '-.',
-             color='r',
-             linewidth='2')
-    # label='mean camber line')
+    plt.plot(airfoil.x_c, airfoil.y_c,
+             '-.', color='r', linewidth='2',
+             label='mean camber line')
     # Plot upper surface
-    plt.plot(airfoil.x_u, airfoil.z_u, '', color='b', linewidth='1')
+    plt.plot(airfoil.x_u, airfoil.z_u,
+             '', color='b', linewidth='1')
     # Plot lower surface
-    plt.plot(airfoil.x_l, airfoil.z_l, '', color='b', linewidth='1')
+    plt.plot(airfoil.x_l, airfoil.z_l,
+             '', color='b', linewidth='1')
 
     # Plot spars
     for _ in range(0, len(spar.x_u)):
@@ -395,6 +394,10 @@ def plot(airfoil, spar, stringer):
     plt.gca().set_aspect('equal', adjustable='box')
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
+
+    plot_bound = airfoil.x_u[-1]
+    plt.xlim(- 5, plot_bound + 5)
+    plt.ylim(- plot_bound / 2, plot_bound / 2)
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.show()
     return None

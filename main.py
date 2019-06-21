@@ -22,12 +22,12 @@ import time
 start_time = time.time()
 
 # Airfoil dimensions
-NACA_NUM = 4412
-CHORD_LENGTH = 100
+NACA_NUM = 2412
+CHORD_LENGTH = 40
 SEMI_SPAN = 200
 
 # Component masses
-AIRFOIL_MASS = 100  # lbs
+AIRFOIL_MASS = 10  # lbs
 SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
 
