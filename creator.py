@@ -391,13 +391,13 @@ def plot(airfoil, spar, stringer):
         plt.plot(x, y, '.', color='y')
 
     # Graph formatting
-    plt.gca().set_aspect('equal', adjustable='box')
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
     plot_bound = airfoil.x_u[-1]
-    plt.xlim(- 5, plot_bound + 5)
-    plt.ylim(- plot_bound / 2, plot_bound / 2)
+    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
+    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+    plt.gca().set_aspect('equal', adjustable='box')
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.show()
     return None
