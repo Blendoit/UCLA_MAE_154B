@@ -76,21 +76,6 @@ def main():
         af.stringer.add_mass(STRINGER_MASS)
         # af.stringer.print_info(2)
 
-        # print(evaluator.get_total_mass(af, af.spar, af.stringer))
-        drag = evaluator.get_drag(af, 10)
-
-        lift_rectangular = evaluator.get_lift_rectangular(af, 10)
-        lift_elliptical = evaluator.get_lift_elliptical(af, 15)
-        lift = evaluator.get_lift(lift_rectangular, lift_elliptical)
-
-        total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
-        dist_mass = evaluator.get_mass_distribution(af, total_mass)
-        print('rect', len(lift_rectangular))
-        print('ellipse', len(lift_elliptical))
-        print('lift', len(lift))
-        print(len(drag))
-        print(len(dist_mass))
-
         # Plot components with matplotlib
         # creator.plot(af, af.spar, af.stringer)
 
@@ -99,8 +84,10 @@ def main():
         # af.spar.save_info(SAVE_PATH, _)
         # af.stringer.save_info(SAVE_PATH, _)
 
-    # Evaluate previously created airfoil(s).
-    # total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
+    # evaluator.Airfoil instance contains the results of the airfoil analysis.
+    # The analysis itself takes place in the evaluator.py module.
+    eval = evaluator.Airfoil(af)
+    eval.print_info(2)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))

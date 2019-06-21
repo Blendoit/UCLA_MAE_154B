@@ -75,6 +75,7 @@ class Coordinates:
         This function's output is piped to the 'save_coord' function below.
         """
         print('============================')
+        print('        CREATOR DATA        ')
         print('Component:', str(self))
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
