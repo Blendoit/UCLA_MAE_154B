@@ -78,13 +78,21 @@ def main():
 
         # print(evaluator.get_total_mass(af, af.spar, af.stringer))
         drag = evaluator.get_drag(af, 10)
+
+        lift_rectangular = evaluator.get_lift_rectangular(af, 10)
+        lift_elliptical = evaluator.get_lift_elliptical(af, 15)
+        lift = evaluator.get_lift(lift_rectangular, lift_elliptical)
+
         total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
         dist_mass = evaluator.get_mass_distribution(af, total_mass)
-        print(total_mass)
-        print(dist_mass)
+        print('rect', len(lift_rectangular))
+        print('ellipse', len(lift_elliptical))
+        print('lift', len(lift))
+        print(len(drag))
+        print(len(dist_mass))
 
         # Plot components with matplotlib
-        creator.plot(af, af.spar, af.stringer)
+        # creator.plot(af, af.spar, af.stringer)
 
         # Save component info
         # af.save_info(SAVE_PATH, _)

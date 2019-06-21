@@ -15,8 +15,6 @@
 
 from math import sin, cos, atan, sqrt
 
-# All of these functions take integer arguments and return lists.
-
 
 def get_total_mass(*component):
     total_mass = float()
@@ -25,18 +23,23 @@ def get_total_mass(*component):
     return total_mass
 
 
-def get_lift_rectangular(lift, semi_span):
-    L_prime = lift / (semi_span * 2)
+# All these functions take integer arguments and return lists.
+
+def get_lift_rectangular(airfoil, lift):
+    L_prime = [lift / (airfoil.semi_span * 2)
+               for x in range(airfoil.semi_span)]
     return L_prime
 
 
-def get_lift_elliptical(L_0, y, semi_span):
-    L_prime = L_0 * sqrt(1 - (y / semi_span) ** 2)
+def get_lift_elliptical(airfoil, L_0):
+    L_prime = [L_0 * sqrt(1 - (y / airfoil.semi_span) ** 2)
+               for y in range(airfoil.semi_span)]
     return L_prime
 
 
 def get_lift(rectangular, elliptical):
-    F_z = (rectangular + elliptical) / 2
+    F_z = [(rectangular[_] + elliptical[_]) / 2
+           for _ in range(len(rectangular))]
     return F_z
 
 

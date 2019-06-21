@@ -360,7 +360,6 @@ class Stringer(Coordinates):
 def plot(airfoil, spar, stringer):
     """This function plots the elements passed as arguments."""
 
-    print('Plotting airfoil.')
     # Plot chord
     x_chord = [0, airfoil.chord]
     y_chord = [0, 0]
