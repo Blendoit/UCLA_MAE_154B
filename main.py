@@ -76,21 +76,23 @@ def main():
         af.stringer.add_mass(STRINGER_MASS)
         # af.stringer.print_info(2)
 
-        print(evaluator.get_total_mass(af, af.spar, af.stringer))
+        # print(evaluator.get_total_mass(af, af.spar, af.stringer))
+        drag = evaluator.get_drag(af, 10)
+        total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
+        dist_mass = evaluator.get_mass_distribution(af, total_mass)
+        print(total_mass)
+        print(dist_mass)
 
         # Plot components with matplotlib
         creator.plot(af, af.spar, af.stringer)
 
         # Save component info
-        af.save_info(SAVE_PATH, _)
-        af.spar.save_info(SAVE_PATH, _)
-        af.stringer.save_info(SAVE_PATH, _)
+        # af.save_info(SAVE_PATH, _)
+        # af.spar.save_info(SAVE_PATH, _)
+        # af.stringer.save_info(SAVE_PATH, _)
 
     # Evaluate previously created airfoil(s).
     # total_mass = evaluator.get_total_mass(af, af.spar, af.stringer)
-
-    # Iteratively evaluate airfoils by defining genetic generations.
-    # pass
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))

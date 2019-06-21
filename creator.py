@@ -81,9 +81,9 @@ class Coordinates:
         print('Mass:', self.mass)
         print('============================')
         print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
-        print('z_u the upper y-coordinates:\n', np.around(self.z_u, round))
+        print('z_u the upper z-coordinates:\n', np.around(self.z_u, round))
         print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))
-        print('z_l the lower y-coordinates:\n', np.around(self.z_l, round))
+        print('z_l the lower z-coordinates:\n', np.around(self.z_l, round))
         return None
 
     def save_info(self, save_dir_path, number):
@@ -123,8 +123,8 @@ class Airfoil(Coordinates):
         # NACA number
         self.naca_num = int()
         # Mean camber line
-        self.x_c = []  # Contains only integers from 0 to self.chord
-        self.y_c = []  # Contains floats
+        self.x_c = []
+        self.y_c = []
 
     def add_naca(self, naca_num):
         """
@@ -167,7 +167,7 @@ class Airfoil(Coordinates):
             Returns thickness from 1 'x' along the airfoil chord.
             """
             y_t = 5 * t * self.chord * (
-                +0.2969 * sqrt(x / self.chord)
+                + 0.2969 * sqrt(x / self.chord)
                 - 0.1260 * (x / self.chord)
                 - 0.3516 * (x / self.chord) ** 2
                 + 0.2843 * (x / self.chord) ** 3
@@ -212,6 +212,12 @@ class Airfoil(Coordinates):
 
     def add_mass(self, mass):
         self.mass = mass
+
+    def print_info(self, round):
+        super().print_info(round)
+        print('x_c the camber x-coordinates:\n', np.around(self.x_u, round))
+        print('z_c the camber z-coordinates:\n', np.around(self.x_u, round))
+        return None
 
 
 class Spar(Coordinates):
