@@ -21,7 +21,7 @@ from math import sqrt
 import matplotlib.pyplot as plt
 
 
-class Airfoil:
+class Evaluator:
     '''Performs structural evaluations for the airfoil passed as argument.'''
 
     def __init__(self, airfoil):
@@ -143,7 +143,9 @@ class Airfoil:
         return(x_centroid, z_centroid)
 
     def get_I_x(self):
-        pass
+        I_x = float()
+        i_x = int()
+        print(I_x)
 
     def get_I_z(self):
         pass
@@ -167,53 +169,54 @@ class Airfoil:
         self.I_xz = self.get_I_xz()
         return None
 
-    def plot(self):
-        '''This function plots analysis results over the airfoil's geometry.'''
 
-        # Plot chord
-        x_chord = [0, self.chord]
-        y_chord = [0, 0]
-        plt.plot(x_chord, y_chord, linewidth='1')
-        # Plot quarter chord
-        q = self.chord / 4
-        plt.plot(q, 0, '.', color='g', markersize=24, label='quarter-chord')
-        # Plot upper surface
-        plt.plot(self.x_u, self.z_u,
-                 '', color='b', linewidth='1')
-        # Plot lower surface
-        plt.plot(self.x_l, self.z_l,
-                 '', color='b', linewidth='1')
+def plot(evaluator):
+    '''This function plots analysis results over the airfoil's geometry.'''
 
-        # Plot spars
-        for _ in range(0, len(self.spar.x_u)):
-            x = (self.spar.x_u[_], self.spar.x_l[_])
-            y = (self.spar.z_u[_], self.spar.z_l[_])
-            plt.plot(x, y, '.-', color='b')
+    # Plot chord
+    x_chord = [0, evaluator.chord]
+    y_chord = [0, 0]
+    plt.plot(x_chord, y_chord, linewidth='1')
+    # Plot quarter chord
+    q = evaluator.chord / 4
+    plt.plot(q, 0, '.', color='g', markersize=24, label='quarter-chord')
+    # Plot upper surface
+    plt.plot(evaluator.x_u, evaluator.z_u,
+             '', color='b', linewidth='1')
+    # Plot lower surface
+    plt.plot(evaluator.x_l, evaluator.z_l,
+             '', color='b', linewidth='1')
 
-        # Plot upper stringers
-        for _ in range(0, len(self.stringer.x_u)):
-            x = self.stringer.x_u[_]
-            y = self.stringer.z_u[_]
-            plt.plot(x, y, '.', color='y', markersize=12)
-        # Plot lower stringers
-        for _ in range(0, len(self.stringer.x_l)):
-            x = self.stringer.x_l[_]
-            y = self.stringer.z_l[_]
-            plt.plot(x, y, '.', color='y', markersize=12)
+    # Plot spars
+    for _ in range(0, len(evaluator.spar.x_u)):
+        x = (evaluator.spar.x_u[_], evaluator.spar.x_l[_])
+        y = (evaluator.spar.z_u[_], evaluator.spar.z_l[_])
+        plt.plot(x, y, '.-', color='b')
 
-        # Plot centroid
-        x = self.centroid[0]
-        y = self.centroid[1]
-        plt.plot(x, y, '.', color='r', markersize=24, label='centroid')
+    # Plot upper stringers
+    for _ in range(0, len(evaluator.stringer.x_u)):
+        x = evaluator.stringer.x_u[_]
+        y = evaluator.stringer.z_u[_]
+        plt.plot(x, y, '.', color='y', markersize=12)
+    # Plot lower stringers
+    for _ in range(0, len(evaluator.stringer.x_l)):
+        x = evaluator.stringer.x_l[_]
+        y = evaluator.stringer.z_l[_]
+        plt.plot(x, y, '.', color='y', markersize=12)
 
-        # Graph formatting
-        plt.xlabel('X axis')
-        plt.ylabel('Z axis')
+    # Plot centroid
+    x = evaluator.centroid[0]
+    y = evaluator.centroid[1]
+    plt.plot(x, y, '.', color='r', markersize=24, label='centroid')
 
-        plot_bound = self.x_u[-1]
-        plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
-        plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
-        plt.gca().set_aspect('equal', adjustable='box')
-        plt.grid(axis='both', linestyle=':', linewidth=1)
-        plt.show()
-        return None
+    # Graph formatting
+    plt.xlabel('X axis')
+    plt.ylabel('Z axis')
+
+    plot_bound = evaluator.x_u[-1]
+    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
+    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.grid(axis='both', linestyle=':', linewidth=1)
+    plt.show()
+    return None

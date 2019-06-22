@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
 import creator  # Create geometry
 import evaluator  # Evaluate geometry
 import generator  # Iteratevely evaluate instances of geometry and optimize
@@ -88,15 +89,15 @@ def main():
         af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
-        af.plot()
+        creator.plot(af)
 
         # evaluator.Evaluator instance contains airfoil analysis results.
-        eval = evaluator.Airfoil(af)
+        eval = evaluator.Evaluator(af)
         # The analysis is performed in the evaluator.py module.
         eval.analysis()
         eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        eval.plot()
+        evaluator.plot(eval)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
