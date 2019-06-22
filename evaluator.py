@@ -53,7 +53,7 @@ class Airfoil:
         # Drag
         self.drag = []
 
-    def print_info(self, round):
+    def info_print(self, round):
         '''
         Print all the component's evaluated data to the terminal.
 
@@ -78,14 +78,14 @@ class Airfoil:
         print('Drag:\n', np.around(self.drag, round))
         return None
 
-    def save_info(self, save_dir_path, number):
+    def info_save(self, save_dir_path, number):
         '''Save all the object's coordinates (must be full path).'''
 
         file_name = 'airfoil_{}_eval.txt'.format(number)
         full_path = os.path.join(save_dir_path, file_name)
         try:
             with open(full_path, 'w') as sys.stdout:
-                self.print_info(6)
+                self.info_print(6)
                 # This line required to reset behavior of sys.stdout
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
