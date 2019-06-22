@@ -75,13 +75,16 @@ class Coordinates:
 
         This function's output is piped to the 'save_coord' function below.
         '''
-        print(20 * '-')
-        print('    CREATOR DATA    ')
+        name = '    CREATOR DATA    '
+        num_of_dashes = len(name)
+
+        print(num_of_dashes * '-')
+        print(name)
         print('Component:', str(self))
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('Mass:', self.mass)
-        print(20 * '-')
+        print(num_of_dashes * '-')
         print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
         print('z_u the upper z-coordinates:\n', np.around(self.z_u, round))
         print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))

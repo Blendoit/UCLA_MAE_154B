@@ -60,14 +60,17 @@ class Airfoil:
         This function's output is piped to the 'save_data' function below.
         '''
 
-        print(22 * '-')
-        print('    EVALUATOR DATA    ')
+        name = '    CREATOR DATA    '
+        num_of_dashes = len(name)
+
+        print(num_of_dashes * '-')
+        print(name)
         print('Evaluating:', self.airfoil)
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('Total airfoil mass:', self.mass_total)
         print('Centroid location:', np.around(self.centroid, round + 1))
-        print(22 * '-')
+        print(num_of_dashes * '-')
         print('Rectangular lift:\n', np.around(self.lift_rectangular, round))
         print('Elliptical lift:\n', np.around(self.lift_elliptical, round))
         print('Combined lift:\n', np.around(self.lift, round))
