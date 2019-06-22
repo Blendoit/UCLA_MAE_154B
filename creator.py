@@ -222,7 +222,7 @@ class Airfoil(Coordinates):
         return None
 
     def plot(self):
-        '''This function plots the elements passed as arguments.'''
+        '''This function plots the entire airfoil's geometry.'''
 
         # Plot chord
         x_chord = [0, self.chord]
@@ -268,7 +268,9 @@ class Airfoil(Coordinates):
         plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
         plt.gca().set_aspect('equal', adjustable='box')
         plt.grid(axis='both', linestyle=':', linewidth=1)
-        plt.show()
+        plt.draw()
+        plt.pause(1)
+        # plt.close()
         return None
 
 

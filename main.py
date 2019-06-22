@@ -77,7 +77,7 @@ def main():
         # af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        af.plot()
+        # af.plot()
 
         # Save component info
         # af.save_info(SAVE_PATH, _)
@@ -90,6 +90,7 @@ def main():
         eval.analysis()
         eval.print_info(2)
         eval.save_info(SAVE_PATH, _)
+        eval.plot()
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))

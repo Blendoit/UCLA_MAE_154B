@@ -17,7 +17,8 @@
 import sys
 import os.path
 import numpy as np
-from math import sin, cos, atan, sqrt
+from math import sqrt
+import matplotlib.pyplot as plt
 
 
 class Airfoil:
@@ -34,11 +35,22 @@ class Airfoil:
                                 + airfoil.spar.mass
                                 + airfoil.stringer.mass)
         self.mass_dist = []
-
+        # Upper coordinates
+        self.x_u = airfoil.x_u
+        self.z_u = airfoil.z_u
+        # Lower coordinates
+        self.x_l = airfoil.x_l
+        self.z_l = airfoil.z_l
+        # Spars
+        self.spar = airfoil.spar
+        # Stringers
+        self.stringer = airfoil.stringer
+        # Lifts
         self.lift_rectangular = []
         self.lift_elliptical = []
         self.lift = []
 
+        # Drag
         self.drag = []
 
     def print_info(self, round):
@@ -142,5 +154,55 @@ class Airfoil:
         self.centroid = self.get_centroid()
         return None
 
-    # denominator
-    # z_c =
+    def plot(self):
+        '''This function plots analysis results over the airfoil's geometry.'''
+
+        # Plot chord
+        x_chord = [0, self.chord]
+        y_chord = [0, 0]
+        plt.plot(x_chord, y_chord, linewidth='1')
+        # Plot quarter chord
+        plt.plot(self.chord / 4, 0, '.', color='g', markersize=24)
+        # Plot upper surface
+        plt.plot(self.x_u, self.z_u,
+                 '', color='b', linewidth='1')
+        # Plot lower surface
+        plt.plot(self.x_l, self.z_l,
+                 '', color='b', linewidth='1')
+
+        # Plot spars
+        for _ in range(0, len(self.spar.x_u)):
+            x = (self.spar.x_u[_], self.spar.x_l[_])
+            y = (self.spar.z_u[_], self.spar.z_l[_])
+            plt.plot(x, y, '.-', color='b')
+
+        # Plot stringers
+        # Upper stringers
+        for _ in range(0, len(self.stringer.x_u)):
+            x = self.stringer.x_u[_]
+            y = self.stringer.z_u[_]
+            plt.plot(x, y, '.', color='y', markersize=12)
+        # Lower stringers
+        for _ in range(0, len(self.stringer.x_l)):
+            x = self.stringer.x_l[_]
+            y = self.stringer.z_l[_]
+            plt.plot(x, y, '.', color='y', markersize=12)
+
+        # Centroid
+        x = self.centroid[0]
+        y = self.centroid[1]
+        plt.plot(x, y, '.', color='r', markersize=24)
+
+        # Graph formatting
+        plt.xlabel('X axis')
+        plt.ylabel('Z axis')
+
+        plot_bound = self.x_u[-1]
+        plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
+        plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+        plt.gca().set_aspect('equal', adjustable='box')
+        plt.grid(axis='both', linestyle=':', linewidth=1)
+        plt.show()
+        # plt.pause(1)
+        # plt.close()
+        return None
