@@ -142,6 +142,15 @@ class Airfoil:
             (len(x_stringers) * area)
         return(x_centroid, z_centroid)
 
+    def get_I_x():
+        pass
+
+    def get_I_z():
+        pass
+
+    def get_I_xz():
+        pass
+
     def analysis(self):
         '''Perform all analysis calculations and store in class instance.'''
 
@@ -153,6 +162,9 @@ class Airfoil:
 
         self.mass_dist = self.get_mass_distribution(self.mass_total)
         self.centroid = self.get_centroid()
+        self.I_x = self.get_I_x()
+        self.I_z = self.get_I_z()
+        self.I_xz = self.get_I_xz()
         return None
 
     def plot(self):

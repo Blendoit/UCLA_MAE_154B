@@ -250,13 +250,12 @@ class Airfoil(Coordinates):
             y = (self.spar.z_u[_], self.spar.z_l[_])
             plt.plot(x, y, '.-', color='b')
 
-        # Plot stringers
-        # Upper stringers
+        # Plot upper stringers
         for _ in range(0, len(self.stringer.x_u)):
             x = self.stringer.x_u[_]
             y = self.stringer.z_u[_]
             plt.plot(x, y, '.', color='y', markersize=12)
-        # Lower stringers
+        # Plot lower stringers
         for _ in range(0, len(self.stringer.x_l)):
             x = self.stringer.x_l[_]
             y = self.stringer.z_l[_]
