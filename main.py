@@ -23,8 +23,8 @@ start_time = time.time()
 
 # Airfoil dimensions
 NACA_NUM = 2412
-CHORD_LENGTH = 40
-SEMI_SPAN = 200
+CHORD_LENGTH = 20
+SEMI_SPAN = 20
 
 # Component masses
 AIRFOIL_MASS = 10  # lbs
@@ -77,15 +77,15 @@ def main():
         # af.stringer.print_info(2)
 
         # Plot components with matplotlib
-        # creator.plot(af, af.spar, af.stringer)
+        af.plot()
 
         # Save component info
-        af.save_info(SAVE_PATH, _)
-        af.spar.save_info(SAVE_PATH, _)
-        af.stringer.save_info(SAVE_PATH, _)
+        # af.save_info(SAVE_PATH, _)
+        # af.spar.save_info(SAVE_PATH, _)
+        # af.stringer.save_info(SAVE_PATH, _)
 
         # evaluator.Evaluator instance contains airfoil analysis results.
-        eval = evaluator.Evaluator(af)
+        eval = evaluator.Airfoil(af)
         # The analysis is performed in the evaluator.py module.
         eval.analysis()
         eval.print_info(2)

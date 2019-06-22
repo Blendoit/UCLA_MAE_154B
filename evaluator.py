@@ -20,16 +20,19 @@ import numpy as np
 from math import sin, cos, atan, sqrt
 
 
-class Evaluator:
+class Airfoil:
     '''Performs structural evaluations for the airfoil passed as argument.'''
 
     def __init__(self, airfoil):
         self.airfoil = airfoil
+        print(self.airfoil)
         # Global dimensions
         self.chord = airfoil.chord
         self.semi_span = airfoil.semi_span
         # mass and area
-        self.mass_total = airfoil.mass + airfoil.spar.mass + airfoil.stringer.mass
+        self.mass_total = float(airfoil.mass
+                                + airfoil.spar.mass
+                                + airfoil.stringer.mass)
         self.mass_dist = []
 
         self.lift_rectangular = []
@@ -51,6 +54,7 @@ class Evaluator:
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('Total airfoil mass:', self.mass_total)
+        print('Centroid location:', np.around(self.centroid, round + 1))
         print(22 * '-')
         print('Rectangular lift:\n', np.around(self.lift_rectangular, round))
         print('Elliptical lift:\n', np.around(self.lift_elliptical, round))
@@ -114,10 +118,19 @@ class Evaluator:
         F_x.extend([1.25 * drag for x in semi_span[cutoff:]])
         return F_x
 
+    def get_centroid(self):
+        area = self.airfoil.stringer.area
+        x_stringers = self.airfoil.stringer.x_u + self.airfoil.stringer.x_l
+        x_centroid = sum([x * area for x in x_stringers]) / \
+            (len(x_stringers) * area)
+
+        z_stringers = self.airfoil.stringer.z_u + self.airfoil.stringer.z_l
+        z_centroid = sum([x * area for x in z_stringers]) / \
+            (len(x_stringers) * area)
+        return(x_centroid, z_centroid)
+
     def analysis(self):
-        '''
-        Perform all analysis calculations and store in class instance.
-        '''
+        '''Perform all analysis calculations and store in class instance.'''
 
         self.drag = self.get_drag(10)
 
@@ -125,18 +138,9 @@ class Evaluator:
         self.lift_elliptical = self.get_lift_elliptical(15)
         self.lift = self.get_lift_total()
 
-        # self.mass_total = self.get_mass_total()
         self.mass_dist = self.get_mass_distribution(self.mass_total)
+        self.centroid = self.get_centroid()
         return None
-
-# def get_centroid(airfoil):
-#     area = airfoil.stringer.area
-#     top_stringers = airfoil.stringer
-#     bottom_stringers =
-#     nose_top_stringers =
-#     nose_bottom_stringers =
-#     for _ in airfoil.stringer[1]:
-#         centroid.x +=
 
     # denominator
     # z_c =

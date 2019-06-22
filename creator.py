@@ -221,6 +221,56 @@ class Airfoil(Coordinates):
         print('z_c the camber z-coordinates:\n', np.around(self.x_u, round))
         return None
 
+    def plot(self):
+        '''This function plots the elements passed as arguments.'''
+
+        # Plot chord
+        x_chord = [0, self.chord]
+        y_chord = [0, 0]
+        plt.plot(x_chord, y_chord, linewidth='1')
+        # Plot quarter chord
+        plt.plot(self.chord / 4, 0, '.', color='g')
+        # Plot mean camber line
+        plt.plot(self.x_c, self.y_c,
+                 '-.', color='r', linewidth='2',
+                 label='mean camber line')
+        # Plot upper surface
+        plt.plot(self.x_u, self.z_u,
+                 '', color='b', linewidth='1')
+        # Plot lower surface
+        plt.plot(self.x_l, self.z_l,
+                 '', color='b', linewidth='1')
+
+        # Plot spars
+        for _ in range(0, len(self.spar.x_u)):
+            x = (self.spar.x_u[_], self.spar.x_l[_])
+            y = (self.spar.z_u[_], self.spar.z_l[_])
+            plt.plot(x, y, '.-', color='b')
+
+        # Plot stringers
+        # Upper stringers
+        for _ in range(0, len(self.stringer.x_u)):
+            x = self.stringer.x_u[_]
+            y = self.stringer.z_u[_]
+            plt.plot(x, y, '.', color='y')
+        # Lower stringers
+        for _ in range(0, len(self.stringer.x_l)):
+            x = self.stringer.x_l[_]
+            y = self.stringer.z_l[_]
+            plt.plot(x, y, '.', color='y')
+
+        # Graph formatting
+        plt.xlabel('X axis')
+        plt.ylabel('Z axis')
+
+        plot_bound = self.x_u[-1]
+        plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
+        plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+        plt.gca().set_aspect('equal', adjustable='box')
+        plt.grid(axis='both', linestyle=':', linewidth=1)
+        plt.show()
+        return None
+
 
 class Spar(Coordinates):
     '''Contains a single spar's location.'''
@@ -357,57 +407,6 @@ class Stringer(Coordinates):
         super().print_info(round)
         print('Stringer Area:\n', np.around(self.area, round))
         return None
-
-
-def plot(airfoil, spar, stringer):
-    '''This function plots the elements passed as arguments.'''
-
-    # Plot chord
-    x_chord = [0, airfoil.chord]
-    y_chord = [0, 0]
-    plt.plot(x_chord, y_chord, linewidth='1')
-    # Plot quarter chord
-    plt.plot(airfoil.chord / 4, 0, '.', color='g')
-    # Plot mean camber line
-    plt.plot(airfoil.x_c, airfoil.y_c,
-             '-.', color='r', linewidth='2',
-             label='mean camber line')
-    # Plot upper surface
-    plt.plot(airfoil.x_u, airfoil.z_u,
-             '', color='b', linewidth='1')
-    # Plot lower surface
-    plt.plot(airfoil.x_l, airfoil.z_l,
-             '', color='b', linewidth='1')
-
-    # Plot spars
-    for _ in range(0, len(spar.x_u)):
-        x = (spar.x_u[_], spar.x_l[_])
-        y = (spar.z_u[_], spar.z_l[_])
-        plt.plot(x, y, '.-', color='b')
-
-    # Plot stringers
-    # Upper stringers
-    for _ in range(0, len(stringer.x_u)):
-        x = stringer.x_u[_]
-        y = stringer.z_u[_]
-        plt.plot(x, y, '.', color='y')
-    # Lower stringers
-    for _ in range(0, len(stringer.x_l)):
-        x = stringer.x_l[_]
-        y = stringer.z_l[_]
-        plt.plot(x, y, '.', color='y')
-
-    # Graph formatting
-    plt.xlabel('X axis')
-    plt.ylabel('Z axis')
-
-    plot_bound = airfoil.x_u[-1]
-    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
-    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.grid(axis='both', linestyle=':', linewidth=1)
-    plt.show()
-    return None
 
 
 def main():
