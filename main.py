@@ -34,12 +34,13 @@ STRINGER_MASS = 5  # lbs
 
 # Area
 STRINGER_AREA = 0.1  # sqin
+# Amount of stringers
 TOP_STRINGERS = 8
 BOTTOM_STRINGERS = 6
 NOSE_TOP_STRINGERS = 4
 NOSE_BOTTOM_STRINGERS = 7
 
-# population information
+# population information & save path
 POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
@@ -69,8 +70,8 @@ def main():
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates and mass, stored in single spar object
-        af.spar.add_coord(af.coord, 0.15)
-        af.spar.add_coord(af.coord, 0.55)
+        af.spar.add_coord(af, 0.15)
+        af.spar.add_coord(af, 0.55)
         af.spar.add_mass(SPAR_MASS)
         # af.spar.info_print(2)
         af.spar.info_save(SAVE_PATH, _)
@@ -78,7 +79,7 @@ def main():
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Compute the stringer coordinates from their quantity in each zone
-        af.stringer.add_coord(af.coord, af.spar.coord,
+        af.stringer.add_coord(af,
                               NOSE_TOP_STRINGERS,
                               TOP_STRINGERS,
                               NOSE_BOTTOM_STRINGERS,

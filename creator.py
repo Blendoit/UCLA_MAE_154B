@@ -232,7 +232,7 @@ class Spar(Coordinates):
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
-    def add_coord(self, airfoil_coord, spar_x):
+    def add_coord(self, airfoil, spar_x):
         '''
         Add a single spar at the % chord location given to function.
 
@@ -246,10 +246,10 @@ class Spar(Coordinates):
         '''
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        x_u = airfoil_coord[0]
-        z_u = airfoil_coord[1]
-        x_l = airfoil_coord[2]
-        z_l = airfoil_coord[3]
+        x_u = airfoil.coord[0]
+        z_u = airfoil.coord[1]
+        x_l = airfoil.coord[2]
+        z_l = airfoil.coord[3]
         # Scaled spar location with regards to chord
         loc = spar_x * self.chord
         # bisect_left: returns index of first value in x_u > loc.
@@ -277,8 +277,9 @@ class Stringer(Coordinates):
         super().__init__(parent.chord, parent.semi_span)
         self.area = float()
 
-    def add_coord(self, airfoil_coord, spar_coord,
-                  stringer_u_1, stringer_u_2, stringer_l_1, stringer_l_2):
+    def add_coord(self, airfoil,
+                  stringer_u_1, stringer_u_2,
+                  stringer_l_1, stringer_l_2):
         '''
         Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
@@ -297,16 +298,14 @@ class Stringer(Coordinates):
 
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        airfoil_x_u = airfoil_coord[0]
-        airfoil_z_u = airfoil_coord[1]
-        airfoil_x_l = airfoil_coord[2]
-        airfoil_z_l = airfoil_coord[3]
+        airfoil_x_u = airfoil.coord[0]
+        airfoil_z_u = airfoil.coord[1]
+        airfoil_x_l = airfoil.coord[2]
+        airfoil_z_l = airfoil.coord[3]
         # Spar coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        spar_x_u = spar_coord[0]
-        spar_z_u = spar_coord[1]
-        spar_x_l = spar_coord[2]
-        spar_z_l = spar_coord[3]
+        spar_x_u = airfoil.spar.coord[0]
+        spar_x_l = airfoil.spar.coord[2]
 
         # Find distance between leading edge and first upper stringer
         interval = spar_x_u[0] / (stringer_u_1 + 1)
