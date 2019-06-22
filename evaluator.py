@@ -60,7 +60,7 @@ class Airfoil:
         This function's output is piped to the 'save_data' function below.
         '''
 
-        name = '    CREATOR DATA    '
+        name = '    EVALUATOR DATA    '
         num_of_dashes = len(name)
 
         print(num_of_dashes * '-')
@@ -142,13 +142,13 @@ class Airfoil:
             (len(x_stringers) * area)
         return(x_centroid, z_centroid)
 
-    def get_I_x():
+    def get_I_x(self):
         pass
 
-    def get_I_z():
+    def get_I_z(self):
         pass
 
-    def get_I_xz():
+    def get_I_xz(self):
         pass
 
     def analysis(self):
@@ -216,6 +216,4 @@ class Airfoil:
         plt.gca().set_aspect('equal', adjustable='box')
         plt.grid(axis='both', linestyle=':', linewidth=1)
         plt.show()
-        # plt.pause(1)
-        # plt.close()
         return None

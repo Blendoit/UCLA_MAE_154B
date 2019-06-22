@@ -91,13 +91,13 @@ class Coordinates:
         print('z_l the lower z-coordinates:\n', np.around(self.z_l, round))
         return None
 
-    def info_save(self, save_dir_path, number):
+    def info_save(self, save_path, number):
         '''
         Save all the object's coordinates (must be full path).
         '''
 
         file_name = '{}_{}.txt'.format(str(self).lower(), number)
-        full_path = os.path.join(save_dir_path, file_name)
+        full_path = os.path.join(save_path, file_name)
         try:
             with open(full_path, 'w') as sys.stdout:
                 self.info_print(6)
