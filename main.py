@@ -32,7 +32,11 @@ SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
 
 # Area
-STRINGER_AREA = 0.1  # sqin
+STRINGER_AREA = 1  # sqin
+TOP_STRINGERS = 4
+BOTTOM_STRINGERS = 6
+NOSE_TOP_STRINGERS = 4
+NOSE_BOTTOM_STRINGERS = 7
 
 # population information
 POP_SIZE = 1
@@ -73,7 +77,11 @@ def main():
         # Create stringer instance
         af.stringer = creator.Stringer()
         # Compute the stringer coordinates from their quantity in each zone
-        af.stringer.add_coord(af.coord, af.spar.coord, 4, 7, 5, 6)
+        af.stringer.add_coord(af.coord, af.spar.coord,
+                              NOSE_TOP_STRINGERS,
+                              TOP_STRINGERS,
+                              NOSE_BOTTOM_STRINGERS,
+                              BOTTOM_STRINGERS)
         af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
         # af.stringer.info_print(2)

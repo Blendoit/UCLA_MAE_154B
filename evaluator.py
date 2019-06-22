@@ -95,10 +95,6 @@ class Airfoil:
                   'Was the full path passed to the function?')
         return None
 
-    # def get_mass_total(airfoil):
-    #     total_mass = airfoil.mass + airfoil.spar.mass + airfoil.stringer.mass
-    #     return total_mass
-
     # All these functions take integer arguments and return lists.
 
     def get_lift_rectangular(self, lift):
@@ -134,7 +130,9 @@ class Airfoil:
         return F_x
 
     def get_centroid(self):
+        '''Return the coordinates of the centroid.'''
         area = self.airfoil.stringer.area
+
         x_stringers = self.airfoil.stringer.x_u + self.airfoil.stringer.x_l
         x_centroid = sum([x * area for x in x_stringers]) / \
             (len(x_stringers) * area)
@@ -165,7 +163,8 @@ class Airfoil:
         y_chord = [0, 0]
         plt.plot(x_chord, y_chord, linewidth='1')
         # Plot quarter chord
-        plt.plot(self.chord / 4, 0, '.', color='g', markersize=24)
+        q = self.chord / 4
+        plt.plot(q, 0, '.', color='g', markersize=24, label='quarter-chord')
         # Plot upper surface
         plt.plot(self.x_u, self.z_u,
                  '', color='b', linewidth='1')
@@ -179,22 +178,21 @@ class Airfoil:
             y = (self.spar.z_u[_], self.spar.z_l[_])
             plt.plot(x, y, '.-', color='b')
 
-        # Plot stringers
-        # Upper stringers
+        # Plot upper stringers
         for _ in range(0, len(self.stringer.x_u)):
             x = self.stringer.x_u[_]
             y = self.stringer.z_u[_]
             plt.plot(x, y, '.', color='y', markersize=12)
-        # Lower stringers
+        # Plot lower stringers
         for _ in range(0, len(self.stringer.x_l)):
             x = self.stringer.x_l[_]
             y = self.stringer.z_l[_]
             plt.plot(x, y, '.', color='y', markersize=12)
 
-        # Centroid
+        # Plot centroid
         x = self.centroid[0]
         y = self.centroid[1]
-        plt.plot(x, y, '.', color='r', markersize=24)
+        plt.plot(x, y, '.', color='r', markersize=24, label='centroid')
 
         # Graph formatting
         plt.xlabel('X axis')

@@ -232,7 +232,7 @@ class Airfoil(Coordinates):
         y_chord = [0, 0]
         plt.plot(x_chord, y_chord, linewidth='1')
         # Plot quarter chord
-        plt.plot(self.chord / 4, 0, '.', color='g')
+        plt.plot(self.chord / 4, 0, '.', color='g', markersize=24)
         # Plot mean camber line
         plt.plot(self.x_c, self.y_c,
                  '-.', color='r', linewidth='2',
@@ -255,12 +255,12 @@ class Airfoil(Coordinates):
         for _ in range(0, len(self.stringer.x_u)):
             x = self.stringer.x_u[_]
             y = self.stringer.z_u[_]
-            plt.plot(x, y, '.', color='y')
+            plt.plot(x, y, '.', color='y', markersize=12)
         # Lower stringers
         for _ in range(0, len(self.stringer.x_l)):
             x = self.stringer.x_l[_]
             y = self.stringer.z_l[_]
-            plt.plot(x, y, '.', color='y')
+            plt.plot(x, y, '.', color='y', markersize=12)
 
         # Graph formatting
         plt.xlabel('X axis')
@@ -271,9 +271,7 @@ class Airfoil(Coordinates):
         plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
         plt.gca().set_aspect('equal', adjustable='box')
         plt.grid(axis='both', linestyle=':', linewidth=1)
-        plt.draw()
-        plt.pause(1)
-        # plt.close()
+        plt.show()
         return None
 
 
