@@ -50,7 +50,7 @@ def main():
     # TODO: imperial + metric unit setting
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
 
-    # Interate through all wings in population.
+    # Interate through all wings in population, creating and evaluating them.
     for _ in range(1, POP_SIZE + 1):
 
         # Create airfoil instance
@@ -80,14 +80,16 @@ def main():
         # creator.plot(af, af.spar, af.stringer)
 
         # Save component info
-        # af.save_info(SAVE_PATH, _)
-        # af.spar.save_info(SAVE_PATH, _)
-        # af.stringer.save_info(SAVE_PATH, _)
+        af.save_info(SAVE_PATH, _)
+        af.spar.save_info(SAVE_PATH, _)
+        af.stringer.save_info(SAVE_PATH, _)
 
-    # evaluator.Airfoil instance contains the results of the airfoil analysis.
-    # The analysis itself takes place in the evaluator.py module.
-    eval = evaluator.Airfoil(af)
-    eval.print_info(2)
+        # evaluator.Evaluator instance contains airfoil analysis results.
+        eval = evaluator.Evaluator(af)
+        # The analysis is performed in the evaluator.py module.
+        eval.analysis()
+        eval.print_info(2)
+        eval.save_info(SAVE_PATH, _)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))

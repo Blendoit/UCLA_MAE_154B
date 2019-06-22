@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+
 import sys
 import os.path
 import numpy as np
@@ -29,7 +30,7 @@ global parent
 
 
 class Coordinates:
-    """
+    '''
     All airfoil components need the following:
 
     Parameters:
@@ -41,7 +42,7 @@ class Coordinates:
         * Save component coordinates to file specified in main.py
 
     So, all component classes inherit from class Coordinates.
-    """
+    '''
 
     def __init__(self, chord, semi_span):
         # Global dimensions
@@ -69,18 +70,18 @@ class Coordinates:
         return type(self).__name__
 
     def print_info(self, round):
-        """
+        '''
         Print all the component's coordinates to the terminal.
 
         This function's output is piped to the 'save_coord' function below.
-        """
-        print('============================')
-        print('        CREATOR DATA        ')
+        '''
+        print(20 * '-')
+        print('    CREATOR DATA    ')
         print('Component:', str(self))
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('Mass:', self.mass)
-        print('============================')
+        print(20 * '-')
         print('x_u the upper x-coordinates:\n', np.around(self.x_u, round))
         print('z_u the upper z-coordinates:\n', np.around(self.z_u, round))
         print('x_l the lower x-coordinates:\n', np.around(self.x_l, round))
@@ -88,15 +89,15 @@ class Coordinates:
         return None
 
     def save_info(self, save_dir_path, number):
-        """
+        '''
         Save all the object's coordinates (must be full path).
-        """
+        '''
 
-        file_name = '{}_{}.txt'.format(self, number)
+        file_name = '{}_{}.txt'.format(str(self).lower(), number)
         full_path = os.path.join(save_dir_path, file_name)
         try:
             with open(full_path, 'w') as sys.stdout:
-                self.print_info(2)
+                self.print_info(6)
                 # This line required to reset behavior of sys.stdout
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
@@ -115,7 +116,7 @@ class Coordinates:
 
 
 class Airfoil(Coordinates):
-    """This class enables the creation of a single NACA airfoil."""
+    '''This class enables the creation of a single NACA airfoil.'''
 
     def __init__(self):
         global parent
@@ -128,7 +129,7 @@ class Airfoil(Coordinates):
         self.y_c = []
 
     def add_naca(self, naca_num):
-        """
+        '''
         This function generates geometry for our chosen NACA airfoil shape.
         The nested functions perform the required steps to generate geometry,
         and can be called to solve the geometry y-coordinate for any 'x' input.
@@ -139,7 +140,7 @@ class Airfoil(Coordinates):
 
         Return:
         None
-        """
+        '''
 
         # Variables extracted from 'naca_num' argument passed to the function
         self.naca_num = naca_num
@@ -150,9 +151,9 @@ class Airfoil(Coordinates):
         p_c = p * self.chord
 
         def get_camber(x):
-            """
+            '''
             Returns camber y-coordinate from 1 'x' along the airfoil chord.
-            """
+            '''
             y_c = float()
             if 0 <= x < p_c:
                 y_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
@@ -164,9 +165,9 @@ class Airfoil(Coordinates):
             return (y_c * self.chord)
 
         def get_thickness(x):
-            """
+            '''
             Returns thickness from 1 'x' along the airfoil chord.
-            """
+            '''
             y_t = 5 * t * self.chord * (
                 + 0.2969 * sqrt(x / self.chord)
                 - 0.1260 * (x / self.chord)
@@ -222,14 +223,14 @@ class Airfoil(Coordinates):
 
 
 class Spar(Coordinates):
-    """Contains a single spar's location."""
+    '''Contains a single spar's location.'''
     global parent
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
 
     def add_coord(self, airfoil_coord, spar_x):
-        """
+        '''
         Add a single spar at the % chord location given to function.
 
         Parameters:
@@ -239,7 +240,7 @@ class Spar(Coordinates):
 
         Return:
         None
-        """
+        '''
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
         x_u = airfoil_coord[0]
@@ -266,7 +267,7 @@ class Spar(Coordinates):
 
 
 class Stringer(Coordinates):
-    """Contains the coordinates of all stringers."""
+    '''Contains the coordinates of all stringers.'''
     global parent
 
     def __init__(self):
@@ -275,7 +276,7 @@ class Stringer(Coordinates):
 
     def add_coord(self, airfoil_coord, spar_coord,
                   stringer_u_1, stringer_u_2, stringer_l_1, stringer_l_2):
-        """
+        '''
         Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
 
@@ -289,7 +290,7 @@ class Stringer(Coordinates):
 
         Returns:
         None
-        """
+        '''
 
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
@@ -359,7 +360,7 @@ class Stringer(Coordinates):
 
 
 def plot(airfoil, spar, stringer):
-    """This function plots the elements passed as arguments."""
+    '''This function plots the elements passed as arguments.'''
 
     # Plot chord
     x_chord = [0, airfoil.chord]
