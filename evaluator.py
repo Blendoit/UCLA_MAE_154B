@@ -25,8 +25,8 @@ class Evaluator:
     '''Performs structural evaluations for the airfoil passed as argument.'''
 
     def __init__(self, airfoil):
+        # Evaluator knows all geometrical info from evaluated airfoil
         self.airfoil = airfoil
-        print(self.airfoil)
         # Global dimensions
         self.chord = airfoil.chord
         self.semi_span = airfoil.semi_span
@@ -48,10 +48,14 @@ class Evaluator:
         # Lifts
         self.lift_rectangular = []
         self.lift_elliptical = []
-        self.lift = []
-
+        self.lift_total = []
         # Drag
         self.drag = []
+        # Inertia terms:
+        # I_x = self.I_[0]
+        # I_z = self.I_[1]
+        # I_xz = self.I_[2]
+        self.I_ = []
 
     def info_print(self, round):
         '''
@@ -69,20 +73,24 @@ class Evaluator:
         print('Chord length:', self.chord)
         print('Semi-span:', self.semi_span)
         print('Total airfoil mass:', self.mass_total)
-        print('Centroid location:', np.around(self.centroid, round + 1))
+        print('Centroid location:\n', np.around(self.centroid, 3))
+        print('Inertia terms:')
+        print('I_x:\n', np.around(self.I_[0], 3))
+        print('I_z:\n', np.around(self.I_[1], 3))
+        print('I_xz:\n', np.around(self.I_[2], 3))
         print(num_of_dashes * '-')
         print('Rectangular lift:\n', np.around(self.lift_rectangular, round))
         print('Elliptical lift:\n', np.around(self.lift_elliptical, round))
-        print('Combined lift:\n', np.around(self.lift, round))
+        print('Combined lift:\n', np.around(self.lift_total, round))
         print('Distribution of mass:\n', np.around(self.mass_dist, round))
         print('Drag:\n', np.around(self.drag, round))
         return None
 
-    def info_save(self, save_dir_path, number):
+    def info_save(self, save_path, number):
         '''Save all the object's coordinates (must be full path).'''
 
         file_name = 'airfoil_{}_eval.txt'.format(number)
-        full_path = os.path.join(save_dir_path, file_name)
+        full_path = os.path.join(save_path, file_name)
         try:
             with open(full_path, 'w') as sys.stdout:
                 self.info_print(6)
@@ -142,35 +150,44 @@ class Evaluator:
             (len(x_stringers) * area)
         return(x_centroid, z_centroid)
 
-    def get_I_x(self):
-        I_x = float()
-        i_x = int()
-        print(I_x)
+    def get_inertia_terms(self):
+        '''Obtain all inertia terms.'''
 
-    def get_I_z(self):
-        pass
+        area = self.stringer.area
+        x_stringers = self.stringer.x_u + self.stringer.x_l
+        z_stringers = self.stringer.z_u + self.stringer.z_l
+        stringer_count = range(len(x_stringers))
 
-    def get_I_xz(self):
-        pass
+        # I_x is the sum of (stringer area * z-distance to the centroid) ** 2,
+        # for all stringers.
+        I_x = sum([area * (z_stringers[_] - self.centroid[1]) ** 2
+                   for _ in stringer_count])
+
+        I_z = sum([area * (x_stringers[_] - self.centroid[0]) ** 2
+                   for _ in stringer_count])
+
+        I_xz = sum([area * (z_stringers[_] - self.centroid[1])
+                    * (x_stringers[_] - self.centroid[0])
+                    for _ in stringer_count])
+
+        return(I_x, I_z, I_xz)
 
     def analysis(self):
         '''Perform all analysis calculations and store in class instance.'''
 
         self.drag = self.get_drag(10)
 
-        self.lift_rectangular = self.get_lift_rectangular(10)
+        self.lift_rectangular = self.get_lift_rectangular(1000)
         self.lift_elliptical = self.get_lift_elliptical(15)
-        self.lift = self.get_lift_total()
+        self.lift_total = self.get_lift_total()
 
         self.mass_dist = self.get_mass_distribution(self.mass_total)
         self.centroid = self.get_centroid()
-        self.I_x = self.get_I_x()
-        self.I_z = self.get_I_z()
-        self.I_xz = self.get_I_xz()
+        self.I_ = self.get_inertia_terms()
         return None
 
 
-def plot(evaluator):
+def plot_geom(evaluator):
     '''This function plots analysis results over the airfoil's geometry.'''
 
     # Plot chord
@@ -179,7 +196,7 @@ def plot(evaluator):
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot quarter chord
     q = evaluator.chord / 4
-    plt.plot(q, 0, '.', color='g', markersize=24, label='quarter-chord')
+    plt.plot(q, 0, '.', color='g', markersize=24, label='Quarter-chord')
     # Plot upper surface
     plt.plot(evaluator.x_u, evaluator.z_u,
              '', color='b', linewidth='1')
@@ -217,6 +234,26 @@ def plot(evaluator):
     plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
     plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')
+    plt.gca().legend()
+    plt.grid(axis='both', linestyle=':', linewidth=1)
+    plt.show()
+    return None
+
+
+def plot_lift(evaluator):
+    x = range(evaluator.semi_span)
+    y_1 = evaluator.lift_rectangular
+    y_2 = evaluator.lift_elliptical
+    y_3 = evaluator.lift_total
+    plt.plot(x, y_1, '.', color='b', markersize=4, label='Rectangular lift')
+    plt.plot(x, y_2, '.', color='g', markersize=4, label='Elliptical lift')
+    plt.plot(x, y_3, '.', color='r', markersize=4, label='Total lift')
+
+    # Graph formatting
+    plt.xlabel('Semi-span location')
+    plt.ylabel('Lift')
+
+    plt.gca().legend()
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.show()
     return None

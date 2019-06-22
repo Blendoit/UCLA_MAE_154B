@@ -63,7 +63,7 @@ def main():
         # Define NACA airfoil coordinates and mass
         af.add_naca(NACA_NUM)
         af.add_mass(AIRFOIL_MASS)
-        af.info_print(2)
+        # af.info_print(2)
         af.info_save(SAVE_PATH, _)
 
         # Create spar instance
@@ -72,7 +72,7 @@ def main():
         af.spar.add_coord(af.coord, 0.15)
         af.spar.add_coord(af.coord, 0.55)
         af.spar.add_mass(SPAR_MASS)
-        af.spar.info_print(2)
+        # af.spar.info_print(2)
         af.spar.info_save(SAVE_PATH, _)
 
         # Create stringer instance
@@ -85,19 +85,20 @@ def main():
                               BOTTOM_STRINGERS)
         af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
-        af.stringer.info_print(2)
+        # af.stringer.info_print(2)
         af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
-        creator.plot(af)
+        # creator.plot_geom(af)
 
-        # evaluator.Evaluator instance contains airfoil analysis results.
+        # Evaluator object contains airfoil analysis results.
         eval = evaluator.Evaluator(af)
         # The analysis is performed in the evaluator.py module.
         eval.analysis()
-        eval.info_print(2)
+        # eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        evaluator.plot(eval)
+        # evaluator.plot_geom(eval)
+        # evaluator.plot_lift(eval)
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))
