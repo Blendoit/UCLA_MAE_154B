@@ -198,8 +198,8 @@ class Airfoil(Coordinates):
         x_chord.extend(i for i in range(x_chord_25_percent, self.chord + 1))
         # Reversed list for our lower airfoil coordinate densification
         x_chord_rev = [i for i in range(self.chord, x_chord_25_percent, -1)]
-        ext = [i / 10 for i in range(x_chord_25_percent * 10, -1, -1)]
-        x_chord_rev.extend(ext)
+        extend = [i / 10 for i in range(x_chord_25_percent * 10, -1, -1)]
+        x_chord_rev.extend(extend)
 
         # Generate our airfoil geometry from previous sub-functions.
         for x in x_chord:
