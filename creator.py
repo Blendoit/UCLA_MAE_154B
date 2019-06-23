@@ -110,13 +110,6 @@ class Coordinates:
                   'Was the full path passed to the function?')
         return None
 
-    def pack_info(self):
-        self.coord.append(self.x_u)
-        self.coord.append(self.z_u)
-        self.coord.append(self.x_l)
-        self.coord.append(self.z_l)
-        return None
-
 
 class Airfoil(Coordinates):
     '''This class enables the creation of a single NACA airfoil.'''
@@ -211,8 +204,6 @@ class Airfoil(Coordinates):
             self.z_u.append(get_upper_coord(x)[1])
             self.x_l.append(get_lower_coord(x)[0])
             self.z_l.append(get_lower_coord(x)[1])
-
-        super().pack_info()
         return None
 
     def add_mass(self, mass):
@@ -246,10 +237,10 @@ class Spar(Coordinates):
         '''
         # Airfoil surface coordinates
         # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        x_u = airfoil.coord[0]
-        z_u = airfoil.coord[1]
-        x_l = airfoil.coord[2]
-        z_l = airfoil.coord[3]
+        x_u = airfoil.x_u
+        z_u = airfoil.z_u
+        x_l = airfoil.x_l
+        z_l = airfoil.z_l
         # Scaled spar location with regards to chord
         loc = spar_x * self.chord
         # bisect_left: returns index of first value in x_u > loc.
@@ -261,12 +252,11 @@ class Spar(Coordinates):
         self.z_u.append(z_u[spar_x_u])
         self.x_l.append(x_l[spar_x_l])
         self.z_l.append(z_l[spar_x_l])
-
-        super().pack_info()
         return None
 
     def add_mass(self, mass):
         self.mass = len(self.x_u) * mass
+        return None
 
 
 class Stringer(Coordinates):
@@ -296,55 +286,45 @@ class Stringer(Coordinates):
         None
         '''
 
-        # Airfoil surface coordinates
-        # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        airfoil_x_u = airfoil.coord[0]
-        airfoil_z_u = airfoil.coord[1]
-        airfoil_x_l = airfoil.coord[2]
-        airfoil_z_l = airfoil.coord[3]
-        # Spar coordinates
-        # unpacked from 'coordinates' (list of lists in 'Coordinates').
-        spar_x_u = airfoil.spar.coord[0]
-        spar_x_l = airfoil.spar.coord[2]
-
         # Find distance between leading edge and first upper stringer
-        interval = spar_x_u[0] / (stringer_u_1 + 1)
+        interval = airfoil.spar.x_u[0] / (stringer_u_1 + 1)
         # initialise first self.stringer_x_u at first interval
         x = interval
         # Add upper stringers from leading edge until first spar.
         for _ in range(0, stringer_u_1):
             # Index of the first value of airfoil_x_u > x
-            index = bi.bisect_left(airfoil_x_u, x)
-            self.x_u.append(airfoil_x_u[index])
-            self.z_u.append(airfoil_z_u[index])
+            index = bi.bisect_left(airfoil.x_u, x)
+            self.x_u.append(airfoil.x_u[index])
+            self.z_u.append(airfoil.z_u[index])
             x += interval
         # Add upper stringers from first spar until last spar
-        interval = (spar_x_u[-1] - spar_x_u[0]) / (stringer_u_2 + 1)
-        x = interval + spar_x_u[0]
+        interval = (airfoil.spar.x_u[-1]
+                    - airfoil.spar.x_u[0]) / (stringer_u_2 + 1)
+        x = interval + airfoil.spar.x_u[0]
         for _ in range(0, stringer_u_2):
-            index = bi.bisect_left(airfoil_x_u, x)
-            self.x_u.append(airfoil_x_u[index])
-            self.z_u.append(airfoil_z_u[index])
+            index = bi.bisect_left(airfoil.x_u, x)
+            self.x_u.append(airfoil.x_u[index])
+            self.z_u.append(airfoil.z_u[index])
             x += interval
 
         # Find distance between leading edge and first lower stringer
-        interval = spar_x_l[0] / (stringer_l_1 + 1)
+        interval = airfoil.spar.x_l[0] / (stringer_l_1 + 1)
         x = interval
         # Add lower stringers from leading edge until first spar.
         for _ in range(0, stringer_l_1):
-            index = bi.bisect_left(airfoil_x_l, x)
-            self.x_l.append(airfoil_x_l[index])
-            self.z_l.append(airfoil_z_l[index])
+            index = bi.bisect_left(airfoil.x_l, x)
+            self.x_l.append(airfoil.x_l[index])
+            self.z_l.append(airfoil.z_l[index])
             x += interval
         # Add lower stringers from first spar until last spar
-        interval = (spar_x_l[-1] - spar_x_l[0]) / (stringer_l_2 + 1)
-        x = interval + spar_x_l[0]
+        interval = (airfoil.spar.x_l[-1]
+                    - airfoil.spar.x_l[0]) / (stringer_l_2 + 1)
+        x = interval + airfoil.spar.x_l[0]
         for _ in range(0, stringer_l_2):
-            index = bi.bisect_left(airfoil_x_l, x)
-            self.x_l.append(airfoil_x_l[index])
-            self.z_l.append(airfoil_z_l[index])
+            index = bi.bisect_left(airfoil.x_l, x)
+            self.x_l.append(airfoil.x_l[index])
+            self.z_l.append(airfoil.z_l[index])
             x += interval
-        super().pack_info()
         return None
 
     def add_area(self, area):
