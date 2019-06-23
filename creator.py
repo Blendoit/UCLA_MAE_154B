@@ -122,7 +122,7 @@ class Airfoil(Coordinates):
         self.naca_num = int()
         # Mean camber line
         self.x_c = []
-        self.y_c = []
+        self.z_c = []
 
     def add_naca(self, naca_num):
         '''
@@ -148,22 +148,22 @@ class Airfoil(Coordinates):
 
         def get_camber(x):
             '''
-            Returns camber y-coordinate from 1 'x' along the airfoil chord.
+            Returns camber z-coordinate from 1 'x' along the airfoil chord.
             '''
-            y_c = float()
+            z_c = float()
             if 0 <= x < p_c:
-                y_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
+                z_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
                                         - (x / self.chord) ** 2)
             elif p_c <= x <= self.chord:
-                y_c = (m / ((1 - p) ** 2)) * ((1 - 2 * p)
+                z_c = (m / ((1 - p) ** 2)) * ((1 - 2 * p)
                                               + 2 * p * (x / self.chord)
                                               - (x / self.chord) ** 2)
-            return (y_c * self.chord)
+            return (z_c * self.chord)
 
         def get_thickness(x):
-            '''
-            Returns thickness from 1 'x' along the airfoil chord.
-            '''
+            '''Returns thickness from 1 'x' along the airfoil chord.'''
+
+            x = 0 if x < 0 else x
             y_t = 5 * t * self.chord * (
                 + 0.2969 * sqrt(x / self.chord)
                 - 0.1260 * (x / self.chord)
@@ -173,12 +173,12 @@ class Airfoil(Coordinates):
             return y_t
 
         def get_theta(x):
-            dy_c = float()
+            dz_c = float()
             if 0 <= x < p_c:
-                dy_c = ((2 * m) / p ** 2) * (p - x / self.chord)
+                dz_c = ((2 * m) / p ** 2) * (p - x / self.chord)
             elif p_c <= x <= self.chord:
-                dy_c = (2 * m) / ((1 - p) ** 2) * (p - x / self.chord)
-            theta = atan(dy_c)
+                dz_c = (2 * m) / ((1 - p) ** 2) * (p - x / self.chord)
+            theta = atan(dz_c)
             return theta
 
         def get_upper_coord(x):
@@ -204,7 +204,7 @@ class Airfoil(Coordinates):
         # Generate our airfoil geometry from previous sub-functions.
         for x in x_chord:
             self.x_c.append(x)
-            self.y_c.append(get_camber(x))
+            self.z_c.append(get_camber(x))
             self.x.append(get_upper_coord(x)[0])
             self.z.append(get_upper_coord(x)[1])
         for x in x_chord_rev:
@@ -361,7 +361,7 @@ def plot_geom(airfoil):
     plt.plot(airfoil.chord / 4, 0, '.', color='g',
              markersize=24, label='Quarter-chord')
     # Plot mean camber line
-    plt.plot(airfoil.x_c, airfoil.y_c, '-.', color='r', linewidth='2',
+    plt.plot(airfoil.x_c, airfoil.z_c, '-.', color='r', linewidth='2',
              label='Mean camber line')
     # Plot airfoil surfaces
     plt.fill(airfoil.x, airfoil.z, color='b', linewidth='1', fill=False)
@@ -374,7 +374,7 @@ def plot_geom(airfoil):
             plt.plot(x, y, '-', color='b')
     except AttributeError:
         print('No spars to plot.')
-    # Plot upper stringers
+    # Plot stringers
     try:
         for _ in range(0, len(airfoil.stringer.x)):
             x = airfoil.stringer.x[_]
@@ -382,11 +382,6 @@ def plot_geom(airfoil):
             plt.plot(x, y, '.', color='y', markersize=12)
     except AttributeError:
         print('No stringers to plot.')
-    # # Plot lower stringers
-    # for _ in range(0, len(airfoil.stringer.x)):
-    #     x = airfoil.stringer.x[_]
-    #     y = airfoil.stringer.z[_]
-    #     plt.plot(x, y, '.', color='y', markersize=12)
 
     # Graph formatting
     plt.xlabel('X axis')

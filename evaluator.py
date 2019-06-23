@@ -49,6 +49,8 @@ class Evaluator:
         self.lift_total = []
         # Drag
         self.drag = []
+        # centroid
+        self.centroid = []
         # Inertia terms:
         # I_x = self.I_[0]
         # I_z = self.I_[1]
@@ -141,18 +143,22 @@ class Evaluator:
         stringer_area = self.stringer.area
         caps_area = self.spar.cap_area
 
-        spar_x = self.spar.x + self.spar.x
+        caps_x = [value for spar in self.spar.x for value in spar]
+        caps_z = [value for spar in self.spar.z for value in spar]
         stringers_x = self.stringer.x
         stringers_z = self.stringer.z
 
-        denom = float(len(spar_x) * caps_area
-                      + len(stringers_x) * stringer_area)
+        denominator = float(len(caps_x) * caps_area
+                            + len(stringers_x) * stringer_area)
 
-        x_ctr = (sum([i * caps_area for i in spar_x[:][0]])
-                 + sum([i * stringer_area for i in stringers_x])) / denom
-        z_ctr = (sum([i * caps_area for i in spar_x[:][0]])
-                 + sum([i * stringer_area for i in stringers_z])) / denom
-        return(x_ctr, z_ctr)
+        centroid_x = float(sum([x * caps_area for x in caps_x])
+                           + sum([x * stringer_area for x in stringers_x]))
+        centroid_x = centroid_x / denominator
+
+        centroid_z = float(sum([z * caps_area for z in caps_z])
+                           + sum([z * stringer_area for z in stringers_z]))
+        centroid_z = centroid_z / denominator
+        return(centroid_x, centroid_z)
 
     def get_inertia_terms(self):
         '''Obtain all inertia terms.'''
@@ -165,7 +171,6 @@ class Evaluator:
         z_stringers = self.stringer.z
         x_spars = self.spar.x[:][0] + self.spar.x[:][1]
         z_spars = self.spar.z[:][0] + self.spar.z[:][1]
-        print(x_spars)
         stringer_count = range(len(x_stringers))
         spar_count = range(len(self.spar.x))
 

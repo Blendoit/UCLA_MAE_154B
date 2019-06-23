@@ -23,9 +23,9 @@ import time
 start_time = time.time()
 
 # Airfoil dimensions
-NACA_NUM = 4412
-CHORD_LENGTH = 133
-SEMI_SPAN = 140
+NACA_NUM = 2412
+CHORD_LENGTH = 101
+SEMI_SPAN = 40
 
 # Airfoil thickness
 T_UPPER = 0.1
@@ -37,11 +37,11 @@ SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
 
 # Area
-SPAR_CAP_AREA = 0.3  # sqin
+SPAR_CAP_AREA = 0.0  # sqin
 STRINGER_AREA = 0.1  # sqin
 
 # Amount of stringers
-TOP_STRINGERS = 5
+TOP_STRINGERS = 3
 BOTTOM_STRINGERS = 4
 NOSE_TOP_STRINGERS = 3
 NOSE_BOTTOM_STRINGERS = 6
@@ -71,7 +71,7 @@ def main():
         af.add_naca(NACA_NUM)
         af.add_mass(AIRFOIL_MASS)
         # af.info_print(2)
-        # af.info_save(SAVE_PATH, _)
+        af.info_save(SAVE_PATH, _)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -82,7 +82,7 @@ def main():
         af.spar.add_spar_caps(SPAR_CAP_AREA)
         af.spar.add_mass(SPAR_MASS)
         # af.spar.info_print(2)
-        # af.spar.info_save(SAVE_PATH, _)
+        af.spar.info_save(SAVE_PATH, _)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
@@ -95,7 +95,7 @@ def main():
         af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
         # af.stringer.info_print(2)
-        # af.stringer.info_save(SAVE_PATH, _)
+        af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
         # creator.plot_geom(af)
@@ -106,7 +106,7 @@ def main():
         eval.analysis()
         # eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        evaluator.plot_geom(eval)
+        # evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 
     # Print final execution time
