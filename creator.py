@@ -254,6 +254,10 @@ class Spar(Coordinates):
         self.z_l.append(z_l[spar_x_l])
         return None
 
+    def add_spar_caps(self, spar_cap_area):
+        self.cap_area = spar_cap_area
+        return None
+
     def add_mass(self, mass):
         self.mass = len(self.x_u) * mass
         return None

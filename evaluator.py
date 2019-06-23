@@ -27,9 +27,12 @@ class Evaluator:
     def __init__(self, airfoil):
         # Evaluator knows all geometrical info from evaluated airfoil
         self.airfoil = airfoil
+        self.spar = airfoil.spar
+        self.stringer = airfoil.stringer
         # Global dimensions
         self.chord = airfoil.chord
         self.semi_span = airfoil.semi_span
+
         # mass and area
         self.mass_total = float(airfoil.mass
                                 + airfoil.spar.mass
@@ -41,11 +44,6 @@ class Evaluator:
         # Lower coordinates
         self.x_l = airfoil.x_l
         self.z_l = airfoil.z_l
-        # Spars
-        self.spar = airfoil.spar
-        # Stringers
-        self.stringer = airfoil.stringer
-        # Lifts
         self.lift_rectangular = []
         self.lift_elliptical = []
         self.lift_total = []
@@ -139,36 +137,52 @@ class Evaluator:
 
     def get_centroid(self):
         '''Return the coordinates of the centroid.'''
-        area = self.airfoil.stringer.area
+        stringer_area = self.stringer.area
+        caps_area = self.spar.cap_area
 
-        x_stringers = self.airfoil.stringer.x_u + self.airfoil.stringer.x_l
-        x_centroid = sum([x * area for x in x_stringers]) / \
-            (len(x_stringers) * area)
+        x_spars = self.spar.x_u + self.spar.x_l
+        x_stringers = self.stringer.x_u + self.stringer.x_l
+        z_stringers = self.stringer.z_u + self.stringer.z_l
+        denom = float(len(x_spars) * caps_area
+                      + len(x_stringers) * stringer_area)
 
-        z_stringers = self.airfoil.stringer.z_u + self.airfoil.stringer.z_l
-        z_centroid = sum([x * area for x in z_stringers]) / \
-            (len(x_stringers) * area)
-        return(x_centroid, z_centroid)
+        x_ctr = (sum([i * caps_area for i in self.spar.x_u])
+                 + sum([i * stringer_area for i in x_stringers])) / denom
+        z_ctr = (sum([i * caps_area for i in self.spar.z_u])
+                 + sum([i * stringer_area for i in z_stringers])) / denom
+        return(x_ctr, z_ctr)
 
     def get_inertia_terms(self):
         '''Obtain all inertia terms.'''
 
-        area = self.stringer.area
+        stringer_area = self.stringer.area
+        caps_area = self.spar.cap_area
+
+        # Adds upper and lower components' coordinates to list
         x_stringers = self.stringer.x_u + self.stringer.x_l
         z_stringers = self.stringer.z_u + self.stringer.z_l
+        x_spars = self.spar.x_u + self.spar.x_l
+        z_spars = self.spar.z_u + self.spar.z_l
         stringer_count = range(len(x_stringers))
+        spar_count = range(len(self.spar.x_u))
 
-        # I_x is the sum of (stringer area * z-distance to the centroid) ** 2,
-        # for all stringers.
-        I_x = sum([area * (z_stringers[_] - self.centroid[1]) ** 2
-                   for _ in stringer_count])
+        # I_x is the sum of the contributions of the spar caps and stringers
+        I_x = (sum([caps_area * (z_spars[i] - self.centroid[1]) ** 2
+                    for i in spar_count])
+               + sum([stringer_area * (z_stringers[i] - self.centroid[1]) ** 2
+                      for i in stringer_count]))
 
-        I_z = sum([area * (x_stringers[_] - self.centroid[0]) ** 2
-                   for _ in stringer_count])
+        I_z = (sum([caps_area * (x_spars[i] - self.centroid[0]) ** 2
+                    for i in spar_count])
+               + sum([stringer_area * (x_stringers[i] - self.centroid[0]) ** 2
+                      for i in stringer_count]))
 
-        I_xz = sum([area * (z_stringers[_] - self.centroid[1])
-                    * (x_stringers[_] - self.centroid[0])
-                    for _ in stringer_count])
+        I_xz = (sum([caps_area * (x_spars[i] - self.centroid[0])
+                     * (z_spars[i] - self.centroid[1])
+                     for i in spar_count])
+                + sum([stringer_area * (x_stringers[i] - self.centroid[0])
+                       * (z_stringers[i] - self.centroid[1])
+                       for i in stringer_count]))
 
         return(I_x, I_z, I_xz)
 
@@ -245,8 +259,10 @@ def plot_lift(evaluator):
     y_1 = evaluator.lift_rectangular
     y_2 = evaluator.lift_elliptical
     y_3 = evaluator.lift_total
-    plt.plot(x, y_1, '.', color='b', markersize=4, label='Rectangular lift')
-    plt.plot(x, y_2, '.', color='g', markersize=4, label='Elliptical lift')
+    plt.plot(x, y_1, '.', color='b', markersize=4,
+             label='Rectangular lift')
+    plt.plot(x, y_2, '.', color='g', markersize=4,
+             label='Elliptical lift')
     plt.plot(x, y_3, '.', color='r', markersize=4, label='Total lift')
 
     # Graph formatting
