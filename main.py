@@ -24,7 +24,7 @@ start_time = time.time()
 
 # Airfoil dimensions
 NACA_NUM = 2412
-CHORD_LENGTH = 101
+CHORD_LENGTH = 100
 SEMI_SPAN = 40
 
 # Airfoil thickness
@@ -37,11 +37,11 @@ SPAR_MASS = 10  # lbs
 STRINGER_MASS = 5  # lbs
 
 # Area
-SPAR_CAP_AREA = 0.0  # sqin
+SPAR_CAP_AREA = 0.3  # sqin
 STRINGER_AREA = 0.1  # sqin
 
 # Amount of stringers
-TOP_STRINGERS = 3
+TOP_STRINGERS = 6
 BOTTOM_STRINGERS = 4
 NOSE_TOP_STRINGERS = 3
 NOSE_BOTTOM_STRINGERS = 6
