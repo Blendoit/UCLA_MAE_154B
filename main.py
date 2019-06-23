@@ -98,7 +98,7 @@ def main():
         af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
-        # creator.plot_geom(af)
+        creator.plot_geom(af)
 
         # Evaluator object contains airfoil analysis results.
         eval = evaluator.Evaluator(af)
@@ -106,7 +106,7 @@ def main():
         eval.analysis()
         # eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        # evaluator.plot_geom(eval)
+        evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 
     # Print final execution time

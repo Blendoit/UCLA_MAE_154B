@@ -38,10 +38,7 @@ class Evaluator:
                                 + airfoil.spar.mass
                                 + airfoil.stringer.mass)
         self.mass_dist = []
-        # Upper coordinates
-        self.x = airfoil.x
-        self.z = airfoil.z
-        # Lower coordinates
+        # Coordinates
         self.x = airfoil.x
         self.z = airfoil.z
         self.lift_rectangular = []
