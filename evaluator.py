@@ -41,6 +41,7 @@ class Evaluator:
         # Coordinates
         self.x = airfoil.x
         self.z = airfoil.z
+        # Lift
         self.lift_rectangular = []
         self.lift_elliptical = []
         self.lift_total = []
