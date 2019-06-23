@@ -77,11 +77,15 @@ class Evaluator:
         print('I_z:\n', np.around(self.I_[1], 3))
         print('I_xz:\n', np.around(self.I_[2], 3))
         print(num_of_dashes * '-')
-        print('Rectangular lift:\n', np.around(self.lift_rectangular, round))
-        print('Elliptical lift:\n', np.around(self.lift_elliptical, round))
-        print('Combined lift:\n', np.around(self.lift_total, round))
-        print('Distribution of mass:\n', np.around(self.mass_dist, round))
-        print('Drag:\n', np.around(self.drag, round))
+        print('Rectangular lift along semi-span:\n',
+              np.around(self.lift_rectangular, round))
+        print('Elliptical lift along semi-span:\n',
+              np.around(self.lift_elliptical, round))
+        print('Combined lift along semi-span:\n',
+              np.around(self.lift_total, round))
+        print('Distribution of mass along semi-span:\n',
+              np.around(self.mass_dist, round))
+        print('Drag along semi-span:\n', np.around(self.drag, round))
         return None
 
     def info_save(self, save_path, number):
