@@ -302,6 +302,7 @@ class Stringer(Coordinates):
             self.z_u.append(airfoil.z_u[index])
             x += interval
         # Add upper stringers from first spar until last spar
+        # TODO: stringer placement if only one spar is created
         interval = (airfoil.spar.x_u[-1]
                     - airfoil.spar.x_u[0]) / (stringer_u_2 + 1)
         x = interval + airfoil.spar.x_u[0]

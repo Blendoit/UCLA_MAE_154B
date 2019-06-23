@@ -41,9 +41,9 @@ SPAR_CAP_AREA = 0.3  # sqin
 STRINGER_AREA = 0.1  # sqin
 
 # Amount of stringers
-TOP_STRINGERS = 7
-BOTTOM_STRINGERS = 6
-NOSE_TOP_STRINGERS = 4
+TOP_STRINGERS = 0
+BOTTOM_STRINGERS = 18
+NOSE_TOP_STRINGERS = 0
 NOSE_BOTTOM_STRINGERS = 5
 
 # population information & save path
