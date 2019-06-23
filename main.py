@@ -24,8 +24,8 @@ start_time = time.time()
 
 # Airfoil dimensions
 NACA_NUM = 2412
-CHORD_LENGTH = 100
-SEMI_SPAN = 40
+CHORD_LENGTH = 68  # inches
+SEMI_SPAN = 100  # inches
 
 # Airfoil thickness
 T_UPPER = 0.1
@@ -106,7 +106,7 @@ def main():
         eval.analysis()
         # eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        evaluator.plot_geom(eval)
+        # evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 
     # Print final execution time

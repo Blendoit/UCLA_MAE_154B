@@ -46,7 +46,7 @@ class Coordinates:
 
     def __init__(self, chord, semi_span):
         # Global dimensions
-        self.chord = chord if chord > 10 else 10
+        self.chord = chord if chord > 40 else 40
         self.semi_span = semi_span
         # mass and area
         self.mass = float()
