@@ -112,6 +112,9 @@ class Airfoil(Coordinates):
     for the x- and z-coordinates. The coordinates start at
     the leading edge, travel over the airfoil's upper edge,
     then loops back to the leading edge via the lower edge.
+    This method was chosen for easier future exports
+    to 3D CAD packages like SolidWorks, which can import
+    geometry as coordinates written in a CSV file.
     '''
 
     def __init__(self):
