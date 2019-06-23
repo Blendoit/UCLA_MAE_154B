@@ -39,11 +39,11 @@ class Evaluator:
                                 + airfoil.stringer.mass)
         self.mass_dist = []
         # Upper coordinates
-        self.x_u = airfoil.x_u
-        self.z_u = airfoil.z_u
+        self.x = airfoil.x
+        self.z = airfoil.z
         # Lower coordinates
-        self.x_l = airfoil.x_l
-        self.z_l = airfoil.z_l
+        self.x = airfoil.x
+        self.z = airfoil.z
         self.lift_rectangular = []
         self.lift_elliptical = []
         self.lift_total = []
@@ -140,15 +140,15 @@ class Evaluator:
         stringer_area = self.stringer.area
         caps_area = self.spar.cap_area
 
-        x_spars = self.spar.x_u + self.spar.x_l
-        x_stringers = self.stringer.x_u + self.stringer.x_l
-        z_stringers = self.stringer.z_u + self.stringer.z_l
+        x_spars = self.spar.x + self.spar.x
+        x_stringers = self.stringer.x + self.stringer.x
+        z_stringers = self.stringer.z + self.stringer.z
         denom = float(len(x_spars) * caps_area
                       + len(x_stringers) * stringer_area)
 
-        x_ctr = (sum([i * caps_area for i in self.spar.x_u])
+        x_ctr = (sum([i * caps_area for i in self.spar.x])
                  + sum([i * stringer_area for i in x_stringers])) / denom
-        z_ctr = (sum([i * caps_area for i in self.spar.z_u])
+        z_ctr = (sum([i * caps_area for i in self.spar.z])
                  + sum([i * stringer_area for i in z_stringers])) / denom
         return(x_ctr, z_ctr)
 
@@ -159,12 +159,12 @@ class Evaluator:
         caps_area = self.spar.cap_area
 
         # Adds upper and lower components' coordinates to list
-        x_stringers = self.stringer.x_u + self.stringer.x_l
-        z_stringers = self.stringer.z_u + self.stringer.z_l
-        x_spars = self.spar.x_u + self.spar.x_l
-        z_spars = self.spar.z_u + self.spar.z_l
+        x_stringers = self.stringer.x + self.stringer.x
+        z_stringers = self.stringer.z + self.stringer.z
+        x_spars = self.spar.x + self.spar.x
+        z_spars = self.spar.z + self.spar.z
         stringer_count = range(len(x_stringers))
-        spar_count = range(len(self.spar.x_u))
+        spar_count = range(len(self.spar.x))
 
         # I_x is the sum of the contributions of the spar caps and stringers
         I_x = (sum([caps_area * (z_spars[i] - self.centroid[1]) ** 2
@@ -212,27 +212,27 @@ def plot_geom(evaluator):
     q = evaluator.chord / 4
     plt.plot(q, 0, '.', color='g', markersize=24, label='Quarter-chord')
     # Plot upper surface
-    plt.plot(evaluator.x_u, evaluator.z_u,
+    plt.plot(evaluator.x, evaluator.z,
              '', color='b', linewidth='1')
     # Plot lower surface
-    plt.plot(evaluator.x_l, evaluator.z_l,
+    plt.plot(evaluator.x, evaluator.z,
              '', color='b', linewidth='1')
 
     # Plot spars
-    for _ in range(0, len(evaluator.spar.x_u)):
-        x = (evaluator.spar.x_u[_], evaluator.spar.x_l[_])
-        y = (evaluator.spar.z_u[_], evaluator.spar.z_l[_])
+    for _ in range(0, len(evaluator.spar.x)):
+        x = (evaluator.spar.x[_], evaluator.spar.x[_])
+        y = (evaluator.spar.z[_], evaluator.spar.z[_])
         plt.plot(x, y, '.-', color='b')
 
     # Plot upper stringers
-    for _ in range(0, len(evaluator.stringer.x_u)):
-        x = evaluator.stringer.x_u[_]
-        y = evaluator.stringer.z_u[_]
+    for _ in range(0, len(evaluator.stringer.x)):
+        x = evaluator.stringer.x[_]
+        y = evaluator.stringer.z[_]
         plt.plot(x, y, '.', color='y', markersize=12)
     # Plot lower stringers
-    for _ in range(0, len(evaluator.stringer.x_l)):
-        x = evaluator.stringer.x_l[_]
-        y = evaluator.stringer.z_l[_]
+    for _ in range(0, len(evaluator.stringer.x)):
+        x = evaluator.stringer.x[_]
+        y = evaluator.stringer.z[_]
         plt.plot(x, y, '.', color='y', markersize=12)
 
     # Plot centroid
@@ -244,7 +244,7 @@ def plot_geom(evaluator):
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
-    plot_bound = evaluator.x_u[-1]
+    plot_bound = evaluator.x[-1]
     plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
     plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')
