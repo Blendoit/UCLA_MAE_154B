@@ -24,7 +24,7 @@ start_time = time.time()
 
 # Airfoil dimensions
 NACA_NUM = 2412
-CHORD_LENGTH = 12
+CHORD_LENGTH = 100
 SEMI_SPAN = 20
 
 # Airfoil thickness
@@ -41,10 +41,10 @@ SPAR_CAP_AREA = 0.3  # sqin
 STRINGER_AREA = 0.1  # sqin
 
 # Amount of stringers
-TOP_STRINGERS = 2
-BOTTOM_STRINGERS = 18
-NOSE_TOP_STRINGERS = 5
-NOSE_BOTTOM_STRINGERS = 5
+TOP_STRINGERS = 4
+BOTTOM_STRINGERS = 7
+NOSE_TOP_STRINGERS = 3
+NOSE_BOTTOM_STRINGERS = 6
 
 # population information & save path
 POP_SIZE = 1
@@ -73,29 +73,29 @@ def main():
         # af.info_print(2)
         af.info_save(SAVE_PATH, _)
 
-        # # Create spar instance
-        # af.spar = creator.Spar()
-        # # Define the spar coordinates and mass, stored in single spar object
-        # af.spar.add_coord(af, 0.15)
-        # af.spar.add_coord(af, 0.55)
-        # # Automatically adds spar caps for all spars previously defined
-        # af.spar.add_spar_caps(SPAR_CAP_AREA)
-        # af.spar.add_mass(SPAR_MASS)
-        # # af.spar.info_print(2)
-        # # af.spar.info_save(SAVE_PATH, _)
-        #
-        # # Create stringer instance
-        # af.stringer = creator.Stringer()
-        # # Compute the stringer coordinates from their quantity in each zone
-        # af.stringer.add_coord(af,
-        #                       NOSE_TOP_STRINGERS,
-        #                       TOP_STRINGERS,
-        #                       NOSE_BOTTOM_STRINGERS,
-        #                       BOTTOM_STRINGERS)
-        # af.stringer.add_area(STRINGER_AREA)
-        # af.stringer.add_mass(STRINGER_MASS)
-        # # af.stringer.info_print(2)
-        # # af.stringer.info_save(SAVE_PATH, _)
+        # Create spar instance
+        af.spar = creator.Spar()
+        # Define the spar coordinates and mass, stored in single spar object
+        af.spar.add_coord(af, 0.20)
+        af.spar.add_coord(af, 0.65)
+        # Automatically adds spar caps for all spars previously defined
+        af.spar.add_spar_caps(SPAR_CAP_AREA)
+        af.spar.add_mass(SPAR_MASS)
+        # af.spar.info_print(2)
+        af.spar.info_save(SAVE_PATH, _)
+
+        # Create stringer instance
+        af.stringer = creator.Stringer()
+        # Compute the stringer coordinates from their quantity in each zone
+        af.stringer.add_coord(af,
+                              NOSE_TOP_STRINGERS,
+                              TOP_STRINGERS,
+                              NOSE_BOTTOM_STRINGERS,
+                              BOTTOM_STRINGERS)
+        af.stringer.add_area(STRINGER_AREA)
+        af.stringer.add_mass(STRINGER_MASS)
+        # af.stringer.info_print(2)
+        af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
         creator.plot_geom(af)

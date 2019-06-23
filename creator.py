@@ -105,7 +105,14 @@ class Coordinates:
 
 
 class Airfoil(Coordinates):
-    '''This class enables the creation of a single NACA airfoil.'''
+    '''
+    This class enables the creation of a single NACA airfoil.
+
+    Please note: the coordinates are saved as two lists
+    for the x- and z-coordinates. The coordinates start at
+    the leading edge, travel over the airfoil's upper edge,
+    then loops back to the leading edge via the lower edge.
+    '''
 
     def __init__(self):
         global parent
@@ -190,12 +197,9 @@ class Airfoil(Coordinates):
         x_chord = [i / 10 for i in range(x_chord_25_percent * 10)]
         x_chord.extend(i for i in range(x_chord_25_percent, self.chord + 1))
         # Reversed list for our lower airfoil coordinate densification
-        x_chord_rev = [i for i in range(
-            self.chord, x_chord_25_percent, -1)]
+        x_chord_rev = [i for i in range(self.chord, x_chord_25_percent, -1)]
         ext = [i / 10 for i in range(x_chord_25_percent * 10, -1, -1)]
         x_chord_rev.extend(ext)
-        print(len(x_chord))
-        print(len(x_chord_rev))
 
         # Generate our airfoil geometry from previous sub-functions.
         for x in x_chord:
@@ -237,31 +241,21 @@ class Spar(Coordinates):
         Return:
         None
         '''
-        # Airfoil surface coordinates
-        x = airfoil.x
-        z = airfoil.z
+
         # Scaled spar location with regards to chord
         loc = x_loc_percent * self.chord
-        # bisect_left: returns index of first value in x > loc
-        # starting from [0]
-        # bisect_right: returns index of first value in x > loc
-        # starting from [-1] (last list element).
-        # This ensures that the spar geom intersects with airfoil geom.
-        spar_x_u = bi.bisect_left(x, loc)  # index of spar's x_u
-        spar_z_u = bi.bisect_left(z, loc)
-        spar_x_l = bi.bisect_left(x[::-1], loc)  # index of spar's x_l
-        spar_z_l = bi.bisect_left(z[::-1], loc)
-        print(len(x))
-        print(len(z))
-        # These x and y coordinates are assigned to the spar, NOT airfoil.
-        # print(spar_x_u)
-        # print(spar_z_u)
-        # print(spar_x_l)
-        # print(spar_z_l)
-        # self.x.append(x[spar_x_u])
-        # self.z.append(z[spar_z_u])
-        # self.x.append(x[spar_x_l])
-        # self.z.append(z[spar_z_l])
+        # bi.bisect_left: returns index of first value in airfoil.x > loc
+        # This ensures that spar geom intersects with airfoil geom.
+        # Spar upper coordinates
+        spar_x = bi.bisect_left(airfoil.x, loc) - 1
+        x = [airfoil.x[spar_x]]
+        z = [airfoil.z[spar_x]]
+        # Spar lower coordinates
+        spar_x = bi.bisect_left(airfoil.x[::-1], loc) - 1
+        x += [airfoil.x[-spar_x]]
+        z += [airfoil.z[-spar_x]]
+        self.x.append(x)
+        self.z.append(z)
         return None
 
     def add_spar_caps(self, spar_cap_area):
@@ -301,44 +295,44 @@ class Stringer(Coordinates):
         '''
 
         # Find distance between leading edge and first upper stringer
-        interval = airfoil.spar.x[0] / (stringer_u_1 + 1)
+        interval = airfoil.spar.x[0][0] / (stringer_u_1 + 1)
         # initialise first self.stringer_x at first interval
         x = interval
         # Add upper stringers from leading edge until first spar.
         for _ in range(0, stringer_u_1):
-            # Index of the first value of airfoil_x > x
-            index = bi.bisect_left(airfoil.x, x)
-            self.x.append(airfoil.x[index])
-            self.z.append(airfoil.z[index])
+            # Index of the first value of airfoil.x > x
+            i = bi.bisect_left(airfoil.x, x)
+            self.x.append(airfoil.x[i])
+            self.z.append(airfoil.z[i])
             x += interval
         # Add upper stringers from first spar until last spar
         # TODO: stringer placement if only one spar is created
-        interval = (airfoil.spar.x[-1]
-                    - airfoil.spar.x[0]) / (stringer_u_2 + 1)
-        x = interval + airfoil.spar.x[0]
+        interval = (airfoil.spar.x[-1][0]
+                    - airfoil.spar.x[0][0]) / (stringer_u_2 + 1)
+        x = interval + airfoil.spar.x[0][0]
         for _ in range(0, stringer_u_2):
-            index = bi.bisect_left(airfoil.x, x)
-            self.x.append(airfoil.x[index])
-            self.z.append(airfoil.z[index])
+            i = bi.bisect_left(airfoil.x, x)
+            self.x.append(airfoil.x[i])
+            self.z.append(airfoil.z[i])
             x += interval
 
         # Find distance between leading edge and first lower stringer
-        interval = airfoil.spar.x[0] / (stringer_l_1 + 1)
+        interval = airfoil.spar.x[0][1] / (stringer_l_1 + 1)
         x = interval
         # Add lower stringers from leading edge until first spar.
         for _ in range(0, stringer_l_1):
-            index = bi.bisect_left(airfoil.x, x)
-            self.x.append(airfoil.x[index])
-            self.z.append(airfoil.z[index])
+            i = bi.bisect_left(airfoil.x[::-1], x)
+            self.x.append(airfoil.x[-i])
+            self.z.append(airfoil.z[-i])
             x += interval
         # Add lower stringers from first spar until last spar
-        interval = (airfoil.spar.x[-1]
-                    - airfoil.spar.x[0]) / (stringer_l_2 + 1)
-        x = interval + airfoil.spar.x[0]
+        interval = (airfoil.spar.x[-1][1]
+                    - airfoil.spar.x[0][1]) / (stringer_l_2 + 1)
+        x = interval + airfoil.spar.x[0][1]
         for _ in range(0, stringer_l_2):
-            index = bi.bisect_left(airfoil.x, x)
-            self.x.append(airfoil.x[index])
-            self.z.append(airfoil.z[index])
+            i = bi.bisect_left(airfoil.x[::-1], x)
+            self.x.append(airfoil.x[-i])
+            self.z.append(airfoil.z[-i])
             x += interval
         return None
 
@@ -364,20 +358,20 @@ def plot_geom(airfoil):
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot quarter chord
-    plt.plot(airfoil.chord / 4, 0, '.', color='g',
+    plt.plot(airfoil.chord / 4, 0, '', color='g',
              markersize=24, label='Quarter-chord')
     # Plot mean camber line
     plt.plot(airfoil.x_c, airfoil.y_c, '-.', color='r', linewidth='2',
              label='Mean camber line')
     # Plot airfoil surfaces
-    plt.fill(airfoil.x, airfoil.z, '', color='b', linewidth='1', fill=False)
+    plt.fill(airfoil.x, airfoil.z, color='b', linewidth='1', fill=False)
 
     # Plot spars
     try:
-        for _ in range(0, len(airfoil.spar.x)):
-            x = (airfoil.spar.x[_], airfoil.spar.x[_])
-            y = (airfoil.spar.z[_], airfoil.spar.z[_])
-            plt.plot(x, y, '.-', color='b')
+        for _ in range(len(airfoil.spar.x)):
+            x = (airfoil.spar.x[_])
+            y = (airfoil.spar.z[_])
+            plt.plot(x, y, '-', color='b')
     except AttributeError:
         print('No spars to plot.')
     # Plot upper stringers
