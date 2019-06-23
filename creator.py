@@ -186,8 +186,16 @@ class Airfoil(Coordinates):
 
         # Densify x-coordinates 10 times for first 1/4 chord length
         x_chord_25_percent = round(self.chord / 4)
-        x_chord = [x / 10 for x in range(x_chord_25_percent * 10)]
-        x_chord.extend([x for x in range(x_chord_25_percent, self.chord + 1)])
+
+        x_chord = [i / 10 for i in range(x_chord_25_percent * 10)]
+        x_chord.extend(i for i in range(x_chord_25_percent, self.chord + 1))
+        # Reversed list for our lower airfoil coordinate densification
+        x_chord_rev = [i for i in range(
+            self.chord, x_chord_25_percent, -1)]
+        ext = [i / 10 for i in range(x_chord_25_percent * 10, -1, -1)]
+        x_chord_rev.extend(ext)
+        print(len(x_chord))
+        print(len(x_chord_rev))
 
         # Generate our airfoil geometry from previous sub-functions.
         for x in x_chord:
@@ -195,9 +203,7 @@ class Airfoil(Coordinates):
             self.y_c.append(get_camber(x))
             self.x.append(get_upper_coord(x)[0])
             self.z.append(get_upper_coord(x)[1])
-        # Behold the true power of Python list slicing!
-        # (This special list index reverses the list.)
-        for x in x_chord[::-1]:
+        for x in x_chord_rev:
             self.x.append(get_lower_coord(x)[0])
             self.z.append(get_lower_coord(x)[1])
         return None
@@ -232,7 +238,6 @@ class Spar(Coordinates):
         None
         '''
         # Airfoil surface coordinates
-        # unpacked from 'coordinates' (list of lists in 'Coordinates').
         x = airfoil.x
         z = airfoil.z
         # Scaled spar location with regards to chord
@@ -242,13 +247,21 @@ class Spar(Coordinates):
         # bisect_right: returns index of first value in x > loc
         # starting from [-1] (last list element).
         # This ensures that the spar geom intersects with airfoil geom.
-        spar_x = bi.bisect_left(x, loc)  # index of spar's x
-        spar_x = bi.bisect_left(x, loc)  # index of spar's x
+        spar_x_u = bi.bisect_left(x, loc)  # index of spar's x_u
+        spar_z_u = bi.bisect_left(z, loc)
+        spar_x_l = bi.bisect_left(x[::-1], loc)  # index of spar's x_l
+        spar_z_l = bi.bisect_left(z[::-1], loc)
+        print(len(x))
+        print(len(z))
         # These x and y coordinates are assigned to the spar, NOT airfoil.
-        self.x.append(x[spar_x])
-        self.z.append(z[spar_x])
-        self.x.append(x[spar_x])
-        self.z.append(z[spar_x])
+        # print(spar_x_u)
+        # print(spar_z_u)
+        # print(spar_x_l)
+        # print(spar_z_l)
+        # self.x.append(x[spar_x_u])
+        # self.z.append(z[spar_z_u])
+        # self.x.append(x[spar_x_l])
+        # self.z.append(z[spar_z_l])
         return None
 
     def add_spar_caps(self, spar_cap_area):
@@ -354,40 +367,38 @@ def plot_geom(airfoil):
     plt.plot(airfoil.chord / 4, 0, '.', color='g',
              markersize=24, label='Quarter-chord')
     # Plot mean camber line
-    plt.plot(airfoil.x_c, airfoil.y_c,
-             '-.', color='r', linewidth='2',
+    plt.plot(airfoil.x_c, airfoil.y_c, '-.', color='r', linewidth='2',
              label='Mean camber line')
-    # Plot upper surface
-    plt.plot(airfoil.x, airfoil.z,
-             '', color='b', linewidth='1')
-    # Plot lower surface
-    plt.plot(airfoil.x, airfoil.z,
-             '', color='b', linewidth='1')
+    # Plot airfoil surfaces
+    plt.fill(airfoil.x, airfoil.z, '', color='b', linewidth='1', fill=False)
 
     # Plot spars
-    for _ in range(0, len(airfoil.spar.x)):
-        x = (airfoil.spar.x[_], airfoil.spar.x[_])
-        y = (airfoil.spar.z[_], airfoil.spar.z[_])
-        plt.plot(x, y, '.-', color='b')
-
+    try:
+        for _ in range(0, len(airfoil.spar.x)):
+            x = (airfoil.spar.x[_], airfoil.spar.x[_])
+            y = (airfoil.spar.z[_], airfoil.spar.z[_])
+            plt.plot(x, y, '.-', color='b')
+    except AttributeError:
+        print('No spars to plot.')
     # Plot upper stringers
-    for _ in range(0, len(airfoil.stringer.x)):
-        x = airfoil.stringer.x[_]
-        y = airfoil.stringer.z[_]
-        plt.plot(x, y, '.', color='y', markersize=12)
-    # Plot lower stringers
-    for _ in range(0, len(airfoil.stringer.x)):
-        x = airfoil.stringer.x[_]
-        y = airfoil.stringer.z[_]
-        plt.plot(x, y, '.', color='y', markersize=12)
+    try:
+        for _ in range(0, len(airfoil.stringer.x)):
+            x = airfoil.stringer.x[_]
+            y = airfoil.stringer.z[_]
+            plt.plot(x, y, '.', color='y', markersize=12)
+    except AttributeError:
+        print('No stringers to plot.')
+    # # Plot lower stringers
+    # for _ in range(0, len(airfoil.stringer.x)):
+    #     x = airfoil.stringer.x[_]
+    #     y = airfoil.stringer.z[_]
+    #     plt.plot(x, y, '.', color='y', markersize=12)
 
     # Graph formatting
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
-    plot_bound = airfoil.x[-1]
-    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
-    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+    # plot_bound = airfoil.x[-1]
     plt.gca().set_aspect('equal', adjustable='box')
     plt.gca().legend()
     plt.grid(axis='both', linestyle=':', linewidth=1)
