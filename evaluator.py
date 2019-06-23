@@ -137,19 +137,21 @@ class Evaluator:
 
     def get_centroid(self):
         '''Return the coordinates of the centroid.'''
+
         stringer_area = self.stringer.area
         caps_area = self.spar.cap_area
 
-        x_spars = self.spar.x + self.spar.x
-        x_stringers = self.stringer.x + self.stringer.x
-        z_stringers = self.stringer.z + self.stringer.z
-        denom = float(len(x_spars) * caps_area
-                      + len(x_stringers) * stringer_area)
+        spar_x = self.spar.x + self.spar.x
+        stringers_x = self.stringer.x
+        stringers_z = self.stringer.z
 
-        x_ctr = (sum([i * caps_area for i in self.spar.x])
-                 + sum([i * stringer_area for i in x_stringers])) / denom
-        z_ctr = (sum([i * caps_area for i in self.spar.z])
-                 + sum([i * stringer_area for i in z_stringers])) / denom
+        denom = float(len(spar_x) * caps_area
+                      + len(stringers_x) * stringer_area)
+
+        x_ctr = (sum([i * caps_area for i in spar_x[:][0]])
+                 + sum([i * stringer_area for i in stringers_x])) / denom
+        z_ctr = (sum([i * caps_area for i in spar_x[:][0]])
+                 + sum([i * stringer_area for i in stringers_z])) / denom
         return(x_ctr, z_ctr)
 
     def get_inertia_terms(self):
@@ -159,10 +161,11 @@ class Evaluator:
         caps_area = self.spar.cap_area
 
         # Adds upper and lower components' coordinates to list
-        x_stringers = self.stringer.x + self.stringer.x
-        z_stringers = self.stringer.z + self.stringer.z
-        x_spars = self.spar.x + self.spar.x
-        z_spars = self.spar.z + self.spar.z
+        x_stringers = self.stringer.x
+        z_stringers = self.stringer.z
+        x_spars = self.spar.x[:][0] + self.spar.x[:][1]
+        z_spars = self.spar.z[:][0] + self.spar.z[:][1]
+        print(x_spars)
         stringer_count = range(len(x_stringers))
         spar_count = range(len(self.spar.x))
 
@@ -209,31 +212,32 @@ def plot_geom(evaluator):
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot quarter chord
-    q = evaluator.chord / 4
-    plt.plot(q, 0, '.', color='g', markersize=24, label='Quarter-chord')
-    # Plot upper surface
-    plt.plot(evaluator.x, evaluator.z,
-             '', color='b', linewidth='1')
-    # Plot lower surface
-    plt.plot(evaluator.x, evaluator.z,
-             '', color='b', linewidth='1')
+    plt.plot(evaluator.chord / 4, 0, '.', color='g',
+             markersize=24, label='Quarter-chord')
+    # Plot airfoil surfaces
+    plt.fill(evaluator.x, evaluator.z, color='b', linewidth='1', fill=False)
 
     # Plot spars
-    for _ in range(0, len(evaluator.spar.x)):
-        x = (evaluator.spar.x[_], evaluator.spar.x[_])
-        y = (evaluator.spar.z[_], evaluator.spar.z[_])
-        plt.plot(x, y, '.-', color='b')
-
+    try:
+        for _ in range(len(evaluator.spar.x)):
+            x = (evaluator.spar.x[_])
+            y = (evaluator.spar.z[_])
+            plt.plot(x, y, '-', color='b')
+    except AttributeError:
+        print('No spars to plot.')
     # Plot upper stringers
-    for _ in range(0, len(evaluator.stringer.x)):
-        x = evaluator.stringer.x[_]
-        y = evaluator.stringer.z[_]
-        plt.plot(x, y, '.', color='y', markersize=12)
-    # Plot lower stringers
-    for _ in range(0, len(evaluator.stringer.x)):
-        x = evaluator.stringer.x[_]
-        y = evaluator.stringer.z[_]
-        plt.plot(x, y, '.', color='y', markersize=12)
+    try:
+        for _ in range(0, len(evaluator.stringer.x)):
+            x = evaluator.stringer.x[_]
+            y = evaluator.stringer.z[_]
+            plt.plot(x, y, '.', color='y', markersize=12)
+    except AttributeError:
+        print('No stringers to plot.')
+    # # Plot lower stringers
+    # for _ in range(0, len(evaluator.stringer.x)):
+    #     x = evaluator.stringer.x[_]
+    #     y = evaluator.stringer.z[_]
+    #     plt.plot(x, y, '.', color='y', markersize=12)
 
     # Plot centroid
     x = evaluator.centroid[0]
@@ -244,7 +248,7 @@ def plot_geom(evaluator):
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
-    plot_bound = evaluator.x[-1]
+    plot_bound = max(evaluator.x)
     plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
     plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')

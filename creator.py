@@ -358,7 +358,7 @@ def plot_geom(airfoil):
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot quarter chord
-    plt.plot(airfoil.chord / 4, 0, '', color='g',
+    plt.plot(airfoil.chord / 4, 0, '.', color='g',
              markersize=24, label='Quarter-chord')
     # Plot mean camber line
     plt.plot(airfoil.x_c, airfoil.y_c, '-.', color='r', linewidth='2',
@@ -392,7 +392,9 @@ def plot_geom(airfoil):
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
-    # plot_bound = airfoil.x[-1]
+    plot_bound = max(airfoil.x)
+    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
+    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')
     plt.gca().legend()
     plt.grid(axis='both', linestyle=':', linewidth=1)
