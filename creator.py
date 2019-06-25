@@ -232,6 +232,11 @@ class Spar(Coordinates):
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
+        self.x_start = []
+        self.x_end = []
+        self.thickness = float()
+        self.z_start = []
+        self.z_end = []
 
     def add_coord(self, airfoil, x_loc_percent):
         '''
@@ -267,6 +272,17 @@ class Spar(Coordinates):
 
     def add_mass(self, mass):
         self.mass = len(self.x) * mass
+        return None
+
+    def add_webs(self, skin_thickness):
+        '''Add webs to spars.'''
+
+        for _ in range(len(self.x)):
+            self.x_start.append(self.x[_][0])
+            self.x_end.append(self.x[_][1])
+            self.thickness = skin_thickness
+            self.z_start.append(self.z[_][0])
+            self.z_end.append(self.z[_][1])
         return None
 
 
@@ -346,6 +362,9 @@ class Stringer(Coordinates):
     def add_mass(self, mass):
         self.mass = len(self.x) * mass + len(self.x) * mass
         return None
+
+    def add_webs(self, thickness):
+        pass
 
     def info_print(self, round):
         super().info_print(round)

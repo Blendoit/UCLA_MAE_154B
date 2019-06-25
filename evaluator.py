@@ -222,7 +222,12 @@ def plot_geom(evaluator):
     plt.plot(evaluator.chord / 4, 0, '.', color='g',
              markersize=24, label='Quarter-chord')
     # Plot airfoil surfaces
-    plt.fill(evaluator.x, evaluator.z, color='b', linewidth='1', fill=False)
+    x = [0.98 * x for x in evaluator.x]
+    y = [0.98 * z for z in evaluator.z]
+    plt.fill(x, y, color='w', linewidth='1', fill=False)
+    x = [1.02 * x for x in evaluator.x]
+    y = [1.02 * z for z in evaluator.z]
+    plt.fill(x, y, color='b', linewidth='1', fill=False)
 
     # Plot spars
     try:

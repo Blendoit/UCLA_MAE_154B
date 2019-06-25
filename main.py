@@ -27,9 +27,9 @@ NACA_NUM = 2412
 CHORD_LENGTH = 68  # inches
 SEMI_SPAN = 150  # inches
 
-# Airfoil thickness
-T_UPPER = 0.1
-T_LOWER = 0.1
+# Thicknesses
+SPAR_THICKNESS = 0.4
+SKIN_THICKNESS = 0.1
 
 # Component masses
 AIRFOIL_MASS = 10  # lbs
@@ -78,9 +78,10 @@ def main():
         # Define the spar coordinates and mass, stored in single spar object
         af.spar.add_coord(af, 0.20)
         af.spar.add_coord(af, 0.65)
-        # Automatically adds spar caps for all spars previously defined
+        # Automatically adds spar caps for every previously defined
         af.spar.add_spar_caps(SPAR_CAP_AREA)
         af.spar.add_mass(SPAR_MASS)
+        af.spar.add_webs(SPAR_THICKNESS)
         # af.spar.info_print(2)
         af.spar.info_save(SAVE_PATH, _)
 
@@ -94,6 +95,7 @@ def main():
                               BOTTOM_STRINGERS)
         af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
+        af.stringer.add_webs(SKIN_THICKNESS)
         # af.stringer.info_print(2)
         af.stringer.info_save(SAVE_PATH, _)
 
