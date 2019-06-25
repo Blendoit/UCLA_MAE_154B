@@ -143,21 +143,21 @@ class Evaluator:
         '''Return the coordinates of the centroid.'''
 
         stringer_area = self.stringer.area
-        caps_area = self.spar.cap_area
+        cap_area = self.spar.cap_area
 
         caps_x = [value for spar in self.spar.x for value in spar]
         caps_z = [value for spar in self.spar.z for value in spar]
         stringers_x = self.stringer.x
         stringers_z = self.stringer.z
 
-        denominator = float(len(caps_x) * caps_area
+        denominator = float(len(caps_x) * cap_area
                             + len(stringers_x) * stringer_area)
 
-        centroid_x = float(sum([x * caps_area for x in caps_x])
+        centroid_x = float(sum([x * cap_area for x in caps_x])
                            + sum([x * stringer_area for x in stringers_x]))
         centroid_x = centroid_x / denominator
 
-        centroid_z = float(sum([z * caps_area for z in caps_z])
+        centroid_z = float(sum([z * cap_area for z in caps_z])
                            + sum([z * stringer_area for z in stringers_z]))
         centroid_z = centroid_z / denominator
         return(centroid_x, centroid_z)
@@ -166,7 +166,7 @@ class Evaluator:
         '''Obtain all inertia terms.'''
 
         stringer_area = self.stringer.area
-        caps_area = self.spar.cap_area
+        cap_area = self.spar.cap_area
 
         # Adds upper and lower components' coordinates to list
         x_stringers = self.stringer.x
@@ -177,17 +177,17 @@ class Evaluator:
         spar_count = range(len(self.spar.x))
 
         # I_x is the sum of the contributions of the spar caps and stringers
-        I_x = (sum([caps_area * (z_spars[i] - self.centroid[1]) ** 2
+        I_x = (sum([cap_area * (z_spars[i] - self.centroid[1]) ** 2
                     for i in spar_count])
                + sum([stringer_area * (z_stringers[i] - self.centroid[1]) ** 2
                       for i in stringer_count]))
 
-        I_z = (sum([caps_area * (x_spars[i] - self.centroid[0]) ** 2
+        I_z = (sum([cap_area * (x_spars[i] - self.centroid[0]) ** 2
                     for i in spar_count])
                + sum([stringer_area * (x_stringers[i] - self.centroid[0]) ** 2
                       for i in stringer_count]))
 
-        I_xz = (sum([caps_area * (x_spars[i] - self.centroid[0])
+        I_xz = (sum([cap_area * (x_spars[i] - self.centroid[0])
                      * (z_spars[i] - self.centroid[1])
                      for i in spar_count])
                 + sum([stringer_area * (x_stringers[i] - self.centroid[0])

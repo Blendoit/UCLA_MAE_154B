@@ -25,7 +25,7 @@ start_time = time.time()
 # Airfoil dimensions
 NACA_NUM = 2412
 CHORD_LENGTH = 68  # inches
-SEMI_SPAN = 100  # inches
+SEMI_SPAN = 150  # inches
 
 # Airfoil thickness
 T_UPPER = 0.1
@@ -44,7 +44,7 @@ STRINGER_AREA = 0.1  # sqin
 TOP_STRINGERS = 6
 BOTTOM_STRINGERS = 4
 NOSE_TOP_STRINGERS = 3
-NOSE_BOTTOM_STRINGERS = 6
+NOSE_BOTTOM_STRINGERS = 5
 
 # population information & save path
 POP_SIZE = 1
@@ -98,7 +98,7 @@ def main():
         af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
-        creator.plot_geom(af)
+        # creator.plot_geom(af)
 
         # Evaluator object contains airfoil analysis results.
         eval = evaluator.Evaluator(af)
@@ -106,7 +106,7 @@ def main():
         eval.analysis()
         # eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        # evaluator.plot_geom(eval)
+        evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 
     # Print final execution time

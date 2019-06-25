@@ -168,13 +168,13 @@ class Airfoil(Coordinates):
             '''Returns thickness from 1 'x' along the airfoil chord.'''
 
             x = 0 if x < 0 else x
-            y_t = 5 * t * self.chord * (
+            z_t = 5 * t * self.chord * (
                 + 0.2969 * sqrt(x / self.chord)
                 - 0.1260 * (x / self.chord)
                 - 0.3516 * (x / self.chord) ** 2
                 + 0.2843 * (x / self.chord) ** 3
                 - 0.1015 * (x / self.chord) ** 4)
-            return y_t
+            return z_t
 
         def get_theta(x):
             dz_c = float()
@@ -238,9 +238,8 @@ class Spar(Coordinates):
         Add a single spar at the % chord location given to function.
 
         Parameters:
-        coordinates: provided by Airfoil.coordinates[x, z, x, z].
-        material: spar's material. Assumes homogeneous material.
-        spar_x: spar's location as a % of total chord length.
+        airfoil: gives the spar access to airfoil's coordinates.
+        x_loc_percent: spar's location as a % of total chord length.
 
         Return:
         None
