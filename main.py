@@ -17,7 +17,7 @@
 import creator  # Create geometry
 import evaluator  # Evaluate geometry
 import generator  # Iteratevely evaluate instances of geometry and optimize
-import random
+import numpy as np
 
 import time
 start_time = time.time()
