@@ -232,7 +232,7 @@ def plot_geom(evaluator):
             plt.plot(x, y, '-', color='b')
     except AttributeError:
         print('No spars to plot.')
-    # Plot upper stringers
+    # Plot stringers
     try:
         for _ in range(0, len(evaluator.stringer.x)):
             x = evaluator.stringer.x[_]
@@ -240,11 +240,6 @@ def plot_geom(evaluator):
             plt.plot(x, y, '.', color='y', markersize=12)
     except AttributeError:
         print('No stringers to plot.')
-    # # Plot lower stringers
-    # for _ in range(0, len(evaluator.stringer.x)):
-    #     x = evaluator.stringer.x[_]
-    #     y = evaluator.stringer.z[_]
-    #     plt.plot(x, y, '.', color='y', markersize=12)
 
     # Plot centroid
     x = evaluator.centroid[0]
