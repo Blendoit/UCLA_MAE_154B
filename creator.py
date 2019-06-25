@@ -221,8 +221,8 @@ class Airfoil(Coordinates):
 
     def info_print(self, round):
         super().info_print(round)
-        print('x_c the camber x-coordinates:\n', np.around(self.x, round))
-        print('z_c the camber z-coordinates:\n', np.around(self.x, round))
+        print('x_c the camber x-coordinates:\n', np.around(self.x_c, round))
+        print('z_c the camber z-coordinates:\n', np.around(self.z_c, round))
         return None
 
 
@@ -237,6 +237,10 @@ class Spar(Coordinates):
         self.thickness = float()
         self.z_start = []
         self.z_end = []
+        self.dx = float()
+        self.dz = float()
+        self.dP_x = float()
+        self.dP_z = float()
 
     def add_coord(self, airfoil, x_loc_percent):
         '''
@@ -274,15 +278,15 @@ class Spar(Coordinates):
         self.mass = len(self.x) * mass
         return None
 
-    def add_webs(self, skin_thickness):
+    def add_webs(self, thickness):
         '''Add webs to spars.'''
 
         for _ in range(len(self.x)):
             self.x_start.append(self.x[_][0])
             self.x_end.append(self.x[_][1])
-            self.thickness = skin_thickness
             self.z_start.append(self.z[_][0])
             self.z_end.append(self.z[_][1])
+        self.thickness = thickness
         return None
 
 
@@ -292,7 +296,16 @@ class Stringer(Coordinates):
 
     def __init__(self):
         super().__init__(parent.chord, parent.semi_span)
+        self.x_start = []
+        self.x_end = []
+        self.thickness = float()
+        self.z_start = []
+        self.z_end = []
         self.area = float()
+        # self.dx = float()
+        # self.dz = float()
+        # self.dP_x = float()
+        # self.dP_z = float()
 
     def add_coord(self, airfoil,
                   stringer_u_1, stringer_u_2,
@@ -364,7 +377,15 @@ class Stringer(Coordinates):
         return None
 
     def add_webs(self, thickness):
-        pass
+        '''Add webs to stringers.'''
+
+        for _ in range(len(self.x) // 2):
+            self.x_start.append(self.x[_])
+            self.x_end.append(self.x[_ + 1])
+            self.z_start.append(self.z[_])
+            self.z_end.append(self.z[_ + 1])
+        self.thickness = thickness
+        return None
 
     def info_print(self, round):
         super().info_print(round)

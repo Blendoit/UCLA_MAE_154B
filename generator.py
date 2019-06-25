@@ -14,3 +14,23 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import creator
+
+
+class Population:
+    '''Collection of random airfoils.'''
+
+    def __init__(self, size):
+        self.size = size
+        self.gen_number = 0  # incremented for every generation
+
+    def mutate(self, prob_mt):
+        '''Randomly mutate the genes of prob_mt % of the population.'''
+
+    def crossover(self, prob_cx):
+        '''Combine the genes of prob_cx % of the population.'''
+
+    def reproduce(self, prob_rp):
+        '''Pass on the genes of the fittest prob_rp % of the population.'''
+
+    def fitness():
+        '''Rate the fitness of an individual on a relative scale (0-100)'''

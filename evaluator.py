@@ -76,6 +76,8 @@ class Evaluator:
         print('I_x:\n', np.around(self.I_[0], 3))
         print('I_z:\n', np.around(self.I_[1], 3))
         print('I_xz:\n', np.around(self.I_[2], 3))
+        print('Spar dP_x:\n', self.spar.dP_x)
+        print('Spar dP_z:\n', self.spar.dP_z)
         print(num_of_dashes * '-')
         print('Rectangular lift along semi-span:\n',
               np.around(self.lift_rectangular, round))
@@ -113,7 +115,8 @@ class Evaluator:
         return L_prime
 
     def get_lift_elliptical(self, L_0):
-        L_prime = [L_0 * sqrt(1 - (y / self.semi_span) ** 2)
+        L_prime = [L_0 / (self.semi_span * 2)
+                   * sqrt(1 - (y / self.semi_span) ** 2)
                    for y in range(self.semi_span)]
         return L_prime
 
@@ -196,18 +199,40 @@ class Evaluator:
 
         return(I_x, I_z, I_xz)
 
-    def analysis(self):
+    def analysis(self, V_x, V_z):
         '''Perform all analysis calculations and store in class instance.'''
+
+        def get_dp(xDist, zDist, V_x, V_z, I_x, I_z, I_xz, area):
+            denom = float(I_x * I_z - I_xz ** 2)
+            z = float()
+            for _ in range(len(xDist)):
+                z += float(- area * xDist[_] * (I_x * V_x - I_xz * V_z)
+                           / denom
+                           - area * zDist[_] * (I_z * V_z - I_xz * V_x)
+                           / denom)
+            return z
+
+        def get_dx(component):
+            return [x - self.centroid[0] for x in component.x_start]
+
+        def get_dz(component):
+            return [x - self.centroid[1] for x in component.x_start]
 
         self.drag = self.get_drag(10)
 
-        self.lift_rectangular = self.get_lift_rectangular(1000)
+        self.lift_rectangular = self.get_lift_rectangular(13.7)
         self.lift_elliptical = self.get_lift_elliptical(15)
         self.lift_total = self.get_lift_total()
 
         self.mass_dist = self.get_mass_distribution(self.mass_total)
         self.centroid = self.get_centroid()
         self.I_ = self.get_inertia_terms()
+        self.spar.dP_x = get_dp(get_dx(self.spar), get_dz(self.spar), V_x, 0,
+                                self.I_[0], self.I_[1], self.I_[2],
+                                self.spar.cap_area)
+        self.spar.dP_z = get_dp(get_dx(self.spar), get_dz(self.spar), 0, V_z,
+                                self.I_[0], self.I_[1], self.I_[2],
+                                self.spar.cap_area)
         return None
 
 
