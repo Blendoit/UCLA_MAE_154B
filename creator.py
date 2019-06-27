@@ -12,8 +12,19 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+The 'creator' module contains class definitions for coordinates
+and various components we add to an airfoil (spars, stringers, and ribs.)
 
+Classes:
+    Coordinates: always instantiated first, but never assigned to object.
+    Airfoil: inherits from Coordinates & automatically aware of airfoil size.
+    Spar: also inherits from Coordinates.
+    Stringer: also inherits from Coordinates.
 
+Functions:
+    plot_geom(airfoil): generates a 2D plot of the airfoil & any components.
+"""
 import sys
 import os.path
 import numpy as np
@@ -30,19 +41,19 @@ global parent
 
 
 class Coordinates:
-    '''
+    """
     All airfoil components need the following:
 
     Parameters:
-        * Component material
-        * Coordinates relative to the chord & semi-span
+        Component material
+        Coordinates relative to the chord & semi-span
 
     Methods:
-        * Print component coordinates
-        * Save component coordinates to file specified in main.py
+        Print component coordinates
+        Save component coordinates to file specified in main.py
 
     So, all component classes inherit from class Coordinates.
-    '''
+    """
 
     def __init__(self, chord, semi_span):
         # Global dimensions
@@ -65,11 +76,11 @@ class Coordinates:
         return type(self).__name__
 
     def info_print(self, round):
-        '''
+        """
         Print all the component's coordinates to the terminal.
 
         This function's output is piped to the 'save_coord' function below.
-        '''
+        """
         name = '    CREATOR DATA    '
         num_of_dashes = len(name)
 
@@ -85,10 +96,9 @@ class Coordinates:
         return None
 
     def info_save(self, save_path, number):
-        '''
+        """
         Save all the object's coordinates (must be full path).
-        '''
-
+        """
         file_name = '{}_{}.txt'.format(str(self).lower(), number)
         full_path = os.path.join(save_path, file_name)
         try:
@@ -105,8 +115,8 @@ class Coordinates:
 
 
 class Airfoil(Coordinates):
-    '''
-    This class enables the creation of a single NACA airfoil.
+    """
+    This class represents a single NACA airfoil.
 
     Please note: the coordinates are saved as two lists
     for the x- and z-coordinates. The coordinates start at
@@ -116,7 +126,7 @@ class Airfoil(Coordinates):
     This method was chosen for easier future exports
     to 3D CAD packages like SolidWorks, which can import such
     geometry as coordinates written in a CSV file.
-    '''
+    """
 
     def __init__(self):
         global parent
@@ -129,7 +139,7 @@ class Airfoil(Coordinates):
         self.z_c = []
 
     def add_naca(self, naca_num):
-        '''
+        """
         This function generates geometry for our chosen NACA airfoil shape.
         The nested functions perform the required steps to generate geometry,
         and can be called to solve the geometry y-coordinate for any 'x' input.
@@ -140,8 +150,7 @@ class Airfoil(Coordinates):
 
         Return:
         None
-        '''
-
+        """
         # Variables extracted from 'naca_num' argument passed to the function
         self.naca_num = naca_num
         m = int(str(naca_num)[0]) / 100
@@ -151,9 +160,9 @@ class Airfoil(Coordinates):
         p_c = p * self.chord
 
         def get_camber(x):
-            '''
+            """
             Returns camber z-coordinate from 1 'x' along the airfoil chord.
-            '''
+            """
             z_c = float()
             if 0 <= x < p_c:
                 z_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
@@ -165,8 +174,7 @@ class Airfoil(Coordinates):
             return (z_c * self.chord)
 
         def get_thickness(x):
-            '''Returns thickness from 1 'x' along the airfoil chord.'''
-
+            """Returns thickness from 1 'x' along the airfoil chord."""
             x = 0 if x < 0 else x
             z_t = 5 * t * self.chord * (
                 + 0.2969 * sqrt(x / self.chord)
@@ -227,7 +235,7 @@ class Airfoil(Coordinates):
 
 
 class Spar(Coordinates):
-    '''Contains a single spar's location.'''
+    """Contains a single spar's location."""
     global parent
 
     def __init__(self):
@@ -243,7 +251,7 @@ class Spar(Coordinates):
         self.dP_z = float()
 
     def add_coord(self, airfoil, x_loc_percent):
-        '''
+        """
         Add a single spar at the % chord location given to function.
 
         Parameters:
@@ -252,8 +260,7 @@ class Spar(Coordinates):
 
         Return:
         None
-        '''
-
+        """
         # Scaled spar location with regards to chord
         loc = x_loc_percent * self.chord
         # bi.bisect_left: returns index of first value in airfoil.x > loc
@@ -279,8 +286,7 @@ class Spar(Coordinates):
         return None
 
     def add_webs(self, thickness):
-        '''Add webs to spars.'''
-
+        """Add webs to spars."""
         for _ in range(len(self.x)):
             self.x_start.append(self.x[_][0])
             self.x_end.append(self.x[_][1])
@@ -291,7 +297,7 @@ class Spar(Coordinates):
 
 
 class Stringer(Coordinates):
-    '''Contains the coordinates of all stringers.'''
+    """Contains the coordinates of all stringers."""
     global parent
 
     def __init__(self):
@@ -310,7 +316,7 @@ class Stringer(Coordinates):
     def add_coord(self, airfoil,
                   stringer_u_1, stringer_u_2,
                   stringer_l_1, stringer_l_2):
-        '''
+        """
         Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
 
@@ -324,8 +330,7 @@ class Stringer(Coordinates):
 
         Returns:
         None
-        '''
-
+        """
         # Find distance between leading edge and first upper stringer
         interval = airfoil.spar.x[0][0] / (stringer_u_1 + 1)
         # initialise first self.stringer_x at first interval
@@ -377,8 +382,7 @@ class Stringer(Coordinates):
         return None
 
     def add_webs(self, thickness):
-        '''Add webs to stringers.'''
-
+        """Add webs to stringers."""
         for _ in range(len(self.x) // 2):
             self.x_start.append(self.x[_])
             self.x_end.append(self.x[_ + 1])
@@ -394,8 +398,7 @@ class Stringer(Coordinates):
 
 
 def plot_geom(airfoil):
-    '''This function plots the airfoil's + sub-components' geometry.'''
-
+    """This function plots the airfoil's + sub-components' geometry."""
     # Plot chord
     x_chord = [0, airfoil.chord]
     y_chord = [0, 0]

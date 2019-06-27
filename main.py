@@ -52,12 +52,11 @@ SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
 
 
 def main():
-    '''
+    """
     Create an airfoil;
     Evaluate an airfoil;
     Generate a population of airfoils & optimize.
-    '''
-
+    """
     # Create coordinate system specific to our airfoil dimensions.
     # TODO: imperial + metric unit setting
     creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
@@ -70,8 +69,8 @@ def main():
         # Define NACA airfoil coordinates and mass
         af.add_naca(NACA_NUM)
         af.add_mass(AIRFOIL_MASS)
-        af.info_print(2)
-        af.info_save(SAVE_PATH, _)
+        # af.info_print(2)
+        # af.info_save(SAVE_PATH, _)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -82,8 +81,8 @@ def main():
         af.spar.add_spar_caps(SPAR_CAP_AREA)
         af.spar.add_mass(SPAR_MASS)
         af.spar.add_webs(SPAR_THICKNESS)
-        af.spar.info_print(2)
-        af.spar.info_save(SAVE_PATH, _)
+        # af.spar.info_print(2)
+        # af.spar.info_save(SAVE_PATH, _)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
@@ -96,20 +95,26 @@ def main():
         af.stringer.add_area(STRINGER_AREA)
         af.stringer.add_mass(STRINGER_MASS)
         af.stringer.add_webs(SKIN_THICKNESS)
-        af.stringer.info_print(2)
-        af.stringer.info_save(SAVE_PATH, _)
-
+        # af.stringer.info_print(2)
+        # af.stringer.info_save(SAVE_PATH, _)
+#
         # Plot components with matplotlib
-        creator.plot_geom(af)
+        # creator.plot_geom(af)
 
         # Evaluator object contains airfoil analysis results.
         eval = evaluator.Evaluator(af)
         # The analysis is performed in the evaluator.py module.
         eval.analysis(1, 1)
-        eval.info_print(2)
-        eval.info_save(SAVE_PATH, _)
+        # eval.info_print(2)
+        # eval.info_save(SAVE_PATH, _)
         evaluator.plot_geom(eval)
-        evaluator.plot_lift(eval)
+        # evaluator.plot_lift(eval)
+
+        pop = generator.Population(10)
+
+        # print(help(creator))
+        # print(help(evaluator))
+        # print(help(generator))
 
     # Print final execution time
     print("--- %s seconds ---" % (time.time() - start_time))

@@ -12,7 +12,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+"""
+The 'evaluator' module contains a single Evaluator class,
+which knows all the attributes of a specified Airfoil instance,
+and contains functions to analyse the airfoil's geometrical
+& structural properties.
+"""
 
 import sys
 import os.path
@@ -22,7 +27,7 @@ import matplotlib.pyplot as plt
 
 
 class Evaluator:
-    '''Performs structural evaluations for the airfoil passed as argument.'''
+    """Performs structural evaluations for the airfoil passed as argument."""
 
     def __init__(self, airfoil):
         # Evaluator knows all geometrical info from evaluated airfoil
@@ -32,8 +37,7 @@ class Evaluator:
         # Global dimensions
         self.chord = airfoil.chord
         self.semi_span = airfoil.semi_span
-
-        # mass and area
+        # Mass & spanwise distribution
         self.mass_total = float(airfoil.mass
                                 + airfoil.spar.mass
                                 + airfoil.stringer.mass)
@@ -50,18 +54,14 @@ class Evaluator:
         # centroid
         self.centroid = []
         # Inertia terms:
-        # I_x = self.I_[0]
-        # I_z = self.I_[1]
-        # I_xz = self.I_[2]
-        self.I_ = []
+        self.I_ = {'x': 0, 'z': 0, 'xz': 0}
 
     def info_print(self, round):
-        '''
+        """
         Print all the component's evaluated data to the terminal.
 
         This function's output is piped to the 'save_data' function below.
-        '''
-
+        """
         name = '    EVALUATOR DATA    '
         num_of_dashes = len(name)
 
@@ -73,9 +73,9 @@ class Evaluator:
         print('Total airfoil mass:', self.mass_total)
         print('Centroid location:\n', np.around(self.centroid, 3))
         print('Inertia terms:')
-        print('I_x:\n', np.around(self.I_[0], 3))
-        print('I_z:\n', np.around(self.I_[1], 3))
-        print('I_xz:\n', np.around(self.I_[2], 3))
+        print('I_x:\n', np.around(self.I_['x'], 3))
+        print('I_z:\n', np.around(self.I_['z'], 3))
+        print('I_xz:\n', np.around(self.I_['xz'], 3))
         print('Spar dP_x:\n', self.spar.dP_x)
         print('Spar dP_z:\n', self.spar.dP_z)
         print(num_of_dashes * '-')
@@ -91,8 +91,7 @@ class Evaluator:
         return None
 
     def info_save(self, save_path, number):
-        '''Save all the object's coordinates (must be full path).'''
-
+        """Save all the object's coordinates (must be full path)."""
         file_name = 'airfoil_{}_eval.txt'.format(number)
         full_path = os.path.join(save_path, file_name)
         try:
@@ -102,22 +101,22 @@ class Evaluator:
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
         except IOError:
-            print('Unable to write {} to specified directory.\n'
-                  .format(file_name),
-                  'Was the full path passed to the function?')
+            print(
+                'Unable to write {} to specified directory.\n'.format(
+                    file_name), 'Was the full path passed to the function?')
         return None
 
     # All these functions take integer arguments and return lists.
 
     def get_lift_rectangular(self, lift):
-        L_prime = [lift / (self.semi_span * 2)
-                   for x in range(self.semi_span)]
+        L_prime = [lift / (self.semi_span * 2) for x in range(self.semi_span)]
         return L_prime
 
     def get_lift_elliptical(self, L_0):
-        L_prime = [L_0 / (self.semi_span * 2)
-                   * sqrt(1 - (y / self.semi_span) ** 2)
-                   for y in range(self.semi_span)]
+        L_prime = [
+            L_0 / (self.semi_span * 2) * sqrt(1 - (y / self.semi_span)**2)
+            for y in range(self.semi_span)
+        ]
         return L_prime
 
     def get_lift_total(self):
@@ -126,8 +125,7 @@ class Evaluator:
         return F_z
 
     def get_mass_distribution(self, total_mass):
-        F_z = [total_mass / self.semi_span
-               for x in range(0, self.semi_span)]
+        F_z = [total_mass / self.semi_span for x in range(0, self.semi_span)]
         return F_z
 
     def get_drag(self, drag):
@@ -143,8 +141,7 @@ class Evaluator:
         return F_x
 
     def get_centroid(self):
-        '''Return the coordinates of the centroid.'''
-
+        """Return the coordinates of the centroid."""
         stringer_area = self.stringer.area
         cap_area = self.spar.cap_area
 
@@ -163,11 +160,11 @@ class Evaluator:
         centroid_z = float(sum([z * cap_area for z in caps_z])
                            + sum([z * stringer_area for z in stringers_z]))
         centroid_z = centroid_z / denominator
-        return(centroid_x, centroid_z)
+
+        return (centroid_x, centroid_z)
 
     def get_inertia_terms(self):
-        '''Obtain all inertia terms.'''
-
+        """Obtain all inertia terms."""
         stringer_area = self.stringer.area
         cap_area = self.spar.cap_area
 
@@ -180,72 +177,75 @@ class Evaluator:
         spar_count = range(len(self.spar.x))
 
         # I_x is the sum of the contributions of the spar caps and stringers
-        I_x = (sum([cap_area * (z_spars[i] - self.centroid[1]) ** 2
+        # TODO: replace list indices with dictionary value
+        I_x = sum([cap_area * (z_spars[i] - self.centroid[1])**2
+                   for i in spar_count])
+        I_x += sum([stringer_area * (z_stringers[i] - self.centroid[1])**2
+                    for i in stringer_count])
+
+        I_z = sum([cap_area * (x_spars[i] - self.centroid[0])**2
+                   for i in spar_count])
+        I_z += sum([stringer_area * (x_stringers[i] - self.centroid[0])**2
+                    for i in stringer_count])
+
+        I_xz = sum([cap_area * (x_spars[i] - self.centroid[0])
+                    * (z_spars[i] - self.centroid[1])
                     for i in spar_count])
-               + sum([stringer_area * (z_stringers[i] - self.centroid[1]) ** 2
-                      for i in stringer_count]))
+        I_xz += sum([stringer_area * (x_stringers[i] - self.centroid[0])
+                     * (z_stringers[i] - self.centroid[1])
+                     for i in stringer_count])
+        return (I_x, I_z, I_xz)
 
-        I_z = (sum([cap_area * (x_spars[i] - self.centroid[0]) ** 2
-                    for i in spar_count])
-               + sum([stringer_area * (x_stringers[i] - self.centroid[0]) ** 2
-                      for i in stringer_count]))
+    def get_dx(self, component):
+        return [x - self.centroid[0] for x in component.x_start]
 
-        I_xz = (sum([cap_area * (x_spars[i] - self.centroid[0])
-                     * (z_spars[i] - self.centroid[1])
-                     for i in spar_count])
-                + sum([stringer_area * (x_stringers[i] - self.centroid[0])
-                       * (z_stringers[i] - self.centroid[1])
-                       for i in stringer_count]))
-
-        return(I_x, I_z, I_xz)
+    def get_dz(self, component):
+        return [x - self.centroid[1] for x in component.x_start]
 
     def analysis(self, V_x, V_z):
-        '''Perform all analysis calculations and store in class instance.'''
+        """Perform all analysis calculations and store in class instance."""
 
-        def get_dp(xDist, zDist, V_x, V_z, I_x, I_z, I_xz, area):
+        def get_dP(xDist, zDist, V_x, V_z, I_x, I_z, I_xz, area):
             denom = float(I_x * I_z - I_xz ** 2)
             z = float()
             for _ in range(len(xDist)):
-                z += float(- area * xDist[_] * (I_x * V_x - I_xz * V_z)
+                z += float(-area * xDist[_] * (I_x * V_x - I_xz * V_z)
                            / denom
                            - area * zDist[_] * (I_z * V_z - I_xz * V_x)
                            / denom)
             return z
 
-        def get_dx(component):
-            return [x - self.centroid[0] for x in component.x_start]
-
-        def get_dz(component):
-            return [x - self.centroid[1] for x in component.x_start]
-
         self.drag = self.get_drag(10)
-
         self.lift_rectangular = self.get_lift_rectangular(13.7)
         self.lift_elliptical = self.get_lift_elliptical(15)
         self.lift_total = self.get_lift_total()
-
         self.mass_dist = self.get_mass_distribution(self.mass_total)
         self.centroid = self.get_centroid()
-        self.I_ = self.get_inertia_terms()
-        self.spar.dP_x = get_dp(get_dx(self.spar), get_dz(self.spar), V_x, 0,
-                                self.I_[0], self.I_[1], self.I_[2],
+        self.I_['x'] = self.get_inertia_terms()[0]
+        self.I_['z'] = self.get_inertia_terms()[1]
+        self.I_['xz'] = self.get_inertia_terms()[2]
+        spar_dx = self.get_dx(self.spar)
+        spar_dz = self.get_dz(self.spar)
+        self.spar.dP_x = get_dP(spar_dx, spar_dz,
+                                V_x, 0,
+                                self.I_['x'], self.I_['z'], self.I_['xz'],
                                 self.spar.cap_area)
-        self.spar.dP_z = get_dp(get_dx(self.spar), get_dz(self.spar), 0, V_z,
-                                self.I_[0], self.I_[1], self.I_[2],
+        self.spar.dP_z = get_dP(spar_dx, spar_dz,
+                                0, V_z,
+                                self.I_['x'], self.I_['z'], self.I_['xz'],
                                 self.spar.cap_area)
         return None
 
 
 def plot_geom(evaluator):
-    '''This function plots analysis results over the airfoil's geometry.'''
-
+    """This function plots analysis results over the airfoil's geometry."""
     # Plot chord
     x_chord = [0, evaluator.chord]
     y_chord = [0, 0]
     plt.plot(x_chord, y_chord, linewidth='1')
     # Plot quarter chord
-    plt.plot(evaluator.chord / 4, 0, '.', color='g',
-             markersize=24, label='Quarter-chord')
+    plt.plot(evaluator.chord / 4, 0,
+             '.', color='g', markersize=24, label='Quarter-chord')
     # Plot airfoil surfaces
     x = [0.98 * x for x in evaluator.x]
     y = [0.98 * z for z in evaluator.z]
@@ -281,8 +281,8 @@ def plot_geom(evaluator):
     plt.ylabel('Z axis')
 
     plot_bound = max(evaluator.x)
-    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
-    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+    plt.xlim(-0.10 * plot_bound, 1.10 * plot_bound)
+    plt.ylim(-(1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')
     plt.gca().legend()
     plt.grid(axis='both', linestyle=':', linewidth=1)
@@ -295,10 +295,8 @@ def plot_lift(evaluator):
     y_1 = evaluator.lift_rectangular
     y_2 = evaluator.lift_elliptical
     y_3 = evaluator.lift_total
-    plt.plot(x, y_1, '.', color='b', markersize=4,
-             label='Rectangular lift')
-    plt.plot(x, y_2, '.', color='g', markersize=4,
-             label='Elliptical lift')
+    plt.plot(x, y_1, '.', color='b', markersize=4, label='Rectangular lift')
+    plt.plot(x, y_2, '.', color='g', markersize=4, label='Elliptical lift')
     plt.plot(x, y_3, '.', color='r', markersize=4, label='Total lift')
 
     # Graph formatting
