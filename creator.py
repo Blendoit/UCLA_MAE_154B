@@ -78,6 +78,7 @@ class Coordinates:
 
         This function's output is piped to the 'save_coord' function below.
         """
+
         name = '    CREATOR DATA    '
         num_of_dashes = len(name)
 
@@ -96,6 +97,7 @@ class Coordinates:
         """
         Save all the object's coordinates (must be full path).
         """
+
         file_name = '{}_{}.txt'.format(str(self).lower(), number)
         full_path = os.path.join(save_path, file_name)
         try:
@@ -126,7 +128,6 @@ class Airfoil(Coordinates):
     """
 
     def __init__(self):
-        global parent
         # Run 'Coordinates' super class init method with same chord & 1/2 span.
         super().__init__()
         self.chord = Coordinates.chord
@@ -259,6 +260,7 @@ class Spar(Coordinates):
         Return:
         None
         """
+
         # Scaled spar location with regards to chord
         loc = x_loc_percent * self.chord
         # bi.bisect_left: returns index of first value in airfoil.x > loc
@@ -328,6 +330,7 @@ class Stringer(Coordinates):
         Returns:
         None
         """
+
         # Find distance between leading edge and first upper stringer
         interval = airfoil.spar.x[0][0] / (stringer_u_1 + 1)
         # initialise first self.stringer_x at first interval
@@ -396,6 +399,7 @@ class Stringer(Coordinates):
 
 def plot_geom(airfoil):
     """This function plots the airfoil's + sub-components' geometry."""
+
     # Plot chord
     x_chord = [0, airfoil.chord]
     y_chord = [0, 0]
