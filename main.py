@@ -59,7 +59,7 @@ def main():
     """
     # Create coordinate system specific to our airfoil dimensions.
     # TODO: imperial + metric unit setting
-    creator.Coordinates(CHORD_LENGTH, SEMI_SPAN)
+    creator.Coordinates.from_chord(CHORD_LENGTH, SEMI_SPAN)
 
     # Interate through all wings in population, creating and evaluating them.
     for _ in range(1, POP_SIZE + 1):
