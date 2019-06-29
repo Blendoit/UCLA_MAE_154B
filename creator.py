@@ -12,8 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """
-The 'creator' module contains class definitions for coordinates
+The creator.py module contains class definitions for coordinates
 and various components we add to an airfoil (spars, stringers, and ribs.)
 
 Classes:
@@ -25,19 +26,13 @@ Classes:
 Functions:
     plot_geom(airfoil): generates a 2D plot of the airfoil & any components.
 """
+
 import sys
 import os.path
 import numpy as np
 from math import sin, cos, atan, sqrt
 import bisect as bi
 import matplotlib.pyplot as plt
-
-
-# This variable is required for main.py constant wing dimensions
-# to be passed to inheriting classes (Airfoil, Spar, Stringer, Rib).
-# This way, we don't have to redeclare our coordinates as parameters for
-# our spars, stringers and ribs. This makes for more elegant code.
-global parent
 
 
 class Coordinates:
@@ -55,10 +50,10 @@ class Coordinates:
     So, all component classes inherit from class Coordinates.
     """
 
-    def __init__(self, chord, semi_span):
-        # Global dimensions
-        self.chord = chord if chord > 40 else 40
-        self.semi_span = semi_span
+    chord = 100
+    semi_span = 200
+
+    def __init__(self):
         # mass and area
         self.mass = float()
         self.area = float()
@@ -68,9 +63,11 @@ class Coordinates:
         self.x = []
         self.z = []
 
-        # The airfoil components know the Coordinates instance's coords
-        global parent
-        parent = self
+    @classmethod
+    def from_chord(cls, chord, semi_span):
+        cls.chord = chord
+        cls.semi_span = semi_span
+        return None
 
     def __str__(self):
         return type(self).__name__
@@ -131,7 +128,9 @@ class Airfoil(Coordinates):
     def __init__(self):
         global parent
         # Run 'Coordinates' super class init method with same chord & 1/2 span.
-        super().__init__(parent.chord, parent.semi_span)
+        super().__init__()
+        self.chord = Coordinates.chord
+        self.semi_span = Coordinates.semi_span
         # NACA number
         self.naca_num = int()
         # Mean camber line
@@ -236,10 +235,9 @@ class Airfoil(Coordinates):
 
 class Spar(Coordinates):
     """Contains a single spar's location."""
-    global parent
 
     def __init__(self):
-        super().__init__(parent.chord, parent.semi_span)
+        super().__init__()
         self.x_start = []
         self.x_end = []
         self.thickness = float()
@@ -298,10 +296,9 @@ class Spar(Coordinates):
 
 class Stringer(Coordinates):
     """Contains the coordinates of all stringers."""
-    global parent
 
     def __init__(self):
-        super().__init__(parent.chord, parent.semi_span)
+        super().__init__()
         self.x_start = []
         self.x_end = []
         self.thickness = float()
@@ -432,7 +429,6 @@ def plot_geom(airfoil):
     # Graph formatting
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
-
     plot_bound = max(airfoil.x)
     plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
     plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
