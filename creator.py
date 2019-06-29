@@ -50,6 +50,7 @@ class Coordinates:
     So, all component classes inherit from class Coordinates.
     """
 
+    # Defaults
     chord = 100
     semi_span = 200
 
@@ -130,8 +131,6 @@ class Airfoil(Coordinates):
     def __init__(self):
         # Run 'Coordinates' super class init method with same chord & 1/2 span.
         super().__init__()
-        self.chord = Coordinates.chord
-        self.semi_span = Coordinates.semi_span
         # NACA number
         self.naca_num = int()
         # Mean camber line
@@ -244,10 +243,6 @@ class Spar(Coordinates):
         self.thickness = float()
         self.z_start = []
         self.z_end = []
-        self.dx = float()
-        self.dz = float()
-        self.dP_x = float()
-        self.dP_z = float()
 
     def add_coord(self, airfoil, x_loc_percent):
         """
@@ -307,10 +302,6 @@ class Stringer(Coordinates):
         self.z_start = []
         self.z_end = []
         self.area = float()
-        # self.dx = float()
-        # self.dz = float()
-        # self.dP_x = float()
-        # self.dP_z = float()
 
     def add_coord(self, airfoil,
                   stringer_u_1, stringer_u_2,

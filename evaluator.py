@@ -42,9 +42,6 @@ class Evaluator:
                                 + airfoil.spar.mass
                                 + airfoil.stringer.mass)
         self.mass_dist = []
-        # Coordinates
-        self.x = airfoil.x
-        self.z = airfoil.z
         # Lift
         self.lift_rectangular = []
         self.lift_elliptical = []
@@ -65,29 +62,33 @@ class Evaluator:
         name = '    EVALUATOR DATA    '
         num_of_dashes = len(name)
 
-        print(num_of_dashes * '-')
-        print(name)
-        print('Evaluating:', self.airfoil)
-        print('Chord length:', self.chord)
-        print('Semi-span:', self.semi_span)
-        print('Total airfoil mass:', self.mass_total)
-        print('Centroid location:\n', np.around(self.centroid, 3))
-        print('Inertia terms:')
-        print('I_x:\n', np.around(self.I_['x'], 3))
-        print('I_z:\n', np.around(self.I_['z'], 3))
-        print('I_xz:\n', np.around(self.I_['xz'], 3))
-        print('Spar dP_x:\n', self.spar.dP_x)
-        print('Spar dP_z:\n', self.spar.dP_z)
-        print(num_of_dashes * '-')
-        print('Rectangular lift along semi-span:\n',
-              np.around(self.lift_rectangular, round))
-        print('Elliptical lift along semi-span:\n',
-              np.around(self.lift_elliptical, round))
-        print('Combined lift along semi-span:\n',
-              np.around(self.lift_total, round))
-        print('Distribution of mass along semi-span:\n',
-              np.around(self.mass_dist, round))
-        print('Drag along semi-span:\n', np.around(self.drag, round))
+        try:
+            print(num_of_dashes * '-')
+            print(name)
+            print('Evaluating:', self.airfoil)
+            print('Chord length:', self.chord)
+            print('Semi-span:', self.semi_span)
+            print('Total airfoil mass:', self.mass_total)
+            print('Centroid location:\n', np.around(self.centroid, 3))
+            print('Inertia terms:')
+            print('I_x:\n', np.around(self.I_['x'], 3))
+            print('I_z:\n', np.around(self.I_['z'], 3))
+            print('I_xz:\n', np.around(self.I_['xz'], 3))
+            print('Spar dP_x:\n', self.spar.dP_x)
+            print('Spar dP_z:\n', self.spar.dP_z)
+            print(num_of_dashes * '-')
+            print('Rectangular lift along semi-span:\n',
+                  np.around(self.lift_rectangular, round))
+            print('Elliptical lift along semi-span:\n',
+                  np.around(self.lift_elliptical, round))
+            print('Combined lift along semi-span:\n',
+                  np.around(self.lift_total, round))
+            print('Distribution of mass along semi-span:\n',
+                  np.around(self.mass_dist, round))
+            print('Drag along semi-span:\n', np.around(self.drag, round))
+        except AttributeError:
+            print(num_of_dashes * '-')
+            print('Cannot print full evaluation. Was the airfoil analyzed?')
         return None
 
     def info_save(self, save_path, number):
@@ -246,11 +247,11 @@ def plot_geom(evaluator):
     plt.plot(evaluator.chord / 4, 0,
              '.', color='g', markersize=24, label='Quarter-chord')
     # Plot airfoil surfaces
-    x = [0.98 * x for x in evaluator.x]
-    y = [0.98 * z for z in evaluator.z]
+    x = [0.98 * x for x in evaluator.airfoil.x]
+    y = [0.98 * z for z in evaluator.airfoil.z]
     plt.fill(x, y, color='w', linewidth='1', fill=False)
-    x = [1.02 * x for x in evaluator.x]
-    y = [1.02 * z for z in evaluator.z]
+    x = [1.02 * x for x in evaluator.airfoil.x]
+    y = [1.02 * z for z in evaluator.airfoil.z]
     plt.fill(x, y, color='b', linewidth='1', fill=False)
 
     # Plot spars
@@ -279,7 +280,7 @@ def plot_geom(evaluator):
     plt.xlabel('X axis')
     plt.ylabel('Z axis')
 
-    plot_bound = max(evaluator.x)
+    plot_bound = max(evaluator.airfoil.x)
     plt.xlim(-0.10 * plot_bound, 1.10 * plot_bound)
     plt.ylim(-(1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
     plt.gca().set_aspect('equal', adjustable='box')
