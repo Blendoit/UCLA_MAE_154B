@@ -15,10 +15,10 @@
 
 """
 The creator.py module contains class definitions for coordinates
-and various components we add to an airfoil (spars, stringers, and ribs.)
+and various components we add to an airfoil (spars, stringers, and ribs).
 
 Classes:
-    Airfoil: instantiated with class method to provide coordinates to heirs
+    Airfoil: instantiated with class method to provide coordinates to heirs.
     Spar: inherits from Airfoil.
     Stringer: also inherits from Airfoil.
 
@@ -73,7 +73,7 @@ class Airfoil:
 
     def add_naca(self, naca_num):
         """
-        This function generates geometry for our chosen NACA airfoil shape.
+        This function generates geometry for a NACA number passed as argument.
         The nested functions perform the required steps to generate geometry,
         and can be called to solve the geometry y-coordinate for any 'x' input.
         Equation coefficients were retrieved from Wikipedia.org.
