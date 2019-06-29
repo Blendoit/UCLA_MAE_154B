@@ -57,15 +57,12 @@ def main():
     Evaluate an airfoil;
     Generate a population of airfoils & optimize.
     """
-    # Create coordinate system specific to our airfoil dimensions.
-    # TODO: imperial + metric unit setting
-    creator.Coordinates.from_chord(CHORD_LENGTH, SEMI_SPAN)
 
     # Interate through all wings in population, creating and evaluating them.
     for _ in range(1, POP_SIZE + 1):
 
         # Create airfoil instance
-        af = creator.Airfoil()
+        af = creator.Airfoil.from_dimensions(CHORD_LENGTH, SEMI_SPAN)
         # Define NACA airfoil coordinates and mass
         af.add_naca(NACA_NUM)
         af.add_mass(AIRFOIL_MASS)
@@ -107,7 +104,7 @@ def main():
         eval.analysis(1, 1)
         # eval.info_print(2)
         # eval.info_save(SAVE_PATH, _)
-        evaluator.plot_geom(eval)
+        # evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 
         pop = generator.Population(10)

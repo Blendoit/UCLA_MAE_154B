@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-The 'evaluator' module contains a single Evaluator class,
+The evaluator.py module contains a single Evaluator class,
 which knows all the attributes of a specified Airfoil instance,
 and contains functions to analyse the airfoil's geometrical
 & structural properties.

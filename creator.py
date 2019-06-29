@@ -18,10 +18,9 @@ The creator.py module contains class definitions for coordinates
 and various components we add to an airfoil (spars, stringers, and ribs.)
 
 Classes:
-    Coordinates: always instantiated first, but never assigned to object.
-    Airfoil: inherits from Coordinates & automatically aware of airfoil size.
-    Spar: also inherits from Coordinates.
-    Stringer: also inherits from Coordinates.
+    Airfoil: instantiated with class method to provide coordinates to heirs
+    Spar: inherits from Airfoil.
+    Stringer: also inherits from Airfoil.
 
 Functions:
     plot_geom(airfoil): generates a 2D plot of the airfoil & any components.
@@ -35,19 +34,18 @@ import bisect as bi
 import matplotlib.pyplot as plt
 
 
-class Coordinates:
+class Airfoil:
     """
-    All airfoil components need the following:
+    This class represents a single NACA airfoil.
 
-    Parameters:
-        Component material
-        Coordinates relative to the chord & semi-span
+    Please note: the coordinates are saved as two lists
+    for the x- and z-coordinates. The coordinates start at
+    the leading edge, travel over the airfoil's upper edge,
+    then loop back to the leading edge via the lower edge.
 
-    Methods:
-        Print component coordinates
-        Save component coordinates to file specified in main.py
-
-    So, all component classes inherit from class Coordinates.
+    This method was chosen for easier future exports
+    to 3D CAD packages like SolidWorks, which can import such
+    geometry as coordinates written in a CSV file.
     """
 
     # Defaults
@@ -65,77 +63,13 @@ class Coordinates:
         self.z = []
 
     @classmethod
-    def from_chord(cls, chord, semi_span):
+    def from_dimensions(cls, chord, semi_span):
         cls.chord = chord
         cls.semi_span = semi_span
-        return None
+        return Airfoil()
 
     def __str__(self):
         return type(self).__name__
-
-    def info_print(self, round):
-        """
-        Print all the component's coordinates to the terminal.
-
-        This function's output is piped to the 'save_coord' function below.
-        """
-
-        name = '    CREATOR DATA    '
-        num_of_dashes = len(name)
-
-        print(num_of_dashes * '-')
-        print(name)
-        print('Component:', str(self))
-        print('Chord length:', self.chord)
-        print('Semi-span:', self.semi_span)
-        print('Mass:', self.mass)
-        print(num_of_dashes * '-')
-        print('x-coordinates:\n', np.around(self.x, round))
-        print('z-coordinates:\n', np.around(self.z, round))
-        return None
-
-    def info_save(self, save_path, number):
-        """
-        Save all the object's coordinates (must be full path).
-        """
-
-        file_name = '{}_{}.txt'.format(str(self).lower(), number)
-        full_path = os.path.join(save_path, file_name)
-        try:
-            with open(full_path, 'w') as sys.stdout:
-                self.info_print(6)
-                # This line required to reset behavior of sys.stdout
-                sys.stdout = sys.__stdout__
-                print('Successfully wrote to file {}'.format(full_path))
-        except IOError:
-            print('Unable to write {} to specified directory.\n'
-                  .format(file_name),
-                  'Was the full path passed to the function?')
-        return None
-
-
-class Airfoil(Coordinates):
-    """
-    This class represents a single NACA airfoil.
-
-    Please note: the coordinates are saved as two lists
-    for the x- and z-coordinates. The coordinates start at
-    the leading edge, travel over the airfoil's upper edge,
-    then loop back to the leading edge via the lower edge.
-
-    This method was chosen for easier future exports
-    to 3D CAD packages like SolidWorks, which can import such
-    geometry as coordinates written in a CSV file.
-    """
-
-    def __init__(self):
-        # Run 'Coordinates' super class init method with same chord & 1/2 span.
-        super().__init__()
-        # NACA number
-        self.naca_num = int()
-        # Mean camber line
-        self.x_c = []
-        self.z_c = []
 
     def add_naca(self, naca_num):
         """
@@ -213,6 +147,8 @@ class Airfoil(Coordinates):
         x_chord_rev.extend(extend)
 
         # Generate our airfoil geometry from previous sub-functions.
+        self.x_c = []
+        self.z_c = []
         for x in x_chord:
             self.x_c.append(x)
             self.z_c.append(get_camber(x))
@@ -227,13 +163,47 @@ class Airfoil(Coordinates):
         self.mass = mass
 
     def info_print(self, round):
-        super().info_print(round)
-        print('x_c the camber x-coordinates:\n', np.around(self.x_c, round))
-        print('z_c the camber z-coordinates:\n', np.around(self.z_c, round))
+        """
+        Print all the component's coordinates to the terminal.
+
+        This function's output is piped to the 'save_coord' function below.
+        """
+
+        name = '    CREATOR DATA    '
+        num_of_dashes = len(name)
+
+        print(num_of_dashes * '-')
+        print(name)
+        print('Component:', str(self))
+        print('Chord length:', self.chord)
+        print('Semi-span:', self.semi_span)
+        print('Mass:', self.mass)
+        print(num_of_dashes * '-')
+        print('x-coordinates:\n', np.around(self.x, round))
+        print('z-coordinates:\n', np.around(self.z, round))
+        return None
+
+    def info_save(self, save_path, number):
+        """
+        Save all the object's coordinates (must be full path).
+        """
+
+        file_name = '{}_{}.txt'.format(str(self).lower(), number)
+        full_path = os.path.join(save_path, file_name)
+        try:
+            with open(full_path, 'w') as sys.stdout:
+                self.info_print(6)
+                # This line required to reset behavior of sys.stdout
+                sys.stdout = sys.__stdout__
+                print('Successfully wrote to file {}'.format(full_path))
+        except IOError:
+            print('Unable to write {} to specified directory.\n'
+                  .format(file_name),
+                  'Was the full path passed to the function?')
         return None
 
 
-class Spar(Coordinates):
+class Spar(Airfoil):
     """Contains a single spar's location."""
 
     def __init__(self):
@@ -291,7 +261,7 @@ class Spar(Coordinates):
         return None
 
 
-class Stringer(Coordinates):
+class Stringer(Airfoil):
     """Contains the coordinates of all stringers."""
 
     def __init__(self):

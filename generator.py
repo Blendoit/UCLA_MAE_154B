@@ -13,18 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-The 'generator' module contains a single Population class,
+The generator.py module contains a single Population class,
 which represents a collection of randomized airfoils.
 """
 
-import creator as cr
+import creator
 
 
-class Population(cr.Airfoil, cr.Spar, cr.Stringer):
+class Population(creator.Airfoil):
     """Collection of random airfoils."""
 
     def __init__(self, size):
-        af = cr.Airfoil
+        af = creator.Airfoil
         # print(af)
         self.size = size
         self.gen_number = 0  # incremented for every generation
