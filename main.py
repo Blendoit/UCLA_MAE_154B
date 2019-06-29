@@ -97,7 +97,7 @@ def main():
         af.stringer.add_webs(SKIN_THICKNESS)
         # af.stringer.info_print(2)
         # af.stringer.info_save(SAVE_PATH, _)
-#
+
         # Plot components with matplotlib
         # creator.plot_geom(af)
 

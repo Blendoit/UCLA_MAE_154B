@@ -202,18 +202,21 @@ class Evaluator:
     def get_dz(self, component):
         return [x - self.centroid[1] for x in component.x_start]
 
+    def get_dP(self, xDist, zDist, V_x, V_z, area):
+        I_x = self.I_['x']
+        I_z = self.I_['z']
+        I_xz = self.I_['xz']
+        denom = float(I_x * I_z - I_xz ** 2)
+        z = float()
+        for _ in range(len(xDist)):
+            z += float(-area * xDist[_] * (I_x * V_x - I_xz * V_z)
+                       / denom
+                       - area * zDist[_] * (I_z * V_z - I_xz * V_x)
+                       / denom)
+        return z
+
     def analysis(self, V_x, V_z):
         """Perform all analysis calculations and store in class instance."""
-
-        def get_dP(xDist, zDist, V_x, V_z, I_x, I_z, I_xz, area):
-            denom = float(I_x * I_z - I_xz ** 2)
-            z = float()
-            for _ in range(len(xDist)):
-                z += float(-area * xDist[_] * (I_x * V_x - I_xz * V_z)
-                           / denom
-                           - area * zDist[_] * (I_z * V_z - I_xz * V_x)
-                           / denom)
-            return z
 
         self.drag = self.get_drag(10)
         self.lift_rectangular = self.get_lift_rectangular(13.7)
@@ -226,14 +229,10 @@ class Evaluator:
         self.I_['xz'] = self.get_inertia_terms()[2]
         spar_dx = self.get_dx(self.spar)
         spar_dz = self.get_dz(self.spar)
-        self.spar.dP_x = get_dP(spar_dx, spar_dz,
-                                V_x, 0,
-                                self.I_['x'], self.I_['z'], self.I_['xz'],
-                                self.spar.cap_area)
-        self.spar.dP_z = get_dP(spar_dx, spar_dz,
-                                0, V_z,
-                                self.I_['x'], self.I_['z'], self.I_['xz'],
-                                self.spar.cap_area)
+        self.spar.dP_x = self.get_dP(spar_dx, spar_dz,
+                                     V_x, 0, self.spar.cap_area)
+        self.spar.dP_z = self.get_dP(spar_dx, spar_dz,
+                                     0, V_z, self.spar.cap_area)
         return None
 
 
