@@ -13,27 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
+import creator
 import tkinter as tk
-from tkinter import ttk
+import tkinter.ttk as ttk
 
-
-class Input:
-    '''User inputs.'''
-
-    def __init__(self, master):
-        ttk.Frame(master).grid(row=0, column=0)
-        ttk.Label(master, text='NACA Number').grid(row=0, sticky='W')
-        ttk.Label(master, text='Chord Length').grid(row=1, sticky='W')
-        ttk.Entry(master).grid(row=0, column=1)
-        ttk.Entry(master).grid(row=1, column=1)
-
-
-class Graph:
-    '''Graph airfoil.'''
-
-    def __init__(self, master):
-        ttk.Frame(master).grid(row=0, column=1)
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+import numpy as np
 
 
 def main():
@@ -41,8 +28,45 @@ def main():
     root.title('MAE 154B - Airfoil Design, Evaluation, Optimization')
     root.geometry('1000x400')
 
-    Input(root)
-    Graph(root)
+    frame = ttk.Frame(root).grid(row=0, column=0)
+    ttk.Label(frame, text='NACA Number').grid(row=0, sticky='W')
+    ttk.Entry(frame).grid(row=0, column=1)
+    ttk.Label(frame, text='Chord Length').grid(row=1, sticky='W')
+    ttk.Entry(frame).grid(row=1, column=1)
+
+    # Create airfoil instance
+    creator.Coordinates(68, 200)
+    af = creator.Airfoil()
+    af.add_naca(2412)
+    af.add_mass(10)
+
+    af.spar = creator.Spar()
+    af.spar.add_coord(af, 0.20)
+    af.spar.add_coord(af, 0.65)
+    af.spar.add_spar_caps(0.03)
+    af.spar.add_mass(0.04)
+    af.spar.add_webs(0.02)
+
+    af.stringer = creator.Stringer()
+    af.stringer.add_coord(af, 3, 6, 5, 4)
+    af.stringer.add_area(0.1)
+    af.stringer.add_mass(0.02)
+    af.stringer.add_webs(0.03)
+
+    frame = ttk.Frame(root).grid(row=0, column=1)
+
+    fig = plt.Figure(figsize=(5, 4), dpi=100)
+    t = np.arange(0, 3, .01)
+    fig.add_subplot(111).plot(af.x, af.z)
+
+    canvas = FigureCanvasTkAgg(fig, master=frame)  # A tk.DrawingArea.
+    # canvas.draw()
+    canvas.get_tk_widget().grid(row=0, column=1)
+
+    # toolbar = NavigationToolbar2Tk(canvas, master)
+    # toolbar.update()
+    # canvas.get_tk_widget().grid(row=0, column=1)
+
     root.mainloop()
     return None
 
