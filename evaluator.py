@@ -53,46 +53,27 @@ class Evaluator:
         # Inertia terms:
         self.I_ = {'x': 0, 'z': 0, 'xz': 0}
 
+    def __str__(self):
+        return type(self).__name__
+
     def info_print(self, round):
-        """
-        Print all the component's evaluated data to the terminal.
-
-        This function's output is piped to the 'save_data' function below.
-        """
-        name = '    EVALUATOR DATA    '
+        """Print all the component's evaluated data to the terminal."""
+        name = '    EVALUATOR DATA FOR {}    '.format(str(self).upper())
         num_of_dashes = len(name)
-
-        try:
-            print(num_of_dashes * '-')
-            print(name)
-            print('Evaluating:', self.airfoil)
-            print('Chord length:', self.chord)
-            print('Semi-span:', self.semi_span)
-            print('Total airfoil mass:', self.mass_total)
-            print('Centroid location:\n', np.around(self.centroid, 3))
-            print('Inertia terms:')
-            print('I_x:\n', np.around(self.I_['x'], 3))
-            print('I_z:\n', np.around(self.I_['z'], 3))
-            print('I_xz:\n', np.around(self.I_['xz'], 3))
-            print('Spar dP_x:\n', self.spar.dP_x)
-            print('Spar dP_z:\n', self.spar.dP_z)
-            print(num_of_dashes * '-')
-            print('Rectangular lift along semi-span:\n',
-                  np.around(self.lift_rectangular, round))
-            print('Elliptical lift along semi-span:\n',
-                  np.around(self.lift_elliptical, round))
-            print('Combined lift along semi-span:\n',
-                  np.around(self.lift_total, round))
-            print('Distribution of mass along semi-span:\n',
-                  np.around(self.mass_dist, round))
-            print('Drag along semi-span:\n', np.around(self.drag, round))
-        except AttributeError:
-            print(num_of_dashes * '-')
-            print('Cannot print full evaluation. Was the airfoil analyzed?')
+        print(num_of_dashes * '-')
+        print(name)
+        for k, v in self.__dict__.items():
+            if type(v) != list:
+                print('{}:\n'.format(k), v)
+        print(num_of_dashes * '-')
+        for k, v in self.__dict__.items():
+            if type(v) == list:
+                print('{}:\n'.format(k), np.around(v, round))
         return None
 
     def info_save(self, save_path, number):
         """Save all the object's coordinates (must be full path)."""
+
         file_name = 'airfoil_{}_eval.txt'.format(number)
         full_path = os.path.join(save_path, file_name)
         try:

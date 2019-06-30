@@ -24,7 +24,7 @@ start_time = time.time()
 
 # Airfoil dimensions
 NACA_NUM = 2412
-CHORD_LENGTH = 68  # inches
+CHORD_LENGTH = 2  # inches
 SEMI_SPAN = 150  # inches
 
 # Thicknesses
@@ -67,7 +67,7 @@ def main():
         af.add_naca(NACA_NUM)
         af.add_mass(AIRFOIL_MASS)
         # af.info_print(2)
-        # af.info_save(SAVE_PATH, _)
+        af.info_save(SAVE_PATH, _)
 
         # Create spar instance
         af.spar = creator.Spar()
@@ -79,7 +79,7 @@ def main():
         af.spar.add_mass(SPAR_MASS)
         af.spar.add_webs(SPAR_THICKNESS)
         # af.spar.info_print(2)
-        # af.spar.info_save(SAVE_PATH, _)
+        af.spar.info_save(SAVE_PATH, _)
 
         # Create stringer instance
         af.stringer = creator.Stringer()
@@ -93,17 +93,17 @@ def main():
         af.stringer.add_mass(STRINGER_MASS)
         af.stringer.add_webs(SKIN_THICKNESS)
         # af.stringer.info_print(2)
-        # af.stringer.info_save(SAVE_PATH, _)
+        af.stringer.info_save(SAVE_PATH, _)
 
         # Plot components with matplotlib
-        creator.plot_geom(af, True)
+        # creator.plot_geom(af, True)
 
         # Evaluator object contains airfoil analysis results.
         eval = evaluator.Evaluator(af)
         # The analysis is performed in the evaluator.py module.
         eval.analysis(1, 1)
         # eval.info_print(2)
-        # eval.info_save(SAVE_PATH, _)
+        eval.info_save(SAVE_PATH, _)
         # evaluator.plot_geom(eval)
         # evaluator.plot_lift(eval)
 

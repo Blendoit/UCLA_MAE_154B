@@ -41,9 +41,9 @@ def main():
     frame_2 = ttk.Frame(root)
     fig, ax = creator.plot_geom(af, False)
     plot = FigureCanvasTkAgg(fig, frame_2)
-    plot.draw()
+    # plot.draw()
     toolbar = NavigationToolbar2Tk(plot, frame_2)
-    toolbar.update()
+    # toolbar.update()
 
     # Layout
     # User input
@@ -53,7 +53,7 @@ def main():
     e_chord.grid(row=1, column=1, padx=4)
     frame_1.pack(side=tk.LEFT)
     # Graph window
-    plot.get_tk_widget().pack(fill=tk.BOTH)
+    plot.get_tk_widget().pack(expand=1, fill=tk.BOTH)
     toolbar.pack()
     frame_2.pack(side=tk.LEFT)
 

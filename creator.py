@@ -64,7 +64,11 @@ class Airfoil:
 
     @classmethod
     def from_dimensions(cls, chord, semi_span):
-        cls.chord = chord
+        if chord > 20:
+            cls.chord = chord
+        else:
+            cls.chord = 20
+            print('Chord too small, using minimum value of 20.')
         cls.semi_span = semi_span
         return Airfoil()
 
@@ -163,24 +167,20 @@ class Airfoil:
         self.mass = mass
 
     def info_print(self, round):
-        """
-        Print all the component's coordinates to the terminal.
+        # TODO: implement this info getting method!
+        """Print all the component's coordinates to the terminal."""
 
-        This function's output is piped to the 'save_coord' function below.
-        """
-
-        name = '    CREATOR DATA    '
+        name = '    CREATOR DATA FOR {}    '.format(str(self).upper())
         num_of_dashes = len(name)
-
         print(num_of_dashes * '-')
         print(name)
-        print('Component:', str(self))
-        print('Chord length:', self.chord)
-        print('Semi-span:', self.semi_span)
-        print('Mass:', self.mass)
+        for k, v in self.__dict__.items():
+            if type(v) != list:
+                print('{}:\n'.format(k), v)
         print(num_of_dashes * '-')
-        print('x-coordinates:\n', np.around(self.x, round))
-        print('z-coordinates:\n', np.around(self.z, round))
+        for k, v in self.__dict__.items():
+            if type(v) == list:
+                print('{}:\n'.format(k), np.around(v, round))
         return None
 
     def info_save(self, save_path, number):
@@ -398,9 +398,13 @@ def plot_geom(airfoil, view: False):
         print('No stringers to plot.')
 
     # Graph formatting
+    plot_bound = max(airfoil.x)
     ax.set(title='NACA ' + str(airfoil.naca_num) + ' airfoil',
            xlabel='X axis',
-           ylabel='Z axis', ylim=[-50, 50])
+           xlim=[- 0.10 * plot_bound, 1.10 * plot_bound],
+           ylabel='Z axis',
+           ylim=[- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2)])
+
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.gca().legend(bbox_to_anchor=(1, 1),
