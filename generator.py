@@ -20,6 +20,29 @@ which represents a collection of randomized airfoils.
 import creator
 
 
+def default_airfoil():
+    """Generate the default airfoil."""
+
+    airfoil = creator.Airfoil.from_dimensions(100, 200)
+    airfoil.add_naca(2412)
+    airfoil.add_mass(10)
+
+    airfoil.spar = creator.Spar()
+    airfoil.spar.add_coord(airfoil, 0.23)
+    airfoil.spar.add_coord(airfoil, 0.57)
+    airfoil.spar.add_spar_caps(0.3)
+    airfoil.spar.add_mass(10)
+    airfoil.spar.add_webs(0.4)
+
+    airfoil.stringer = creator.Stringer()
+    airfoil.stringer.add_coord(airfoil, 3, 6, 5, 4)
+    airfoil.stringer.add_area(0.1)
+    airfoil.stringer.add_mass(5)
+    airfoil.stringer.add_webs(0.1)
+
+    return airfoil
+
+
 class Population(creator.Airfoil):
     """Collection of random airfoils."""
 

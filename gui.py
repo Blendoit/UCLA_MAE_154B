@@ -14,37 +14,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import creator
+import evaluator
+import generator
 import tkinter as tk
 import tkinter.ttk as ttk
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
-
-
-def make_airfoil():
-    """Create airfoil instance."""
-
-    airfoil = creator.Airfoil.from_dimensions(100, 200)
-    airfoil.add_naca(2412)
-    airfoil.add_mass(10)
-
-    airfoil.spar = creator.Spar()
-    airfoil.spar.add_coord(airfoil, 0.23)
-    airfoil.spar.add_coord(airfoil, 0.57)
-    airfoil.spar.add_spar_caps(0.3)
-    airfoil.spar.add_mass(10)
-    airfoil.spar.add_webs(0.4)
-
-    airfoil.stringer = creator.Stringer()
-    airfoil.stringer.add_coord(airfoil,
-                               3,
-                               6,
-                               5,
-                               4)
-    airfoil.stringer.add_area(0.1)
-    airfoil.stringer.add_mass(5)
-    airfoil.stringer.add_webs(0.1)
-    return airfoil
 
 
 def main():
@@ -57,18 +33,18 @@ def main():
     e_naca = ttk.Entry(root)
     l_chord = ttk.Label(root, text='Chord Length')
     e_chord = ttk.Entry(root)
-    af = make_airfoil()
+    af = generator.default_airfoil()
 
     # # Graph window
     fig, ax = creator.plot_geom(af, False)
 
-    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
-    canvas.draw()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    plot = FigureCanvasTkAgg(fig, master=root)
+    plot.draw()
+    plot.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar = NavigationToolbar2Tk(plot, root)
     toolbar.update()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    plot.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     # # Layout
     l_naca.pack()
