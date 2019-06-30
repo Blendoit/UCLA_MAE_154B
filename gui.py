@@ -28,29 +28,36 @@ def main():
     root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
     # root.geometry('1000x400')
 
-    # # User inputs
-    l_naca = ttk.Label(root, text='NACA Number')
-    e_naca = ttk.Entry(root)
-    l_chord = ttk.Label(root, text='Chord Length')
-    e_chord = ttk.Entry(root)
+    # Object definition
+    # User inputs
+    frame_1 = ttk.Frame(root)
+    l_naca = ttk.Label(frame_1, text='NACA Number')
+    naca = tk.StringVar()
+    e_naca = ttk.Entry(frame_1, textvariable=naca)
+    l_chord = ttk.Label(frame_1, text='Chord Length')
+    e_chord = ttk.Entry(frame_1)
     af = generator.default_airfoil()
-
-    # # Graph window
+    # Graph window
+    frame_2 = ttk.Frame(root)
     fig, ax = creator.plot_geom(af, False)
-
-    plot = FigureCanvasTkAgg(fig, master=root)
+    plot = FigureCanvasTkAgg(fig, frame_2)
     plot.draw()
-    plot.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    toolbar = NavigationToolbar2Tk(plot, root)
+    toolbar = NavigationToolbar2Tk(plot, frame_2)
     toolbar.update()
-    plot.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-    # # Layout
-    l_naca.pack()
-    e_naca.pack()
-    l_chord.pack()
-    e_chord.pack()
+    # Layout
+    # User input
+    l_naca.grid(row=0, column=0)
+    e_naca.grid(row=0, column=1, padx=4)
+    l_chord.grid(row=1, column=0)
+    e_chord.grid(row=1, column=1, padx=4)
+    frame_1.pack(side=tk.LEFT)
+    # Graph window
+    plot.get_tk_widget().pack(fill=tk.BOTH)
+    toolbar.pack()
+    frame_2.pack(side=tk.LEFT)
+
+    # plot.get_tk_widget().pack()
 
     root.mainloop()
 

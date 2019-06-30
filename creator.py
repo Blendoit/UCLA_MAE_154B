@@ -362,30 +362,30 @@ def plot_geom(airfoil, view: False):
     """This function plots the airfoil's + sub-components' geometry."""
 
     fig, ax = plt.subplots()
-    ax.axis('off')
+    # ax.axis('off')
 
     # Plot chord
     x = [0, airfoil.chord]
     y = [0, 0]
-    fig.add_subplot(111).plot(x, y, linewidth='1')
+    ax.plot(x, y, linewidth='1')
     # Plot quarter chord
-    fig.add_subplot(111).plot(airfoil.chord / 4, 0,
-                              '.', color='g', markersize=24,
-                              label='Quarter-chord')
+    ax.plot(airfoil.chord / 4, 0,
+            '.', color='g', markersize=24,
+            label='Quarter-chord')
     # Plot mean camber line
-    fig.add_subplot(111).plot(airfoil.x_c, airfoil.z_c,
-                              '-.', color='r', linewidth='2',
-                              label='Mean camber line')
+    ax.plot(airfoil.x_c, airfoil.z_c,
+            '-.', color='r', linewidth='2',
+            label='Mean camber line')
     # Plot airfoil surfaces
-    fig.add_subplot(111).plot(airfoil.x, airfoil.z,
-                              color='b', linewidth='1')
+    ax.plot(airfoil.x, airfoil.z,
+            color='b', linewidth='1')
 
     # Plot spars
     try:
         for _ in range(len(airfoil.spar.x)):
             x = (airfoil.spar.x[_])
             y = (airfoil.spar.z[_])
-            fig.add_subplot(111).plot(x, y, '-', color='y', linewidth='4')
+            ax.plot(x, y, '-', color='y', linewidth='4')
     except AttributeError:
         print('No spars to plot.')
     # Plot stringers
@@ -393,17 +393,19 @@ def plot_geom(airfoil, view: False):
         for _ in range(0, len(airfoil.stringer.x)):
             x = airfoil.stringer.x[_]
             y = airfoil.stringer.z[_]
-            fig.add_subplot(111).plot(x, y, '.', color='y', markersize=12)
+            ax.plot(x, y, '.', color='y', markersize=12)
     except AttributeError:
         print('No stringers to plot.')
 
     # Graph formatting
     ax.set(title='NACA ' + str(airfoil.naca_num) + ' airfoil',
            xlabel='X axis',
-           ylabel='Z axis')
+           ylabel='Z axis', ylim=[-50, 50])
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.gca().legend()
+    plt.gca().legend(bbox_to_anchor=(1, 1),
+                     bbox_transform=plt.gcf().transFigure)
+
     if view == True:
         plt.show()
     else:
