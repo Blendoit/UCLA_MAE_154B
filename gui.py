@@ -19,39 +19,65 @@ import tkinter.ttk as ttk
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.figure import Figure
-
-import numpy as np
 
 
-root = tk.Tk()
-root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
-# root.geometry('1000x400')
+def make_airfoil():
+    """Create airfoil instance."""
 
-# # User inputs
-# l_naca = ttk.Label(root, text='NACA Number')
-# e_naca = ttk.Entry(root)
-# l_chord = ttk.Label(root, text='Chord Length')
-# e_chord = ttk.Entry(root)
-# # Graph window
+    airfoil = creator.Airfoil.from_dimensions(100, 200)
+    airfoil.add_naca(2412)
+    airfoil.add_mass(10)
 
-fig = Figure()
-t = np.arange(0, 3, .01)
-fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
+    airfoil.spar = creator.Spar()
+    airfoil.spar.add_coord(airfoil, 0.23)
+    airfoil.spar.add_coord(airfoil, 0.57)
+    airfoil.spar.add_spar_caps(0.3)
+    airfoil.spar.add_mass(10)
+    airfoil.spar.add_webs(0.4)
 
-canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
-canvas.draw()
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    airfoil.stringer = creator.Stringer()
+    airfoil.stringer.add_coord(airfoil,
+                               3,
+                               6,
+                               5,
+                               4)
+    airfoil.stringer.add_area(0.1)
+    airfoil.stringer.add_mass(5)
+    airfoil.stringer.add_webs(0.1)
+    return airfoil
 
-toolbar = NavigationToolbar2Tk(canvas, root)
-toolbar.update()
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+def main():
+    root = tk.Tk()
+    root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
+    # root.geometry('1000x400')
+
+    # # User inputs
+    l_naca = ttk.Label(root, text='NACA Number')
+    e_naca = ttk.Entry(root)
+    l_chord = ttk.Label(root, text='Chord Length')
+    e_chord = ttk.Entry(root)
+    af = make_airfoil()
+
+    # # Graph window
+    fig, ax = creator.plot_geom(af, False)
+
+    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    # # Layout
+    l_naca.pack()
+    e_naca.pack()
+    l_chord.pack()
+    e_chord.pack()
+
+    root.mainloop()
 
 
-# # Layout
-# l_naca.grid(row=0, sticky='W')
-# e_naca.grid(row=0, column=1)
-# l_chord.grid(row=1, sticky='W')
-# e_chord.grid(row=1, column=1)
-
-root.mainloop()
+if __name__ == '__main__':
+    main()

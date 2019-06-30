@@ -32,7 +32,6 @@ import numpy as np
 from math import sin, cos, atan, sqrt
 import bisect as bi
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 
 
 class Airfoil:
@@ -359,29 +358,34 @@ class Stringer(Airfoil):
         return None
 
 
-def plot_geom(airfoil):
+def plot_geom(airfoil, view: False):
     """This function plots the airfoil's + sub-components' geometry."""
 
-    fig = Figure()
+    fig, ax = plt.subplots()
+    ax.axis('off')
+
     # Plot chord
-    x_chord = [0, airfoil.chord]
-    y_chord = [0, 0]
-    plt.plot(x_chord, y_chord, linewidth='1')
+    x = [0, airfoil.chord]
+    y = [0, 0]
+    fig.add_subplot(111).plot(x, y, linewidth='1')
     # Plot quarter chord
-    plt.plot(airfoil.chord / 4, 0, '.', color='g',
-             markersize=24, label='Quarter-chord')
+    fig.add_subplot(111).plot(airfoil.chord / 4, 0,
+                              '.', color='g', markersize=24,
+                              label='Quarter-chord')
     # Plot mean camber line
-    plt.plot(airfoil.x_c, airfoil.z_c, '-.', color='r', linewidth='2',
-             label='Mean camber line')
+    fig.add_subplot(111).plot(airfoil.x_c, airfoil.z_c,
+                              '-.', color='r', linewidth='2',
+                              label='Mean camber line')
     # Plot airfoil surfaces
-    plt.fill(airfoil.x, airfoil.z, color='b', linewidth='1', fill=False)
+    fig.add_subplot(111).plot(airfoil.x, airfoil.z,
+                              color='b', linewidth='1')
 
     # Plot spars
     try:
         for _ in range(len(airfoil.spar.x)):
             x = (airfoil.spar.x[_])
             y = (airfoil.spar.z[_])
-            plt.plot(x, y, '-', color='y', linewidth='4')
+            fig.add_subplot(111).plot(x, y, '-', color='y', linewidth='4')
     except AttributeError:
         print('No spars to plot.')
     # Plot stringers
@@ -389,21 +393,22 @@ def plot_geom(airfoil):
         for _ in range(0, len(airfoil.stringer.x)):
             x = airfoil.stringer.x[_]
             y = airfoil.stringer.z[_]
-            plt.plot(x, y, '.', color='y', markersize=12)
+            fig.add_subplot(111).plot(x, y, '.', color='y', markersize=12)
     except AttributeError:
         print('No stringers to plot.')
 
     # Graph formatting
-    plt.xlabel('X axis')
-    plt.ylabel('Z axis')
-    plot_bound = max(airfoil.x)
-    plt.xlim(- 0.10 * plot_bound, 1.10 * plot_bound)
-    plt.ylim(- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2))
+    ax.set(title='NACA ' + str(airfoil.naca_num) + ' airfoil',
+           xlabel='X axis',
+           ylabel='Z axis')
+    plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.gca().legend()
-    plt.grid(axis='both', linestyle=':', linewidth=1)
-    plt.show()
-    return None
+    if view == True:
+        plt.show()
+    else:
+        pass
+    return fig, ax
 
 
 def main():
