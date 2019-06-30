@@ -17,21 +17,41 @@ import creator
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.figure import Figure
 
-def main():
-    root = tk.Tk()
-    root.title('MAE 154B - Airfoil Design, Evaluation, Optimization')
-    root.geometry('1000x400')
-
-    frame = ttk.Frame(root).grid(row=0, column=0)
-    ttk.Label(frame, text='NACA Number').grid(row=0, sticky='W')
-    ttk.Entry(frame).grid(row=0, column=1)
-    ttk.Label(frame, text='Chord Length').grid(row=1, sticky='W')
-    ttk.Entry(frame).grid(row=1, column=1)
-
-    root.mainloop()
-    return None
+import numpy as np
 
 
-if __name__ == '__main__':
-    main()
+root = tk.Tk()
+root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
+# root.geometry('1000x400')
+
+# # User inputs
+# l_naca = ttk.Label(root, text='NACA Number')
+# e_naca = ttk.Entry(root)
+# l_chord = ttk.Label(root, text='Chord Length')
+# e_chord = ttk.Entry(root)
+# # Graph window
+
+fig = Figure()
+t = np.arange(0, 3, .01)
+fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
+
+canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+canvas.draw()
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+toolbar = NavigationToolbar2Tk(canvas, root)
+toolbar.update()
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+
+# # Layout
+# l_naca.grid(row=0, sticky='W')
+# e_naca.grid(row=0, column=1)
+# l_chord.grid(row=1, sticky='W')
+# e_chord.grid(row=1, column=1)
+
+root.mainloop()

@@ -72,8 +72,8 @@ def main():
         # Create spar instance
         af.spar = creator.Spar()
         # Define the spar coordinates and mass, stored in single spar object
-        af.spar.add_coord(af, 0.20)
-        af.spar.add_coord(af, 0.65)
+        af.spar.add_coord(af, 0.23)
+        af.spar.add_coord(af, 0.57)
         # Automatically adds spar caps for every previously defined
         af.spar.add_spar_caps(SPAR_CAP_AREA)
         af.spar.add_mass(SPAR_MASS)
@@ -104,8 +104,8 @@ def main():
         eval.analysis(1, 1)
         eval.info_print(2)
         eval.info_save(SAVE_PATH, _)
-        evaluator.plot_geom(eval)
-        evaluator.plot_lift(eval)
+        # evaluator.plot_geom(eval)
+        # evaluator.plot_lift(eval)
 
         pop = generator.Population(10)
 

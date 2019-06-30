@@ -32,6 +32,7 @@ import numpy as np
 from math import sin, cos, atan, sqrt
 import bisect as bi
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 
 class Airfoil:
@@ -235,7 +236,7 @@ class Spar(Airfoil):
         x = [airfoil.x[spar_x]]
         z = [airfoil.z[spar_x]]
         # Spar lower coordinates
-        spar_x = bi.bisect_left(airfoil.x[::-1], loc) - 1
+        spar_x = bi.bisect_left(airfoil.x[::-1], loc)
         x += [airfoil.x[-spar_x]]
         z += [airfoil.z[-spar_x]]
         self.x.append(x)
@@ -361,6 +362,7 @@ class Stringer(Airfoil):
 def plot_geom(airfoil):
     """This function plots the airfoil's + sub-components' geometry."""
 
+    fig = Figure()
     # Plot chord
     x_chord = [0, airfoil.chord]
     y_chord = [0, 0]
@@ -379,7 +381,7 @@ def plot_geom(airfoil):
         for _ in range(len(airfoil.spar.x)):
             x = (airfoil.spar.x[_])
             y = (airfoil.spar.z[_])
-            plt.plot(x, y, '-', color='b')
+            plt.plot(x, y, '-', color='y', linewidth='4')
     except AttributeError:
         print('No spars to plot.')
     # Plot stringers
