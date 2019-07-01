@@ -23,44 +23,69 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
-def main():
-    root = tk.Tk()
-    root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
-    # root.geometry('1000x400')
+# def main():
 
-    # Object definition
-    # User inputs
-    frame_1 = ttk.Frame(root)
-    l_naca = ttk.Label(frame_1, text='NACA Number')
-    naca = tk.StringVar()
-    e_naca = ttk.Entry(frame_1, textvariable=naca)
-    l_chord = ttk.Label(frame_1, text='Chord Length')
-    e_chord = ttk.Entry(frame_1)
-    af = generator.default_airfoil()
-    # Graph window
-    frame_2 = ttk.Frame(root)
-    fig, ax = creator.plot_geom(af, False)
-    plot = FigureCanvasTkAgg(fig, frame_2)
-    # plot.draw()
-    toolbar = NavigationToolbar2Tk(plot, frame_2)
-    # toolbar.update()
+def new_field(parent, name):
+    """Add a new user input field."""
 
-    # Layout
-    # User input
-    l_naca.grid(row=0, column=0)
-    e_naca.grid(row=0, column=1, padx=4)
-    l_chord.grid(row=1, column=0)
-    e_chord.grid(row=1, column=1, padx=4)
-    frame_1.pack(side=tk.LEFT)
-    # Graph window
-    plot.get_tk_widget().pack(expand=1, fill=tk.BOTH)
-    toolbar.pack()
-    frame_2.pack(side=tk.LEFT)
-
-    # plot.get_tk_widget().pack()
-
-    root.mainloop()
+    label = ttk.Label(parent, text=name)
+    entry = ttk.Entry(parent)
+    return label, entry
 
 
-if __name__ == '__main__':
-    main()
+def set_naca(name):
+    naca_num = name.get()
+    print(naca_num)
+
+
+def set_chord(name):
+    chord = name.get()
+    print(chord)
+
+
+def set_semi_span(name):
+    semi_span = name.get()
+    print(semi_span)
+
+
+root = tk.Tk()
+root.wm_title('MAE 154B - Airfoil Design, Evaluation, Optimization')
+# root.geometry('1000x400')
+
+# Object definition
+# User inputs
+frame_1 = ttk.Frame(root)
+l_naca, e_naca = new_field(frame_1, 'naca')
+l_chord, e_chord = new_field(frame_1, 'chord')
+l_semi_span, e_semi_span = new_field(frame_1, 'semi_span')
+af = generator.default_airfoil()
+# Graph window
+frame_2 = ttk.Frame(root)
+fig, ax = creator.plot_geom(af, False)
+plot = FigureCanvasTkAgg(fig, frame_2)
+# plot.draw()
+toolbar = NavigationToolbar2Tk(plot, frame_2)
+# toolbar.update()
+
+# Layout
+# User input
+l_naca.grid(row=0, column=0)
+e_naca.grid(row=0, column=1, padx=4)
+# b_naca.grid(row=0, column=2)
+l_chord.grid(row=1, column=0)
+e_chord.grid(row=1, column=1, padx=4)
+l_semi_span.grid(row=2, column=0, padx=4)
+e_semi_span.grid(row=2, column=1, padx=4)
+frame_1.pack(side=tk.LEFT)
+# Graph window
+plot.get_tk_widget().pack(expand=1, fill=tk.BOTH)
+toolbar.pack()
+frame_2.pack(side=tk.LEFT)
+
+# plot.get_tk_widget().pack()
+
+root.mainloop()
+
+
+# if __name__ == '__main__':
+#     main()
