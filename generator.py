@@ -22,7 +22,6 @@ import creator
 
 def default_airfoil():
     """Generate the default airfoil."""
-
     airfoil = creator.Airfoil.from_dimensions(100, 200)
     airfoil.add_naca(2412)
     airfoil.add_mass(10)

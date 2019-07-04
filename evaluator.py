@@ -73,7 +73,6 @@ class Evaluator:
 
     def info_save(self, save_path, number):
         """Save all the object's coordinates (must be full path)."""
-
         file_name = 'airfoil_{}_eval.txt'.format(number)
         full_path = os.path.join(save_path, file_name)
         try:
@@ -199,7 +198,6 @@ class Evaluator:
 
     def analysis(self, V_x, V_z):
         """Perform all analysis calculations and store in class instance."""
-
         self.drag = self.get_drag(10)
         self.lift_rectangular = self.get_lift_rectangular(13.7)
         self.lift_elliptical = self.get_lift_elliptical(15)

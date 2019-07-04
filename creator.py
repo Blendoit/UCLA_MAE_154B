@@ -35,8 +35,7 @@ import matplotlib.pyplot as plt
 
 
 class Airfoil:
-    """
-    This class represents a single NACA airfoil.
+    """This class represents a single NACA airfoil.
 
     Please note: the coordinates are saved as two lists
     for the x- and z-coordinates. The coordinates start at
@@ -65,7 +64,6 @@ class Airfoil:
     @classmethod
     def from_dimensions(cls, chord, semi_span):
         """Create airfoil from its chord and semi-span."""
-
         if chord > 20:
             cls.chord = chord
         else:
@@ -78,8 +76,8 @@ class Airfoil:
         return type(self).__name__
 
     def add_naca(self, naca_num):
-        """
-        This function generates geometry for a NACA number passed as argument.
+        """Generate surface geometry for a NACA airfoil.
+
         The nested functions perform the required steps to generate geometry,
         and can be called to solve the geometry y-coordinate for any 'x' input.
         Equation coefficients were retrieved from Wikipedia.org.
@@ -113,7 +111,7 @@ class Airfoil:
             return (z_c * self.chord)
 
         def get_thickness(x):
-            """Returns thickness from 1 'x' along the airfoil chord."""
+            """Return thickness from 1 'x' along the airfoil chord."""
             x = 0 if x < 0 else x
             z_t = 5 * t * self.chord * (
                 + 0.2969 * (x / self.chord) ** 0.5
@@ -169,9 +167,7 @@ class Airfoil:
         self.mass = mass
 
     def info_print(self, round):
-        # TODO: implement this info getting method!
         """Print all the component's coordinates to the terminal."""
-
         name = '    CREATOR DATA FOR {}    '.format(str(self).upper())
         num_of_dashes = len(name)
         print(num_of_dashes * '-')
@@ -186,10 +182,7 @@ class Airfoil:
         return None
 
     def info_save(self, save_path, number):
-        """
-        Save all the object's coordinates (must be full path).
-        """
-
+        """Save all the object's coordinates (must be full path)."""
         file_name = '{}_{}.txt'.format(str(self).lower(), number)
         full_path = os.path.join(save_path, file_name)
         try:
@@ -217,8 +210,7 @@ class Spar(Airfoil):
         self.z_end = []
 
     def add_coord(self, airfoil, x_loc_percent):
-        """
-        Add a single spar at the % chord location given to function.
+        """Add a single spar at the % chord location given to function.
 
         Parameters:
         airfoil: gives the spar access to airfoil's coordinates.
@@ -278,8 +270,7 @@ class Stringer(Airfoil):
     def add_coord(self, airfoil,
                   stringer_u_1, stringer_u_2,
                   stringer_l_1, stringer_l_2):
-        """
-        Add equally distributed stringers to four airfoil locations
+        """Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
 
         Parameters:
@@ -362,9 +353,7 @@ class Stringer(Airfoil):
 
 def plot_geom(airfoil, view: False):
     """This function plots the airfoil's + sub-components' geometry."""
-
     fig, ax = plt.subplots()
-    # ax.axis('off')
 
     # Plot chord
     x = [0, airfoil.chord]

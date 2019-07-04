@@ -1,18 +1,5 @@
-# This file is part of Marius Peter's airfoil analysis package (this program).
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
+"""This example illustrates the usage of creator, evaluator and generator.
+
 Create an airfoil;
 Evaluate an airfoil;
 Generate a population of airfoils & optimize.
@@ -21,7 +8,6 @@ Generate a population of airfoils & optimize.
 import creator  # Create geometry
 import evaluator  # Evaluate geometry
 import generator  # Iteratevely evaluate instances of geometry and optimize
-import numpy as np
 
 import time
 start_time = time.time()
