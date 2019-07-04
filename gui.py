@@ -23,8 +23,6 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
-# def main():
-
 def new_field(parent, name):
     """Add a new user input field."""
 
@@ -85,7 +83,3 @@ frame_2.pack(side=tk.LEFT)
 # plot.get_tk_widget().pack()
 
 root.mainloop()
-
-
-# if __name__ == '__main__':
-#     main()

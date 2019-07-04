@@ -29,7 +29,7 @@ Functions:
 import sys
 import os.path
 import numpy as np
-from math import sin, cos, atan, sqrt
+from math import sin, cos, atan
 import bisect as bi
 import matplotlib.pyplot as plt
 
@@ -64,6 +64,8 @@ class Airfoil:
 
     @classmethod
     def from_dimensions(cls, chord, semi_span):
+        """Create airfoil from its chord and semi-span."""
+
         if chord > 20:
             cls.chord = chord
         else:
@@ -114,8 +116,8 @@ class Airfoil:
             """Returns thickness from 1 'x' along the airfoil chord."""
             x = 0 if x < 0 else x
             z_t = 5 * t * self.chord * (
-                + 0.2969 * sqrt(x / self.chord)
-                - 0.1260 * (x / self.chord)
+                + 0.2969 * (x / self.chord) ** 0.5
+                - 0.1260 * (x / self.chord) ** 1
                 - 0.3516 * (x / self.chord) ** 2
                 + 0.2843 * (x / self.chord) ** 3
                 - 0.1015 * (x / self.chord) ** 4)
