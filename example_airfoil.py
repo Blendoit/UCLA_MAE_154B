@@ -1,13 +1,14 @@
 """This example illustrates the usage of creator, evaluator and generator.
 
+All the steps of airfoil creation & evaluation are detailed here;
+however, the generator.py module contains certain presets (default airfoils).
+
 Create an airfoil;
 Evaluate an airfoil;
 Generate a population of airfoils & optimize.
 """
 
-import creator  # Create geometry
-import evaluator  # Evaluate geometry
-import generator  # Iteratevely evaluate instances of geometry and optimize
+from tools import creator, evaluator, generator
 
 import time
 start_time = time.time()
@@ -36,9 +37,8 @@ BOTTOM_STRINGERS = 4
 NOSE_TOP_STRINGERS = 3
 NOSE_BOTTOM_STRINGERS = 5
 
-# population information & save path
-POP_SIZE = 1
 SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
+
 
 # Create airfoil instance
 af = creator.Airfoil.from_dimensions(CHORD_LENGTH, SEMI_SPAN)
@@ -49,10 +49,10 @@ af.info_save(SAVE_PATH, 'foo_name')
 
 # Create spar instance
 af.spar = creator.Spar()
-# Define the spar coordinates and mass, stored in single spar object
+# All spar coordinates are stored in single Spar object
 af.spar.add_coord(af, 0.23)
 af.spar.add_coord(af, 0.57)
-# Automatically adds spar caps for each spar defined previously
+# Automatically adds spar caps for each spar previously defined
 af.spar.add_spar_caps(SPAR_CAP_AREA)
 af.spar.add_mass(SPAR_MASS)
 af.spar.add_webs(SPAR_THICKNESS)

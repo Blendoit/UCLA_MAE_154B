@@ -17,7 +17,7 @@ The generator.py module contains a single Population class,
 which represents a collection of randomized airfoils.
 """
 
-import creator
+from tools import creator
 
 
 def default_airfoil():
