@@ -401,7 +401,7 @@ def plot_geom(airfoil, view: False):
     plt.gca().legend(bbox_to_anchor=(1, 1),
                      bbox_transform=plt.gcf().transFigure)
 
-    if view == True:
+    if view is True:
         plt.show()
     else:
         pass
