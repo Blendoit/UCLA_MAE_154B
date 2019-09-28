@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 class Airfoil:
     """This class represents a single NACA airfoil.
 
-    Please note: the coordinates are saved as two lists
+    The coordinates are saved as two lists
     for the x- and z-coordinates. The coordinates start at
     the leading edge, travel over the airfoil's upper edge,
     then loop back to the leading edge via the lower edge.
@@ -69,7 +69,7 @@ class Airfoil:
         else:
             cls.chord = 20
             print('Chord too small, using minimum value of 20.')
-        cls.semi_span = semi_span
+            cls.semi_span = semi_span
         return Airfoil()
 
     def __str__(self):
@@ -175,7 +175,7 @@ class Airfoil:
         for k, v in self.__dict__.items():
             if type(v) != list:
                 print('{}:\n'.format(k), v)
-        print(num_of_dashes * '-')
+                print(num_of_dashes * '-')
         for k, v in self.__dict__.items():
             if type(v) == list:
                 print('{}:\n'.format(k), np.around(v, round))
@@ -251,7 +251,7 @@ class Spar(Airfoil):
             self.x_end.append(self.x[_][1])
             self.z_start.append(self.z[_][0])
             self.z_end.append(self.z[_][1])
-        self.thickness = thickness
+            self.thickness = thickness
         return None
 
 
@@ -296,8 +296,8 @@ class Stringer(Airfoil):
             self.x.append(airfoil.x[i])
             self.z.append(airfoil.z[i])
             x += interval
-        # Add upper stringers from first spar until last spar
-        # TODO: stringer placement if only one spar is created
+            # Add upper stringers from first spar until last spar
+            # TODO: stringer placement if only one spar is created
         interval = (airfoil.spar.x[-1][0]
                     - airfoil.spar.x[0][0]) / (stringer_u_2 + 1)
         x = interval + airfoil.spar.x[0][0]
@@ -316,7 +316,7 @@ class Stringer(Airfoil):
             self.x.append(airfoil.x[-i])
             self.z.append(airfoil.z[-i])
             x += interval
-        # Add lower stringers from first spar until last spar
+            # Add lower stringers from first spar until last spar
         interval = (airfoil.spar.x[-1][1]
                     - airfoil.spar.x[0][1]) / (stringer_l_2 + 1)
         x = interval + airfoil.spar.x[0][1]
@@ -342,7 +342,7 @@ class Stringer(Airfoil):
             self.x_end.append(self.x[_ + 1])
             self.z_start.append(self.z[_])
             self.z_end.append(self.z[_ + 1])
-        self.thickness = thickness
+            self.thickness = thickness
         return None
 
     def info_print(self, round):
@@ -379,7 +379,7 @@ def plot_geom(airfoil, view: False):
             ax.plot(x, y, '-', color='y', linewidth='4')
     except AttributeError:
         print('No spars to plot.')
-    # Plot stringers
+        # Plot stringers
     try:
         for _ in range(0, len(airfoil.stringer.x)):
             x = airfoil.stringer.x[_]

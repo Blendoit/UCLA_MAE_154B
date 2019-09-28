@@ -1,8 +1,0 @@
-# UCLA MAE 154B
-
-## Spring 2019 Final Project
-
-This program enables the creation of NACA airfoils;\
-the analysis of the airfoil's structural properties;\
-the optimization via genetic algorithm of a population of airfoils;\
-With the final objective of designing a lightweight FAR 23 compliant airfoil.

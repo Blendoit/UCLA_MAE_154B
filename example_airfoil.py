@@ -10,26 +10,27 @@ Generate a population of airfoils & optimize.
 
 from tools import creator, evaluator, generator
 
+
 import time
 start_time = time.time()
 
-# Airfoil dimensions
+# Airfoil dimensions (in)
 NACA_NUM = 2412
-CHORD_LENGTH = 68  # inches
-SEMI_SPAN = 150  # inches
+CHORD_LENGTH = 68
+SEMI_SPAN = 150
 
 # Thicknesses
 SPAR_THICKNESS = 0.4
 SKIN_THICKNESS = 0.1
 
-# Component masses
-AIRFOIL_MASS = 10  # lbs
-SPAR_MASS = 10  # lbs
-STRINGER_MASS = 5  # lbs
+# Component masses (lbs)
+AIRFOIL_MASS = 10
+SPAR_MASS = 10
+STRINGER_MASS = 5
 
-# Area
-SPAR_CAP_AREA = 0.3  # sqin
-STRINGER_AREA = 0.1  # sqin
+# Area (sqin)
+SPAR_CAP_AREA = 0.3
+STRINGER_AREA = 0.1
 
 # Amount of stringers
 TOP_STRINGERS = 6
@@ -37,7 +38,7 @@ BOTTOM_STRINGERS = 4
 NOSE_TOP_STRINGERS = 3
 NOSE_BOTTOM_STRINGERS = 5
 
-SAVE_PATH = 'C:/Users/blend/github/UCLA_MAE_154B/save'
+SAVE_PATH = '/home/blendux/github/UCLA_MAE_154B/save/'
 
 
 # Create airfoil instance
@@ -87,9 +88,9 @@ evaluator.plot_lift(eval)
 
 pop = generator.Population(10)
 
-print(help(creator))
-print(help(evaluator))
-print(help(generator))
+# print(help(creator))
+# print(help(evaluator))
+# print(help(generator))
 
 # Print final execution time
 print("--- %s seconds ---" % (time.time() - start_time))

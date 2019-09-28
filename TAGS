@@ -1,0 +1,445 @@
+
+/home/blendux/github/UCLA_MAE_154B/example_airfoil.py,842
+start_time = time.time()start_time15,374
+NACA_NUM = 2412NACA_NUM18,426
+CHORD_LENGTH = 68CHORD_LENGTH19,442
+SEMI_SPAN = 150SEMI_SPAN20,460
+SPAR_THICKNESS = 0.4SPAR_THICKNESS23,491
+SKIN_THICKNESS = 0.1SKIN_THICKNESS24,512
+AIRFOIL_MASS = 10AIRFOIL_MASS27,559
+SPAR_MASS = 10SPAR_MASS28,577
+STRINGER_MASS = 5STRINGER_MASS29,592
+SPAR_CAP_AREA = 0.3SPAR_CAP_AREA32,625
+STRINGER_AREA = 0.1STRINGER_AREA33,645
+TOP_STRINGERS = 6TOP_STRINGERS36,688
+BOTTOM_STRINGERS = 4BOTTOM_STRINGERS37,706
+NOSE_TOP_STRINGERS = 3NOSE_TOP_STRINGERS38,727
+NOSE_BOTTOM_STRINGERS = 5NOSE_BOTTOM_STRINGERS39,750
+SAVE_PATH = '/home/blendux/github/UCLA_MAE_154B/save/'SAVE_PATH41,777
+af = creator.Airfoil.from_dimensions(CHORD_LENGTH, SEMI_SPAN)af45,860
+eval = evaluator.Evaluator(af)eval81,2026
+pop = generator.Population(10)pop89,2245
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/my_progress.m,7747
+Vx = 1; Vz = 1; My = 1;  %test loads will be applied individuallyVx5,40
+numStringers = numTopStringers;numStringers15,163
+stringerGap = upperStringerGap;stringerGap16,195
+webThickness = t_upper;webThickness17,227
+tempStringers = topStringers;tempStringers18,251
+        dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx34,786
+    tempInt = get_int(web(i).xStart/chord,web(i).xEnd/chord,1)*chord^2;  %integral of airfoil futempInt40,1142
+    triangle1 = abs( (web(i).xStart - sparCaps(1).posX)*web(i).zStart/2);triangle141,1245
+    triangle2 = abs((web(i).xEnd - sparCaps(1).posX)*web(i).zEnd/2);triangle242,1319
+webTop = web;webTop56,2080
+web = [];web57,2094
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx67,2319
+webRearSpar = web;webRearSpar87,3367
+web = [];web88,3386
+numStringers = numBottomStringers;numStringers92,3410
+stringerGap = lowerStringerGap;stringerGap93,3445
+webThickness = t_lower;webThickness94,3477
+tempStringers = bottomStringers;tempStringers95,3501
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx103,3817
+    tempInt = get_int(web(i).xEnd/chord,web(i).xStart/chord,0)*chord^2;  %integral of airfoil futempInt118,4524
+    triangle2 = abs((web(i).xStart - sparCaps(1).posX)*web(i).zStart/2);triangle2119,4627
+    triangle1 = abs((web(i).xEnd - sparCaps(1).posX)*web(i).zEnd/2);triangle1120,4700
+webBottom = web;webBottom136,5535
+web = [];web137,5552
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx147,5779
+webFrontSpar = web;webFrontSpar165,6715
+web = [];web166,6735
+numStringers = numNoseBottomStringers;numStringers174,6781
+stringerGap = lowerNoseStringerGap;stringerGap175,6820
+webThickness = t_lower_front;webThickness176,6856
+tempStringers = noseBottomStringers;tempStringers177,6886
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx185,7206
+    tempInt = get_int(web(i).xEnd/chord,web(i).xStart/chord,0)*chord^2;  %integral of airfoil futempInt200,7761
+    triangle1 = abs((web(i).xStart - sparCaps(2).posX)*web(i).zStart/2);triangle1201,7864
+    triangle2 = abs((web(i).xEnd - sparCaps(2).posX)*web(i).zEnd/2);triangle2202,7937
+webLowerNose = web;webLowerNose218,8776
+web = [];web219,8796
+numStringers = numNoseTopStringers;numStringers222,8824
+stringerGap = upperNoseStringerGap;stringerGap223,8860
+webThickness = t_upper_front;webThickness224,8896
+tempStringers = noseTopStringers;tempStringers225,8926
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx233,9205
+    tempInt = get_int(web(i).xStart/chord,web(i).xEnd/chord,1)*chord^2;  %integral of airfoil futempInt247,9864
+    triangle2 = abs((web(i).xStart - sparCaps(2).posX)*web(i).zStart/2);triangle2248,9967
+    triangle1 = abs((web(i).xEnd - sparCaps(2).posX)*web(i).zEnd/2);triangle1249,10040
+webUpperNose = web;webUpperNose264,10802
+web = [];web265,10822
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx276,11050
+webFrontSparCell2 = web;webFrontSparCell2294,11994
+web = [];web295,12019
+Fx = sum([webTop.qp_dx_X])+webRearSpar.qp_dx_X+ sum([webBottom.qp_dx_X])+webFrontSpar.qp_dx_X;  Fx300,12064
+Fx = Fx + sum([webLowerNose.qp_dx_X])+ sum([webUpperNose.qp_dx_X]);  %cell 2Fx301,12168
+Fz = sum([webTop.qp_dz_X])+webRearSpar.qp_dz_X+ sum([webBottom.qp_dz_X])+webFrontSpar.qp_dz_X;  Fz303,12248
+Fz = Fz + sum([webLowerNose.qp_dz_X])+ sum([webUpperNose.qp_dz_X]);  %cell 2Fz304,12352
+Fx = sum([webTop.qp_dx_Z])+webRearSpar.qp_dx_Z+ sum([webBottom.qp_dx_Z])+webFrontSpar.qp_dx_Z;  Fx310,12467
+Fx = Fx + sum([webLowerNose.qp_dx_Z])+ sum([webUpperNose.qp_dx_Z]);  %cell 2Fx311,12571
+Fz = sum([webTop.qp_dz_Z])+webRearSpar.qp_dz_Z+ sum([webBottom.qp_dz_Z])+webFrontSpar.qp_dz_Z;  Fz313,12651
+Fz = Fz + sum([webLowerNose.qp_dz_Z])+ sum([webUpperNose.qp_dz_Z]);  %cell 2Fz314,12755
+A11 = sum([webTop.dS_over_t])+webRearSpar.dS_over_t+ sum([webBottom.dS_over_t])+webFrontSpar.dS_A11323,12925
+A22 = sum([webLowerNose.dS_over_t])+ sum([webUpperNose.dS_over_t])+webFrontSparCell2.dS_over_t;A22324,13029
+A12 = -webFrontSpar.dS_over_t;A12325,13125
+A21 = -webFrontSparCell2.dS_over_t;A21326,13156
+B1_X = sum([webTop.q_dS_over_t_X])+webRearSpar.q_dS_over_t_X+ sum([webBottom.q_dS_over_t_X])+webB1_X328,13193
+B2_X = sum([webLowerNose.q_dS_over_t_X])+ sum([webUpperNose.q_dS_over_t_X])+webFrontSparCell2.q_B2_X329,13314
+B1_Z = sum([webTop.q_dS_over_t_Z])+webRearSpar.q_dS_over_t_Z+ sum([webBottom.q_dS_over_t_Z])+webB1_Z330,13423
+B2_Z = sum([webLowerNose.q_dS_over_t_Z])+ sum([webUpperNose.q_dS_over_t_Z])+webFrontSparCell2.q_B2_Z331,13544
+Amat = [A11 A12; A21 A22];Amat333,13654
+Bmat_X = -[B1_X;B2_X];Bmat_X334,13681
+Bmat_Z = -[B1_Z;B2_Z];Bmat_Z335,13704
+qs_X = inv(Amat)*Bmat_X;qs_X337,13728
+qs_Z = inv(Amat)*Bmat_Z;qs_Z338,13753
+sum_2_a_q_X = sum([webTop.two_A_qprime_X])+webRearSpar.two_A_qprime_X+ sum([webBottom.two_A_qprisum_2_a_q_X342,13781
+sum_2_a_q_X = sum_2_a_q_X + sum([webLowerNose.two_A_qprime_X])+ sum([webUpperNose.two_A_qprime_Xsum_2_a_q_X343,13902
+sum_2_a_q_X = sum_2_a_q_X +  2*qs_X(1)*(sum([webTop.Area])+webRearSpar.Area+ sum([webBottom.Areasum_2_a_q_X344,14020
+sum_2_a_q_X = sum_2_a_q_X +  2*qs_X(2)*(sum([webLowerNose.Area])+ sum([webUpperNose.Area]));sum_2_a_q_X345,14121
+sum_2_a_q_Z = sum([webTop.two_A_qprime_Z])+webRearSpar.two_A_qprime_Z+ sum([webBottom.two_A_qprisum_2_a_q_Z347,14215
+sum_2_a_q_Z = sum_2_a_q_Z + sum([webLowerNose.two_A_qprime_Z])+ sum([webUpperNose.two_A_qprime_Zsum_2_a_q_Z348,14336
+sum_2_a_q_Z = sum_2_a_q_Z +  2*qs_Z(1)*(sum([webTop.Area])+webRearSpar.Area+ sum([webBottom.Areasum_2_a_q_Z349,14454
+sum_2_a_q_Z = sum_2_a_q_Z +  2*qs_Z(2)*(sum([webLowerNose.Area])+ sum([webUpperNose.Area]));sum_2_a_q_Z350,14555
+torque_Z = Vz*(sc.posX - 0.25*chord);torque_Z360,14875
+torque_X = -Vx*sc.posZ;torque_X361,14913
+Area1 = sum([webTop.Area]) + webRearSpar.Area + sum([webBottom.Area]);Area1364,14939
+Area1_check = get_int(frontSpar,backSpar,1)*chord^2 + get_int(frontSpar,backSpar,0)*chord^2;Area1_check366,15022
+Area2 = sum([webLowerNose.Area]) + sum([webUpperNose.Area]);Area2368,15116
+Area2_check = get_int(0,frontSpar,1)*chord^2 + get_int(0,frontSpar,0)*chord^2;Area2_check369,15177
+q1t_over_q2t = (A22/Area2 + webFrontSpar.dS_over_t/Area1)/(A11/Area1 + webFrontSpar.dS_over_t/Arq1t_over_q2t374,15312
+q2t = torque_X/(2*Area1*q1t_over_q2t + 2*Area2);q2t376,15415
+q1t = q2t*q1t_over_q2t;q1t377,15464
+qt_X = [q1t;q2t];qt_X378,15488
+q2t = torque_Z/(2*Area1*q1t_over_q2t + 2*Area2);q2t380,15507
+q1t = q2t*q1t_over_q2t;q1t381,15556
+qt_Z = [q1t;q2t];qt_Z382,15580
+xChord = 0:.01:1;xChord403,15777
+xChord = xChord*chord;xChord404,15795
+upperSurface = zeros(1,length(xChord));upperSurface405,15818
+lowerSurface = zeros(1,length(xChord));lowerSurface406,15858
+   vecX = [frontSpar*chord webTop(i).xStart webTop(i).xEnd];vecX421,16255
+   vecZ = [0 webTop(i).zStart webTop(i).zEnd];vecZ422,16316
+   vecX = [frontSpar*chord webBottom(i).xStart webBottom(i).xEnd];vecX427,16429
+   vecZ = [0 webBottom(i).zStart webBottom(i).zEnd];vecZ428,16496
+   vecX = [frontSpar*chord webUpperNose(i).xStart webUpperNose(i).xEnd];vecX433,16618
+   vecZ = [0 webUpperNose(i).zStart webUpperNose(i).zEnd];vecZ434,16691
+   vecX = [frontSpar*chord webLowerNose(i).xStart webLowerNose(i).xEnd];vecX439,16819
+   vecZ = [0 webLowerNose(i).zStart webLowerNose(i).zEnd];vecZ440,16892
+   vecX = [frontSpar*chord sparCaps(3).posX sparCaps(4).posX];vecX444,16989
+   vecZ = [0 sparCaps(3).posZ sparCaps(4).posZ];vecZ445,17052
+sparCapSize = 18;sparCapSize449,17136
+stringerSize = 18;stringerSize450,17154
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/get_z.m,481
+function z = get_z(x,u)get_z1,0
+M = 0.02;M9,66
+P = 0.4;P10,76
+T = 0.12;T11,85
+a0 = 0.2969;a012,95
+a1 = -0.126;a113,108
+a2 = -0.3516;a214,121
+a3 = 0.2843;a315,135
+a4 = -0.1015;a416,148
+    z_camber = M/P^2*(2*P*x - x^2);z_camber19,171
+    z_camber = (M/(1-P)^2)*(1 - 2*P +2*P*x - x^2);z_camber21,212
+z_thickness = (T/0.2)*(a0*x^.5+a1*x+a2*x^2+a3*x^3+a4*x^4);z_thickness25,301
+    z = z_camber + z_thickness;z28,369
+    z = z_camber - z_thickness;z30,406
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/get_dp.m,169
+function z = get_dp(xDist,zDist,Vx,Vz,Ix,Iz,Ixz,A)get_dp1,0
+denom = (Ix*Iz-Ixz^2);denom3,52
+z = -A*xDist*(Ix*Vx-Ixz*Vz)/denom - A*zDist*(Iz*Vz-Ixz*Vx)/denom;z4,75
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/get_int.m,925
+function z = get_int(xi,xf,u)get_int1,0
+M = 0.02;M3,31
+P = 0.4;P4,41
+T = 0.12;T5,50
+a0 = 0.2969;a06,60
+a1 = -0.126;a17,73
+a2 = -0.3516;a28,86
+a3 = 0.2843;a39,100
+a4 = -0.1015;a410,113
+    intCamb =  M/P^2*(2*P*xf^2/2 - xf^3/3) - M/P^2*(2*P*xi^2/2 - xi^3/3);   intCamb16,214
+    intCamb = (M/(1-P)^2)*((1 - 2*P)*xf +2*P*xf^2/2 - xf^3/3) - (M/(1-P)^2)*((1 - 2*P)*P +2*P*P^intCamb18,303
+    intCamb = intCamb + M/P^2*(2*P*P^2/2 - P^3/3) - M/P^2*(2*P*xi^2/2 - xi^3/3);intCamb19,413
+    intCamb = (M/(1-P)^2)*((1 - 2*P)*xf +2*P*xf^2/2 - xf^3/3) - (M/(1-P)^2)*((1 - 2*P)*xi +2*P*xintCamb21,499
+intThickness = (T/0.2)*(a0*xf^1.5/1.5 + a1*xf^2/2 + a2*xf^3/3 + a3*xf^4/4 +a4*xf^5/5);intThickness27,710
+intThickness = intThickness - (T/0.2)*(a0*xi^1.5/1.5 + a1*xi^2/2 + a2*xi^3/3 + a3*xi^4/4 +a4*xi^intThickness28,797
+   z = intCamb + intThickness; z32,964
+   z = abs(intCamb - intThickness);z34,1001
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/eye_beam_example.m,1004
+length = 20; % inlength4,44
+force = 10000; %lbsforce5,62
+max_width = 4; % inmax_width9,105
+min_width = 1; % inmin_width10,125
+y_max = 4; % iny_max11,145
+center_y = 2; % incenter_y12,161
+M = force*length;M17,218
+I = min_width*(2*center_y)^3/12 + 2*( max_width*(y_max-center_y)^3/12 + ...I19,237
+sigma_max = M * y_max / I;sigma_max22,370
+tempCoeff = force / (I * max_width);tempCoeff29,542
+int_y_da = ((y_max+center_y)/2) * max_width*(y_max-center_y);int_y_da30,579
+shear_1 = tempCoeff*int_y_da;shear_131,641
+tempCoeff = force / (I * min_width);tempCoeff34,749
+shear_2 = tempCoeff*int_y_da;shear_235,786
+tempCoeff = force / (I * min_width);tempCoeff39,857
+int_y_da = (center_y/2) * min_width*center_y;int_y_da40,894
+shear_3 = shear_2+tempCoeff*int_y_da;shear_341,940
+int_y_da_4 = force / (I * max_width)*4*(y_max^2/2 - (center_y:.1:y_max).^2/2);int_y_da_444,1027
+int_y_da_1 = shear_2 + force / (I * min_width)*1*(center_y^2/2 - (0:.1:center_y).^2/2);int_y_da_147,1155
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/get_ds.m,378
+function ds = get_ds(xi,xf,u)get_ds1,0
+dist = 0;dist3,31
+numSteps = 10;numSteps4,41
+dx = (xf-xi)/numSteps;dx5,56
+z0 = get_z(xi,u);z06,79
+x0 = xi;x07,97
+    tempX = x0+dx;tempX9,117
+        tempZ = get_z(tempX,u);tempZ11,153
+        tempZ = 0;tempZ13,195
+    dist = dist + (dx^2+(tempZ-z0)^2)^.5;dist15,222
+    z0 = tempZ;z016,264
+    x0 = tempX;x017,280
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/stringersBeamExample.m,837
+force = 8000; % lbsforce2,12
+stringer_A = 0.5; % in^2stringer_A3,32
+thickness = 0.04; % inthickness4,57
+top_stringers_y = 6; % intop_stringers_y6,81
+middle_stringers_y = 2; % inmiddle_stringers_y7,107
+I = 2*stringer_A*top_stringers_y^2 + 2*stringer_A*middle_stringers_y^2;I9,137
+shear_top_web = force / (I*thickness) * top_stringers_y * stringer_A;shear_top_web15,381
+shear_middle_web = shear_top_web + (force / (I*thickness) * middle_stringers_y * stringer_A);shear_middle_web16,451
+d_sigma = force * top_stringers_y / I;  %(lbs/in^2)d_sigma36,1520
+d_force_top = d_sigma * stringer_A;d_force_top37,1572
+d_sigma = force * middle_stringers_y / I;  %(lbs/in^2)d_sigma40,1631
+d_force_middle = d_force_top + d_sigma*stringer_A;d_force_middle41,1686
+check_load = 2*d_force_top*4 + d_force_middle*4;check_load44,1762
+
+/home/blendux/github/UCLA_MAE_154B/wing_scripts/wingAnalysis_190422.m,10240
+Vx = 1; Vz = 1; My = 1;  %test loads will be applied individuallyVx8,43
+numTopStringers = 6;numTopStringers11,124
+numBottomStringers = 8;numBottomStringers12,145
+numNoseTopStringers = 4;numNoseTopStringers13,169
+numNoseBottomStringers = 4;numNoseBottomStringers14,194
+t_upper = 0.02/12;t_upper16,223
+t_lower = 0.02/12;t_lower17,242
+t_upper_front = 0.02/12;t_upper_front18,261
+t_lower_front = 0.02/12;t_lower_front19,286
+t_frontSpar = 0.04/12;t_frontSpar20,311
+t_rearSpar = 0.04/12;t_rearSpar21,334
+frontSpar = 0.2;frontSpar23,357
+backSpar = 0.7;backSpar24,374
+chord = 5;chord25,390
+upperStringerGap = (sparCaps(3).posX - sparCaps(1).posX)/(numTopStringers + 1);upperStringerGap42,817
+lowerStringerGap = (sparCaps(3).posX - sparCaps(1).posX)/(numBottomStringers + 1);lowerStringerGap43,897
+upperNoseStringerGap = (sparCaps(1).posX - 0)/(numNoseTopStringers + 1);upperNoseStringerGap44,980
+lowerNoseStringerGap = (sparCaps(1).posX - 0)/(numNoseBottomStringers + 1);lowerNoseStringerGap45,1053
+Ix = 0; Iz = 0; Ixz = 0;Ix98,3144
+    Ix = Ix + sparCaps(i).area*(sparCaps(i).posZ-centroid.posZ)^2;Ix101,3191
+    Iz = Iz + sparCaps(i).area*(sparCaps(i).posX-centroid.posX)^2;Iz102,3258
+    Ixz = Ixz + sparCaps(i).area*(sparCaps(i).posX-centroid.posX)*(sparCaps(i).posZ-centroid.posIxz103,3325
+    Ix = Ix + topStringers(i).area*(topStringers(i).posZ-centroid.posZ)^2;Ix108,3470
+    Iz = Iz + topStringers(i).area*(topStringers(i).posX-centroid.posX)^2;Iz109,3545
+    Ixz = Ixz + topStringers(i).area*(topStringers(i).posX-centroid.posX)*(topStringers(i).posZ-Ixz110,3620
+    Ix = Ix + bottomStringers(i).area*(bottomStringers(i).posZ-centroid.posZ)^2;Ix113,3781
+    Iz = Iz + bottomStringers(i).area*(bottomStringers(i).posX-centroid.posX)^2;Iz114,3862
+    Ixz = Ixz + bottomStringers(i).area*(bottomStringers(i).posX-centroid.posX)*(bottomStringersIxz115,3943
+    Ix = Ix + noseTopStringers(i).area*(noseTopStringers(i).posZ-centroid.posZ)^2;Ix118,4116
+    Iz = Iz + noseTopStringers(i).area*(noseTopStringers(i).posX-centroid.posX)^2;Iz119,4199
+    Ixz = Ixz + noseTopStringers(i).area*(noseTopStringers(i).posX-centroid.posX)*(noseTopStringIxz120,4282
+    Ix = Ix + noseBottomStringers(i).area*(noseBottomStringers(i).posZ-centroid.posZ)^2;Ix123,4464
+    Iz = Iz + noseBottomStringers(i).area*(noseBottomStringers(i).posX-centroid.posX)^2;Iz124,4553
+    Ixz = Ixz + noseBottomStringers(i).area*(noseBottomStringers(i).posX-centroid.posX)*(noseBotIxz125,4642
+numStringers = numTopStringers;numStringers135,4835
+stringerGap = upperStringerGap;stringerGap136,4867
+webThickness = t_upper;webThickness137,4899
+tempStringers = topStringers;tempStringers138,4923
+        dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx154,5458
+    tempInt = get_int(web(i).xStart/chord,web(i).xEnd/chord,1)*chord^2;  %integral of airfoil futempInt160,5814
+    triangle1 = abs( (web(i).xStart - sparCaps(1).posX)*web(i).zStart/2);triangle1161,5917
+    triangle2 = abs((web(i).xEnd - sparCaps(1).posX)*web(i).zEnd/2);triangle2162,5991
+webTop = web;webTop176,6752
+web = [];web177,6766
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx187,6991
+webRearSpar = web;webRearSpar207,8039
+web = [];web208,8058
+numStringers = numBottomStringers;numStringers212,8082
+stringerGap = lowerStringerGap;stringerGap213,8117
+webThickness = t_lower;webThickness214,8149
+tempStringers = bottomStringers;tempStringers215,8173
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx223,8489
+    tempInt = get_int(web(i).xEnd/chord,web(i).xStart/chord,0)*chord^2;  %integral of airfoil futempInt238,9196
+    triangle2 = abs((web(i).xStart - sparCaps(1).posX)*web(i).zStart/2);triangle2239,9299
+    triangle1 = abs((web(i).xEnd - sparCaps(1).posX)*web(i).zEnd/2);triangle1240,9372
+webBottom = web;webBottom256,10207
+web = [];web257,10224
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx267,10451
+webFrontSpar = web;webFrontSpar285,11387
+web = [];web286,11407
+numStringers = numNoseBottomStringers;numStringers294,11453
+stringerGap = lowerNoseStringerGap;stringerGap295,11492
+webThickness = t_lower_front;webThickness296,11528
+tempStringers = noseBottomStringers;tempStringers297,11558
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx305,11878
+    tempInt = get_int(web(i).xEnd/chord,web(i).xStart/chord,0)*chord^2;  %integral of airfoil futempInt320,12433
+    triangle1 = abs((web(i).xStart - sparCaps(2).posX)*web(i).zStart/2);triangle1321,12536
+    triangle2 = abs((web(i).xEnd - sparCaps(2).posX)*web(i).zEnd/2);triangle2322,12609
+webLowerNose = web;webLowerNose338,13448
+web = [];web339,13468
+numStringers = numNoseTopStringers;numStringers342,13496
+stringerGap = upperNoseStringerGap;stringerGap343,13532
+webThickness = t_upper_front;webThickness344,13568
+tempStringers = noseTopStringers;tempStringers345,13598
+    dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx353,13877
+    tempInt = get_int(web(i).xStart/chord,web(i).xEnd/chord,1)*chord^2;  %integral of airfoil futempInt367,14536
+    triangle2 = abs((web(i).xStart - sparCaps(2).posX)*web(i).zStart/2);triangle2368,14639
+    triangle1 = abs((web(i).xEnd - sparCaps(2).posX)*web(i).zEnd/2);triangle1369,14712
+webUpperNose = web;webUpperNose384,15474
+web = [];web385,15494
+dx = web(i).xStart-centroid.posX; dz = web(i).zStart-centroid.posZ;dx396,15722
+webFrontSparCell2 = web;webFrontSparCell2414,16666
+web = [];web415,16691
+Fx = sum([webTop.qp_dx_X])+webRearSpar.qp_dx_X+ sum([webBottom.qp_dx_X])+webFrontSpar.qp_dx_X;  Fx420,16736
+Fx = Fx + sum([webLowerNose.qp_dx_X])+ sum([webUpperNose.qp_dx_X]);  %cell 2Fx421,16840
+Fz = sum([webTop.qp_dz_X])+webRearSpar.qp_dz_X+ sum([webBottom.qp_dz_X])+webFrontSpar.qp_dz_X;  Fz423,16920
+Fz = Fz + sum([webLowerNose.qp_dz_X])+ sum([webUpperNose.qp_dz_X]);  %cell 2Fz424,17024
+Fx = sum([webTop.qp_dx_Z])+webRearSpar.qp_dx_Z+ sum([webBottom.qp_dx_Z])+webFrontSpar.qp_dx_Z;  Fx430,17139
+Fx = Fx + sum([webLowerNose.qp_dx_Z])+ sum([webUpperNose.qp_dx_Z]);  %cell 2Fx431,17243
+Fz = sum([webTop.qp_dz_Z])+webRearSpar.qp_dz_Z+ sum([webBottom.qp_dz_Z])+webFrontSpar.qp_dz_Z;  Fz433,17323
+Fz = Fz + sum([webLowerNose.qp_dz_Z])+ sum([webUpperNose.qp_dz_Z]);  %cell 2Fz434,17427
+A11 = sum([webTop.dS_over_t])+webRearSpar.dS_over_t+ sum([webBottom.dS_over_t])+webFrontSpar.dS_A11443,17597
+A22 = sum([webLowerNose.dS_over_t])+ sum([webUpperNose.dS_over_t])+webFrontSparCell2.dS_over_t;A22444,17701
+A12 = -webFrontSpar.dS_over_t;A12445,17797
+A21 = -webFrontSparCell2.dS_over_t;A21446,17828
+B1_X = sum([webTop.q_dS_over_t_X])+webRearSpar.q_dS_over_t_X+ sum([webBottom.q_dS_over_t_X])+webB1_X448,17865
+B2_X = sum([webLowerNose.q_dS_over_t_X])+ sum([webUpperNose.q_dS_over_t_X])+webFrontSparCell2.q_B2_X449,17986
+B1_Z = sum([webTop.q_dS_over_t_Z])+webRearSpar.q_dS_over_t_Z+ sum([webBottom.q_dS_over_t_Z])+webB1_Z450,18095
+B2_Z = sum([webLowerNose.q_dS_over_t_Z])+ sum([webUpperNose.q_dS_over_t_Z])+webFrontSparCell2.q_B2_Z451,18216
+Amat = [A11 A12; A21 A22];Amat453,18326
+Bmat_X = -[B1_X;B2_X];Bmat_X454,18353
+Bmat_Z = -[B1_Z;B2_Z];Bmat_Z455,18376
+qs_X = inv(Amat)*Bmat_X;qs_X457,18400
+qs_Z = inv(Amat)*Bmat_Z;qs_Z458,18425
+sum_2_a_q_X = sum([webTop.two_A_qprime_X])+webRearSpar.two_A_qprime_X+ sum([webBottom.two_A_qprisum_2_a_q_X462,18453
+sum_2_a_q_X = sum_2_a_q_X + sum([webLowerNose.two_A_qprime_X])+ sum([webUpperNose.two_A_qprime_Xsum_2_a_q_X463,18574
+sum_2_a_q_X = sum_2_a_q_X +  2*qs_X(1)*(sum([webTop.Area])+webRearSpar.Area+ sum([webBottom.Areasum_2_a_q_X464,18692
+sum_2_a_q_X = sum_2_a_q_X +  2*qs_X(2)*(sum([webLowerNose.Area])+ sum([webUpperNose.Area]));sum_2_a_q_X465,18793
+sum_2_a_q_Z = sum([webTop.two_A_qprime_Z])+webRearSpar.two_A_qprime_Z+ sum([webBottom.two_A_qprisum_2_a_q_Z467,18887
+sum_2_a_q_Z = sum_2_a_q_Z + sum([webLowerNose.two_A_qprime_Z])+ sum([webUpperNose.two_A_qprime_Zsum_2_a_q_Z468,19008
+sum_2_a_q_Z = sum_2_a_q_Z +  2*qs_Z(1)*(sum([webTop.Area])+webRearSpar.Area+ sum([webBottom.Areasum_2_a_q_Z469,19126
+sum_2_a_q_Z = sum_2_a_q_Z +  2*qs_Z(2)*(sum([webLowerNose.Area])+ sum([webUpperNose.Area]));sum_2_a_q_Z470,19227
+torque_Z = Vz*(sc.posX - 0.25*chord);torque_Z480,19547
+torque_X = -Vx*sc.posZ;torque_X481,19585
+Area1 = sum([webTop.Area]) + webRearSpar.Area + sum([webBottom.Area]);Area1484,19611
+Area1_check = get_int(frontSpar,backSpar,1)*chord^2 + get_int(frontSpar,backSpar,0)*chord^2;Area1_check486,19694
+Area2 = sum([webLowerNose.Area]) + sum([webUpperNose.Area]);Area2488,19788
+Area2_check = get_int(0,frontSpar,1)*chord^2 + get_int(0,frontSpar,0)*chord^2;Area2_check489,19849
+q1t_over_q2t = (A22/Area2 + webFrontSpar.dS_over_t/Area1)/(A11/Area1 + webFrontSpar.dS_over_t/Arq1t_over_q2t494,19984
+q2t = torque_X/(2*Area1*q1t_over_q2t + 2*Area2);q2t496,20087
+q1t = q2t*q1t_over_q2t;q1t497,20136
+qt_X = [q1t;q2t];qt_X498,20160
+q2t = torque_Z/(2*Area1*q1t_over_q2t + 2*Area2);q2t500,20179
+q1t = q2t*q1t_over_q2t;q1t501,20228
+qt_Z = [q1t;q2t];qt_Z502,20252
+xChord = 0:.01:1;xChord523,20449
+xChord = xChord*chord;xChord524,20467
+upperSurface = zeros(1,length(xChord));upperSurface525,20490
+lowerSurface = zeros(1,length(xChord));lowerSurface526,20530
+   vecX = [frontSpar*chord webTop(i).xStart webTop(i).xEnd];vecX541,20927
+   vecZ = [0 webTop(i).zStart webTop(i).zEnd];vecZ542,20988
+   vecX = [frontSpar*chord webBottom(i).xStart webBottom(i).xEnd];vecX547,21101
+   vecZ = [0 webBottom(i).zStart webBottom(i).zEnd];vecZ548,21168
+   vecX = [frontSpar*chord webUpperNose(i).xStart webUpperNose(i).xEnd];vecX553,21290
+   vecZ = [0 webUpperNose(i).zStart webUpperNose(i).zEnd];vecZ554,21363
+   vecX = [frontSpar*chord webLowerNose(i).xStart webLowerNose(i).xEnd];vecX559,21491
+   vecZ = [0 webLowerNose(i).zStart webLowerNose(i).zEnd];vecZ560,21564
+   vecX = [frontSpar*chord sparCaps(3).posX sparCaps(4).posX];vecX564,21661
+   vecZ = [0 sparCaps(3).posZ sparCaps(4).posZ];vecZ565,21724
+sparCapSize = 18;sparCapSize569,21808
+stringerSize = 18;stringerSize570,21826
+
+/home/blendux/github/UCLA_MAE_154B/gui.py,393
+import tkinter as tktk20,820
+import tkinter.ttk as ttkttk21,841
+class MainWindow(tk.Frame):MainWindow27,963
+    def __init__(self, *args, **kwargs):__init__30,1022
+    def create_window(self):create_window64,2364
+def new_field(parent, name):new_field72,2661
+def set_naca(name):set_naca80,2826
+def set_chord(name):set_chord85,2894
+def set_semi_span(name):set_semi_span90,2957
+
+/home/blendux/github/UCLA_MAE_154B/README.md,94
+# UCLA MAE 154BUCLA MAE 154B1,0
+## Spring 2019 Final ProjectSpring 2019 Final Project3,17
+
+/home/blendux/github/UCLA_MAE_154B/tools/evaluator.py,1051
+import numpy as npnp24,959
+import matplotlib.pyplot as pltplt26,1000
+class Evaluator:Evaluator29,1034
+    def __init__(self, airfoil):__init__32,1130
+    def __str__(self):__str__56,1932
+    def info_print(self, round):info_print59,1991
+    def info_save(self, save_path, number):info_save74,2570
+    def get_lift_rectangular(self, lift):get_lift_rectangular92,3362
+    def get_lift_elliptical(self, L_0):get_lift_elliptical96,3507
+    def get_lift_total(self):get_lift_total103,3719
+    def get_mass_distribution(self, total_mass):get_mass_distribution108,3900
+    def get_drag(self, drag):get_drag112,4047
+    def get_centroid(self):get_centroid124,4473
+    def get_inertia_terms(self):get_inertia_terms147,5377
+    def get_dx(self, component):get_dx180,6841
+    def get_dz(self, component):get_dz183,6940
+    def get_dP(self, xDist, zDist, V_x, V_z, area):get_dP186,7039
+    def analysis(self, V_x, V_z):analysis199,7491
+def plot_geom(evaluator):plot_geom219,8423
+def plot_lift(evaluator):plot_lift272,10194
+
+/home/blendux/github/UCLA_MAE_154B/tools/creator.py,1569
+import numpy as npnp31,1142
+import bisect as bibi33,1193
+import matplotlib.pyplot as pltplt34,1213
+class Airfoil:Airfoil37,1247
+    chord = 100chord51,1727
+    semi_span = 200semi_span52,1743
+    def __init__(self):__init__54,1764
+    def from_dimensions(cls, chord, semi_span):from_dimensions65,2007
+    def __str__(self):__str__75,2337
+    def add_naca(self, naca_num):add_naca78,2396
+        def get_camber(x):get_camber99,3112
+        def get_thickness(x):get_thickness113,3714
+        def get_theta(x):get_theta124,4162
+        def get_upper_coord(x):get_upper_coord132,4452
+        def get_lower_coord(x):get_lower_coord137,4637
+    def add_mass(self, mass):add_mass165,5804
+    def info_print(self, round):info_print168,5860
+    def info_save(self, save_path, number):info_save183,6442
+class Spar(Airfoil):Spar200,7175
+    def __init__(self):__init__203,7242
+    def add_coord(self, airfoil, x_loc_percent):add_coord211,7427
+    def add_spar_caps(self, spar_cap_area):add_spar_caps238,8357
+    def add_mass(self, mass):add_mass242,8460
+    def add_webs(self, thickness):add_webs246,8550
+class Stringer(Airfoil):Stringer257,8896
+    def __init__(self):__init__260,8975
+    def add_coord(self, airfoil,add_coord269,9188
+    def add_area(self, area):add_area329,11686
+    def add_mass(self, mass):add_mass333,11762
+    def add_webs(self, thickness):add_webs337,11873
+    def info_print(self, round):info_print347,12223
+def plot_geom(airfoil, view: False):plot_geom353,12375
+def main():main410,14137
+
+/home/blendux/github/UCLA_MAE_154B/tools/generator.py,332
+def default_airfoil():default_airfoil23,867
+class Population(creator.Airfoil):Population45,1474
+    def __init__(self, size):__init__48,1551
+    def mutate(self, prob_mt):mutate54,1720
+    def crossover(self, prob_cx):crossover57,1824
+    def reproduce(self, prob_rp):reproduce60,1923
+    def fitness():fitness63,2034
