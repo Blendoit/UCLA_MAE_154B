@@ -374,10 +374,6 @@ def set_naca(name):set_naca80,2826
 def set_chord(name):set_chord85,2894
 def set_semi_span(name):set_semi_span90,2957
 
-/home/blendux/github/UCLA_MAE_154B/README.md,94
-# UCLA MAE 154BUCLA MAE 154B1,0
-## Spring 2019 Final ProjectSpring 2019 Final Project3,17
-
 /home/blendux/github/UCLA_MAE_154B/tools/evaluator.py,1051
 import numpy as npnp24,959
 import matplotlib.pyplot as pltplt26,1000
@@ -414,26 +410,26 @@ class Airfoil:Airfoil37,1247
         def get_camber(x):get_camber99,3112
         def get_thickness(x):get_thickness113,3714
         def get_theta(x):get_theta124,4162
-        def get_upper_coord(x):get_upper_coord132,4452
-        def get_lower_coord(x):get_lower_coord137,4637
-    def add_mass(self, mass):add_mass165,5804
-    def info_print(self, round):info_print168,5860
-    def info_save(self, save_path, number):info_save183,6442
-class Spar(Airfoil):Spar200,7175
-    def __init__(self):__init__203,7242
-    def add_coord(self, airfoil, x_loc_percent):add_coord211,7427
-    def add_spar_caps(self, spar_cap_area):add_spar_caps238,8357
-    def add_mass(self, mass):add_mass242,8460
-    def add_webs(self, thickness):add_webs246,8550
-class Stringer(Airfoil):Stringer257,8896
-    def __init__(self):__init__260,8975
-    def add_coord(self, airfoil,add_coord269,9188
-    def add_area(self, area):add_area329,11686
-    def add_mass(self, mass):add_mass333,11762
-    def add_webs(self, thickness):add_webs337,11873
-    def info_print(self, round):info_print347,12223
-def plot_geom(airfoil, view: False):plot_geom353,12375
-def main():main410,14137
+        def get_upper_coord(x):get_upper_coord133,4478
+        def get_lower_coord(x):get_lower_coord138,4663
+    def add_mass(self, mass):add_mass166,5830
+    def info_print(self, round):info_print169,5886
+    def info_save(self, save_path, number):info_save184,6468
+class Spar(Airfoil):Spar201,7201
+    def __init__(self):__init__204,7268
+    def add_coord(self, airfoil, x_loc_percent):add_coord212,7453
+    def add_spar_caps(self, spar_cap_area):add_spar_caps239,8383
+    def add_mass(self, mass):add_mass243,8486
+    def add_webs(self, thickness):add_webs247,8576
+class Stringer(Airfoil):Stringer258,8922
+    def __init__(self):__init__261,9001
+    def add_coord(self, airfoil,add_coord270,9214
+    def add_area(self, area):add_area330,11712
+    def add_mass(self, mass):add_mass334,11788
+    def add_webs(self, thickness):add_webs338,11899
+    def info_print(self, round):info_print348,12249
+def plot_geom(airfoil, view: False):plot_geom354,12401
+def main():main411,14163
 
 /home/blendux/github/UCLA_MAE_154B/tools/generator.py,332
 def default_airfoil():default_airfoil23,867
