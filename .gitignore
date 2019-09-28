@@ -1,7 +1,5 @@
 # .gitignore
 
-# Script execution artifacts
-__pycache__
-
-# Saved component informations
-save
+__pycache__/
+save/
+TAGS
