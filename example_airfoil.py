@@ -10,7 +10,6 @@ Generate a population of airfoils & optimize.
 
 from tools import creator, evaluator, generator
 
-
 import time
 start_time = time.time()
 
@@ -40,7 +39,6 @@ NOSE_BOTTOM_STRINGERS = 5
 
 SAVE_PATH = '/home/blendux/github/UCLA_MAE_154B/save/'
 
-
 # Create airfoil instance
 af = creator.Airfoil.from_dimensions(CHORD_LENGTH, SEMI_SPAN)
 af.add_naca(NACA_NUM)
@@ -63,11 +61,8 @@ af.spar.info_save(SAVE_PATH, 'foo_name')
 # Create stringer instance
 af.stringer = creator.Stringer()
 # Compute the stringer coordinates from their quantity in each zone
-af.stringer.add_coord(af,
-                      NOSE_TOP_STRINGERS,
-                      TOP_STRINGERS,
-                      NOSE_BOTTOM_STRINGERS,
-                      BOTTOM_STRINGERS)
+af.stringer.add_coord(af, NOSE_TOP_STRINGERS, TOP_STRINGERS,
+                      NOSE_BOTTOM_STRINGERS, BOTTOM_STRINGERS)
 af.stringer.add_area(STRINGER_AREA)
 af.stringer.add_mass(STRINGER_MASS)
 af.stringer.add_webs(SKIN_THICKNESS)

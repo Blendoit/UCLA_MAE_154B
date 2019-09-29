@@ -12,7 +12,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 """
 The creator.py module contains class definitions for coordinates
 and various components we add to an airfoil (spars, stringers, and ribs).
@@ -57,7 +56,7 @@ class Airfoil:
         self.area = float()
         # Component material
         self.material = str()
-        # Coordinates
+        # Coordinate
         self.x = []
         self.z = []
 
@@ -102,31 +101,32 @@ class Airfoil:
             """
             z_c = float()
             if 0 <= x < p_c:
-                z_c = (m / (p ** 2)) * (2 * p * (x / self.chord)
-                                        - (x / self.chord) ** 2)
+                z_c = (m / (p**2)) * (2 * p * (x / self.chord) -
+                                      (x / self.chord)**2)
             elif p_c <= x <= self.chord:
-                z_c = (m / ((1 - p) ** 2)) * ((1 - 2 * p)
-                                              + 2 * p * (x / self.chord)
-                                              - (x / self.chord) ** 2)
+                z_c = (m /
+                       ((1 - p)**2)) * ((1 - 2 * p) + 2 * p *
+                                        (x / self.chord) - (x / self.chord)**2)
             return (z_c * self.chord)
 
         def get_thickness(x):
             """Return thickness from 1 'x' along the airfoil chord."""
             x = 0 if x < 0 else x
-            z_t = 5 * t * self.chord * (
-                + 0.2969 * (x / self.chord) ** 0.5
-                - 0.1260 * (x / self.chord) ** 1
-                - 0.3516 * (x / self.chord) ** 2
-                + 0.2843 * (x / self.chord) ** 3
-                - 0.1015 * (x / self.chord) ** 4)
+            z_t = 5 * t * self.chord * (+0.2969 *
+                                        (x / self.chord)**0.5 - 0.1260 *
+                                        (x / self.chord)**1 - 0.3516 *
+                                        (x / self.chord)**2 + 0.2843 *
+                                        (x / self.chord)**3 - 0.1015 *
+                                        (x / self.chord)**4)
             return z_t
 
         def get_theta(x):
             dz_c = float()
             if 0 <= x < p_c:
-                dz_c = ((2 * m) / p ** 2) * (p - x / self.chord)
+                dz_c = ((2 * m) / p**2) * (p - x / self.chord)
             elif p_c <= x <= self.chord:
-                dz_c = (2 * m) / ((1 - p) ** 2) * (p - x / self.chord)
+                dz_c = (2 * m) / ((1 - p)**2) * (p - x / self.chord)
+
             theta = atan(dz_c)
             return theta
 
@@ -192,15 +192,14 @@ class Airfoil:
                 sys.stdout = sys.__stdout__
                 print('Successfully wrote to file {}'.format(full_path))
         except IOError:
-            print('Unable to write {} to specified directory.\n'
-                  .format(file_name),
-                  'Was the full path passed to the function?')
+            print(
+                'Unable to write {} to specified directory.\n'.format(
+                    file_name), 'Was the full path passed to the function?')
         return None
 
 
 class Spar(Airfoil):
     """Contains a single spar's location."""
-
     def __init__(self):
         super().__init__()
         self.x_start = []
@@ -257,7 +256,6 @@ class Spar(Airfoil):
 
 class Stringer(Airfoil):
     """Contains the coordinates of all stringers."""
-
     def __init__(self):
         super().__init__()
         self.x_start = []
@@ -267,9 +265,8 @@ class Stringer(Airfoil):
         self.z_end = []
         self.area = float()
 
-    def add_coord(self, airfoil,
-                  stringer_u_1, stringer_u_2,
-                  stringer_l_1, stringer_l_2):
+    def add_coord(self, airfoil, stringer_u_1, stringer_u_2, stringer_l_1,
+                  stringer_l_2):
         """Add equally distributed stringers to four airfoil locations
         (upper nose, lower nose, upper surface, lower surface).
 
@@ -298,8 +295,8 @@ class Stringer(Airfoil):
             x += interval
             # Add upper stringers from first spar until last spar
             # TODO: stringer placement if only one spar is created
-        interval = (airfoil.spar.x[-1][0]
-                    - airfoil.spar.x[0][0]) / (stringer_u_2 + 1)
+        interval = (airfoil.spar.x[-1][0] -
+                    airfoil.spar.x[0][0]) / (stringer_u_2 + 1)
         x = interval + airfoil.spar.x[0][0]
         for _ in range(0, stringer_u_2):
             i = bi.bisect_left(airfoil.x, x)
@@ -317,8 +314,8 @@ class Stringer(Airfoil):
             self.z.append(airfoil.z[-i])
             x += interval
             # Add lower stringers from first spar until last spar
-        interval = (airfoil.spar.x[-1][1]
-                    - airfoil.spar.x[0][1]) / (stringer_l_2 + 1)
+        interval = (airfoil.spar.x[-1][1] -
+                    airfoil.spar.x[0][1]) / (stringer_l_2 + 1)
         x = interval + airfoil.spar.x[0][1]
         for _ in range(0, stringer_l_2):
             i = bi.bisect_left(airfoil.x[::-1], x)
@@ -360,16 +357,21 @@ def plot_geom(airfoil, view: False):
     y = [0, 0]
     ax.plot(x, y, linewidth='1')
     # Plot quarter chord
-    ax.plot(airfoil.chord / 4, 0,
-            '.', color='g', markersize=24,
+    ax.plot(airfoil.chord / 4,
+            0,
+            '.',
+            color='g',
+            markersize=24,
             label='Quarter-chord')
     # Plot mean camber line
-    ax.plot(airfoil.x_c, airfoil.z_c,
-            '-.', color='r', linewidth='2',
+    ax.plot(airfoil.x_c,
+            airfoil.z_c,
+            '-.',
+            color='r',
+            linewidth='2',
             label='Mean camber line')
     # Plot airfoil surfaces
-    ax.plot(airfoil.x, airfoil.z,
-            color='b', linewidth='1')
+    ax.plot(airfoil.x, airfoil.z, color='b', linewidth='1')
 
     # Plot spars
     try:
@@ -392,9 +394,9 @@ def plot_geom(airfoil, view: False):
     plot_bound = max(airfoil.x)
     ax.set(title='NACA ' + str(airfoil.naca_num) + ' airfoil',
            xlabel='X axis',
-           xlim=[- 0.10 * plot_bound, 1.10 * plot_bound],
+           xlim=[-0.10 * plot_bound, 1.10 * plot_bound],
            ylabel='Z axis',
-           ylim=[- (1.10 * plot_bound / 2), (1.10 * plot_bound / 2)])
+           ylim=[-(1.10 * plot_bound / 2), (1.10 * plot_bound / 2)])
 
     plt.grid(axis='both', linestyle=':', linewidth=1)
     plt.gca().set_aspect('equal', adjustable='box')
